@@ -76,7 +76,7 @@ class Avatar(object):
 		module_links.ses_avatars[id] = self
 
 		self.chank = self.area.fst_chank
-		self.chank.generator()
+		self.chank.generator(self)
 
 		self.chance['dodge Atk']  = 100 - self.dodge_Atk
 		self.chance['dodge MAtk'] = 100 - self.dodge_MAtk
@@ -125,7 +125,7 @@ class Avatar(object):
 
 		self.chank = self.area.chank_map[int(self.location['row']/50)][int(self.location['elm']/50)]
 
-		self.chank.msg()
+		self.chank.msg(self)
 
 		self.level()
 

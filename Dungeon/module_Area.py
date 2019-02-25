@@ -37,7 +37,7 @@ class Area(object):
 
 		self.map = [[None for elm in range(self.elms)] for row in range(self.rows)]
 
-		self.chank_map = [[Chank(row, elm, self, ses_avatars) for elm in range(int(self.elms/50))] for row in range(int(self.rows/50))]
+		self.chank_map = [[Chank(row, elm) for elm in range(int(self.elms/50))] for row in range(int(self.rows/50))]
 
 		self.fst_chank = self.chank_map[int(len(self.chank_map)/2)][int(len(self.chank_map[int(len(self.chank_map)/2)])/2)]
 

@@ -2,69 +2,65 @@ from Blocks.module_GameNone import GameNone
 
 class Chank(object):
 
-	def __init__(self, row, elm, glob_ses_area, glob_ses_avatars, num=50):   # number of rows and elms
+	def __init__(self, row, elm, num=50):   # number of rows and elms
 
 		self.row = row
 		self.elm = elm
 		self.num = num
-
-		self.map = glob_ses_area.map
-		self.area = glob_ses_area
-		self.avatars = glob_ses_avatars
 
 		self.strt_row = row*num
 		self.strt_elm = elm*num
 
 		self.fin_row = self.strt_row + num
 		self.fin_elm = self.strt_elm + num
+		
+		from module_links import ses_area
 
 		for row in range(-1, self.fin_row - self.strt_row - 1):
 			for elm in range(-1, self.fin_elm - self.strt_elm - 1):
-				self.map[self.strt_row + row][self.strt_elm + elm] = GameNone()
+				ses_area.map[self.strt_row + row][self.strt_elm + elm] = GameNone()
 
-	def check(self):
+	def check(self, avatar):
 
-		for avatar in self.avatars:
+		if avatar.chank.row < self.row:
 
-			if avatar.chank.row < self.row:
-
-				for row in range(self.strt_row, self.strt_row - 6):
-					for elm in range(self.strt_elm, self.fin_elm):
-						if self.map[row][elm] == avatar:
-							self.generator()
+			for row in range(self.strt_row, self.strt_row - 6):
+				for elm in range(self.strt_elm, self.fin_elm):
+					if avatar.map[row][elm] == avatar:
+						self.generator(avatar)
 
 
-			elif avatar.chank.elm > self.elm:
+		elif avatar.chank.elm > self.elm:
 
-				for row in range(self.strt_row, self.fin_row):
-					for elm in range(self.fin_elm, self.fin_elm + 6):
-						if self.map[row][elm] == avatar:
-							self.generator()
+			for row in range(self.strt_row, self.fin_row):
+				for elm in range(self.fin_elm, self.fin_elm + 6):
+					if avatar.map[row][elm] == avatar:
+						self.generator(avatar)
 
-			elif avatar.chank.row > self.row:
+		elif avatar.chank.row > self.row:
 
-				for row in range(self.fin_row, self.fin_row + 6):
-					for elm in range(self.strt_elm, self.fin_elm):
-						if self.map[row][elm] == avatar:
-							self.generator()
+			for row in range(self.fin_row, self.fin_row + 6):
+				for elm in range(self.strt_elm, self.fin_elm):
+					if avatar.map[row][elm] == avatar:
+						self.generator(avatar)
 
-			elif avatar.chank.elm < self.row:
+		elif avatar.chank.elm < self.row:
 
-				for row in range(self.strt_row, self.fin_row):
-					for elm in range(self.strt_elm, self.strt_elm - 6):
-						if self.map[row][elm] == avatar:
-							self.generator()
+			for row in range(self.strt_row, self.fin_row):
+				for elm in range(self.strt_elm, self.strt_elm - 6):
+					if avatar.map[row][elm] == avatar:
+						self.generator(avatar)
 
-	def generator(self):
+	def generator(self, avatar):
 
 		for row in range(self.strt_row, self.fin_row):
 			for elm in range(self.strt_elm, self.fin_elm):
-				if type(self.map[row][elm]) is GameNone:
-					self.map[row][elm].act(row, elm)
+				if type(avatar.map[row][elm]) is GameNone:
+					avatar.map[row][elm].act(row, elm)
 
-	def msg(self):
+	def msg(self, avatar):
 
-		self.area.chank_map[self.row - 1][self.elm].check()
-		self.area.chank_map[self.row][self.elm + 1].check()
-		self.area.chank_map[self.row + 1][self.elm].check()
-		self.area.chank_map[self.row][self.elm - 1].check()
+		avatar.area.chank_map[self.row - 1][self.elm].check(avatar)
+		avatar.area.chank_map[self.row][self.elm + 1].check(avatar)
+		avatar.area.chank_map[self.row + 1][self.elm].check(avatar)
+		avatar.area.chank_map[self.row][self.elm - 1].check(avatar)
