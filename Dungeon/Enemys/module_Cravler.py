@@ -1,8 +1,10 @@
 from Enemys.module_metaEnemy import metaEnemy
 
+from termcolor import colored
+
 class Cravler(metaEnemy):
 
-	des = 'r'
+	des = colored('r', 'red')
 	type= 'Cravler'
 
 	def __init__(self, row, elm):

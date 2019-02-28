@@ -1,9 +1,10 @@
 from Enemys.module_metaEnemy import metaEnemy
 
+from termcolor import colored
+
 class Goblin(metaEnemy):
 	
-	des  = 'g'
-	type = 'Goblin'
+	des  = colored('g', 'red')
 	
 	def __init__(self, row, elm):
 		self.row = row

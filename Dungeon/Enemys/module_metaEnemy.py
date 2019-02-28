@@ -1,6 +1,6 @@
 from random import randint
 
-from Blocks.module_metaSurfaces import Ground, metaSurface as Surface
+from Blocks.module_Surfaces import Ground, metaSurface as Surface
 
 class Enemy(object):
 
@@ -87,7 +87,7 @@ class metaEnemy(object):
 		from Methods.module_random_moving import random_moving
 		from Methods.module_moving import moving
 
-		for avatar in ses_avatars:
+		for avatar in ses_avatars.values():
 			location = avatar.location
 			
 			if self.row == location['row']:
