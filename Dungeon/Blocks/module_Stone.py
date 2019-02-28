@@ -1,11 +1,13 @@
 from random import randint
 
+from termcolor import colored
+
 class Stone(object):
 	'''
 	docstring for Stone
 	'''
 
-	des = '#'
+	des = colored('#', 'white', 'on_grey')
 
 	def walk(self, choice, obj):
 		'''
@@ -15,7 +17,7 @@ class Stone(object):
 		from module_links import ses_avatars
 		from Enemys.module_metaEnemy import metaEnemy
 		from Blocks.Trigers.module_Chest import Chest
-		from Blocks.module_metaSurfaces import Ground
+		from Blocks.module_Surfaces import Ground
 		
 		if obj in ses_avatars:
 			if choice == 'up':

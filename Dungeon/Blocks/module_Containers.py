@@ -1,4 +1,5 @@
 from random import randint, choice
+from termcolor import colored
 
 from module_links import ses_avatars, items, types_of_items
 
@@ -25,7 +26,7 @@ class Container(object):
 
 class GoldOre(Container):
 	
-	des = '*'
+	des = colored('*', 'yellow')
 	
 	def give(self, obj):
 		random_num = randint(1, 15)
@@ -34,7 +35,7 @@ class GoldOre(Container):
 
 class Pot(Container):
 	
-	des = '+'
+	des = colored('+', 'yellow')
 	
 	def give(self, obj):
 

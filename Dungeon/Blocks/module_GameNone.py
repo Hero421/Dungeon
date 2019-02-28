@@ -1,7 +1,7 @@
 from random import randint
 
 from Blocks.module_Stone import Stone
-from Blocks.module_metaSurfaces import Wall, Ground, Chasm
+from Blocks.module_Surfaces import Wall, Ground, Chasm
 from Blocks.module_Containers import GoldOre
 
 from Blocks.Trigers.module_Spike import Spike
