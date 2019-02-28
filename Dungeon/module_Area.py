@@ -1,7 +1,7 @@
 from module_Chank import Chank
 from random import randint
 
-from Blocks.module_metaSurfaces import Wall
+from Blocks.module_Surfaces import Wall
 
 from module_Rooms import Room
 from module_links import levels, ses_avatars

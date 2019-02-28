@@ -7,7 +7,7 @@ from module_Avatar import Avatar
 from Methods.module_effect import effect
 from Methods.module_moving import moving
 
-from module_links import game, esc, ses_avatars, ses_area, clear, enemys, res, dirs_dict
+from module_links import game, esc, ses_avatars, ses_area, clear, enemys, res, dirs_dict, path, uuid
 import module_links
 
 import Items.Drugs.module_SmallHealthDrug
@@ -82,10 +82,10 @@ def turn(avatar):
 					res = False
 		
 		elif chk == 'skills':
-			module_links.skl_bool = avatar
+			avatar.skill_tree()
 
 		elif chk == 'esc':
-			esc = True
+			module_links.esc == True
 
 		avatar.check()
 
@@ -96,9 +96,9 @@ def global_turn(id):
 		avatar.recovery()
 		avatar.check()
 
-	ses_avatars[id].choices = load(open(str(id) + '.json', 'r'))
+	ses_avatars[id].choices = load(open(path + uuid + str(id) + '.json', 'r'))
 
-	for avatar in ses_avatars:
+	for avatar in ses_avatars.values():
 		turn(avatar)
 
 	for enemy in enemys:

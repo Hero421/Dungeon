@@ -1,7 +1,18 @@
+import Dungeon
+
+path_= list(Dungeon.__file__)
+
+for count in range(11):
+	del path_[-1]
+
+path = ''
+
+for ltr in path_:
+	path += ltr
+
 intoxicated = {}
 
 raritys = ['common', 'rare', 'Epic', 'GODLY']
-
 
 types_of_items = [
 	'Helmet',
@@ -69,8 +80,11 @@ from os import system as os_sys
 from platform import system as platform_sys
 
 if platform_sys() == 'Windows':
+	input(platform_sys())
 	clear = lambda: os_sys('cls')
+	uuid = '\\uuid\\'
 elif platform_sys() == 'Linux':
 	clear = lambda: os_sys('clear')
+	uuid = '/uuid/'
 
 res = False

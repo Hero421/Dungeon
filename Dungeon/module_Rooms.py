@@ -1,4 +1,4 @@
-from Blocks.module_metaSurfaces import Floor, Wall, Ground
+from Blocks.module_Surfaces import Floor, Wall, Ground
 
 from Blocks.Trigers.module_Simulator import Simulator
 from Blocks.Trigers.module_Portal import Portal

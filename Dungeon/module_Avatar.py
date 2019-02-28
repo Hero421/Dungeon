@@ -2,9 +2,10 @@ from random import randint
 
 from module_Rooms import Room
 import module_links
+from module_links import clear, intoxicated
 
-from Blocks.module_metaSurfaces import Floor
-
+from Blocks.module_Surfaces import Floor
+from Blocks.Trigers.module_DieChest import DieChest
 
 class Avatar(object):
 
@@ -56,13 +57,11 @@ class Avatar(object):
 
 	crit = 0
 
-	id = 'host'
-
 	def __init__(self, id, room='yes'):
 
 		self.hlt  = self.full_hlt
 		self.mana = self.full_mana
-		self.dmg  = randint(self.mid_dmg - 1, self.mid_dmg + 1)
+		self.dmg  = randint(self.mid_dmg   - 1, self.mid_dmg   + 1)
 		self.m_dmg= randint(self.mid_m_dmg - 1, self.mid_m_dmg + 1)
 		
 		self.id = id
@@ -187,7 +186,7 @@ class Avatar(object):
 		'''
 		Restart the level and Avatar
 		'''
-		if self.selected != None:
+		if self.selected:
 			self.selected.use = False
 		self.map[self.location['row']][self.location['elm']] = DieChest()
 		self.location['row'], self.location['elm'] = self._fst_row, self._fst_elm
@@ -198,13 +197,8 @@ class Avatar(object):
 		self.armor = self.full_armor
 		self.mana = self.full_mana
 		self.memo = Floor
-		global intoxicated
 		if self in intoxicated:
 			del intoxicated[self]
-
-	def move(self, dir):
-		moving(self, dir)
-		pass
 
 	def open_inventory(self, chest=0):
 		'''
@@ -292,7 +286,7 @@ class Avatar(object):
 	def add_to_inventory(self, items):
 		for item in items:
 			if type(item) is list:
-				if self.empt_slot != None:
+				if self.empt_slot:
 					self.inventory[1][self.empt_slot] = item
 					self.emp_slot()
 			elif item.type == 'Helmet' and self.inventory[0]['head'] == None:
@@ -313,7 +307,7 @@ class Avatar(object):
 				break
 
 	def stat(self):
-		if self in module_links.intoxicated:
+		if self in intoxicated:
 			print(*list(set(self.status)))
 		print('health: ' + str(self.hlt))
 		print('armor:  ' + str(self.armor))
@@ -325,26 +319,20 @@ class Avatar(object):
 
 
 	def get_hit(self, dmg):
-		random_num = randint(1, 100)
-		if random_num in range(self.chance['dodge Atk']):
+		if randint(1, 100) in range(self.chance['dodge Atk']):
 			if self.armor < dmg:
 				self.hlt -= dmg - self.armor
-				print(dmg - self.armor)
-				input()
+				input('get damage: ' + dmg - self.armor)
 			else:
-				print('miss')
-				input()
+				input('miss')
 		else:
-			print('miss')
-			input()
+			input('miss')
 
 	def give_hit(self, obj):
-		random_num = randint(1, 100)
-		if random_num in range(self.chance['hit']):
+		if randint(1, 100) in range(self.chance['hit']):
 			obj.get_hit(self.dmg)
 		else:
-			print('miss')
-			input()
+			input('miss')
 
 
 	def del_of_inventory(self, item):
@@ -379,9 +367,8 @@ class Avatar(object):
 
 	def skill_up(self):
 		
-		esc = False
-		
-		while self.Skill_points > 0 and esc == False:
+		while self.Skill_points > 0:
+
 			print('Skill points:', self.Skill_points)
 
 			self.skill_tree()
@@ -407,8 +394,7 @@ class Avatar(object):
 			elif choice == 'Luc':
 				self.Luc += 1
 			
-			elif choice == 'esc':
-				esc = True
+			elif choice == 'esc': break
 			
 			if choice != 'esc' and choice != '':
 				self.Skill_points -= 1
