@@ -1,6 +1,8 @@
+from termcolor import colored
+
 class Simulator(object):
 	
-	des = '{'
+	des = colored('{', 'yellow')
 	
 	def __init__(self):
 

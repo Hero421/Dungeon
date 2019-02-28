@@ -1,11 +1,12 @@
 from random import choice as ch
+from termcolor import colored
 
 class Chest(object):
 	'''
 	The chest for the Avatar
 	'''
 
-	des = 'C'
+	des = colored('C', 'yellow')
 
 	def __init__(self, rarity=None):
 		self.stat  = False
@@ -32,7 +33,7 @@ class Chest(object):
 
 		if self.stat == False:
 			self.stat = True
-			self.des  = 'c'
+			self.des  = colored('c', 'yellow')
 
 			if self.rarity == 'common':
 				for count in range(3):

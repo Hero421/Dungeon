@@ -1,9 +1,11 @@
+from termcolor import colored
+
 class Table(object):
 	'''
 	Plaque with the inscription
 	'''
 
-	des = '='
+	des = colored('=', 'grey')
 
 	def __init__(self, text):
 		self.text = text

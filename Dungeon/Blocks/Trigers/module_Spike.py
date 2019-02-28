@@ -1,5 +1,5 @@
 from random import randint
-from Blocks.module_metaSurfaces import Ground
+from Blocks.module_Surfaces import Ground
 
 from Enemys.module_metaEnemy import metaEnemy
 
@@ -44,7 +44,7 @@ class Spike(object):
 				else:
 					if self.bool == True:
 						if self.des == ' ':
-							self.des = '^'
+							self.des = colored('^', 'red')
 						
 						obj.get_hit(self.dmg)
 						

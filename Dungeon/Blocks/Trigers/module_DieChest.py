@@ -1,9 +1,11 @@
+from termcolor import colored
+
 class DieChest(object):
 	'''
 	Chest with all the things of the Avatar, which is created at death
 	'''
 
-	des = '%'
+	des = colored('%', 'blue')
 
 	def __init__(self):
 		self.inventory = self.object.inventory[1].copy()

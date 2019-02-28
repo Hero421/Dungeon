@@ -1,8 +1,10 @@
 from module_links import intoxicated, ses_avatars
 
+from termcolor import colored
+
 class Source(object):
 	
-	des = '£'
+	des = colored('£', 'blue')
 	
 	def __init__(self):
 
