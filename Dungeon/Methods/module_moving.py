@@ -1,4 +1,4 @@
-from Blocks.module_metaSurfaces import metaSurface as Surface, Wall
+from Blocks.module_Surfaces import metaSurface as Surface, Wall
 from Blocks.module_Stone import Stone
 from Blocks.Trigers.module_Spike import Spike
 from Blocks.Trigers.module_Door  import Door
