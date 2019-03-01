@@ -1,5 +1,5 @@
 from time import sleep
-from json import dump, load
+from json import load
 
 from module_Area import Area
 from module_Avatar import Avatar
@@ -32,7 +32,7 @@ import Items.Wings.module_Wings
 #		Chasms
 #		Choice(Enemy)
 
-Dungeon_1 = Area('Dungeon 1', 150, 150)
+Dungeon_1 = Area('Dungeon 1', 150, 150, stones=0, spikes=0, chasms=0, enemys=0)
 Dungeon_2 = Area('Dungeon 2', 150, 150)
 
 def turn(avatar):
@@ -105,9 +105,9 @@ def global_turn(id):
 		enemy.act()
 		enemy.check()
 
-def create_player(id):
+def create_player(id, room=True):
 	
-	created_player = Avatar(id)
+	created_player = Avatar(id, room=room)
 	
 	from Items.Drugs.module_SmallHealthDrug import SmallHealthDrug
 	from Items.Swords.module_Sword import Sword

@@ -1,6 +1,5 @@
 from uuid import uuid4
 from json import dump
-from platform import system
 
 import Dungeon
 
@@ -10,9 +9,9 @@ id = uuid4()
 
 player = create_player(str(id))
 
-from module_links import uuid, path, clear
+from module_links import uuid, path, clear, esc
 
-while True:
+while not esc:
 
 	clear()
 	

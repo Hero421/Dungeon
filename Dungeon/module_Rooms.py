@@ -35,49 +35,39 @@ class Rooms(object):
 	def spawn(self, way, veiw, ways):
 		if way == 'up':
 			if self.row - 4 - self.height in range(self.area.rows):
-				room = Room(self.row - self.height - 4, self.elm, veiw, self.width, self.height)
-				room.spawn()
-				del room
+				Room(self.row - self.height - 4, self.elm, veiw, self.width, self.height).spawn()
 				self.row -= self.height - 4
 			else:
-				way = random.choice(ways)
-				self.spawn(way, veiw)
+				self.spawn(choice(ways), veiw)
 
 		elif way == 'right':
 			if self.elm + 4 + self.width in range(self.area.elms):
-				room = Room(self.row, self.elm + self.width + 4, veiw, self.width, self.height)
-				room.spawn()
-				del room
+				Room(self.row, self.elm + self.width + 4, veiw, self.width, self.height).spawn()
 				self.elm += self.width + 4
 			else:
-				way = random.choice(ways)
-				self.spawn(way, veiw)
+				self.spawn(choice(ways), veiw)
 
 		elif way == 'down':
 			if self.row + 4 + self.height in range(self.area.rows):
-				room = Room(self.row + self.height + 4, self.elm, veiw, self.width, self.height)
-				room.spawn()
+				Room(self.row + self.height + 4, self.elm, veiw, self.width, self.height).spawn()
 				self.row += self.height + 4
 			else:
-				way = random.choice(ways)
-				self.spawn(way, veiw)
+				self.spawn(choice(ways), veiw)
 
 		elif way == 'left':
 			if self.elm - 4 - self.width in range(self.area.elms):
-				room = Room(self.row, self.elm - self.width - 4, veiw, self.width, self.height)
-				room.spawn()
+				Room(self.row, self.elm - self.width - 4, veiw, self.width, self.height).spawn()
 				self.elm += self.width + 4
 			else:
-				way = random.choice(ways)
-				self.spawn(way, veiw)
+				self.spawn(choice(ways), veiw)
 
 class Room(object):
 
-	def __init__(self, strt_row, strt_elm, ses_area, veiw=None, width=5, height=5):
+	def __init__(self, strt_row, strt_elm, ses_area, veiw=False, width=5, height=5):
 		if veiw:
 			self.veiw = veiw
 		else:
-			self.veiw = random.choice(['room with the monster', 'room with the chest', 'a room with a chest and a monster'])
+			self.veiw = choice(['room with the monster', 'room with the chest', 'a room with a chest and a monster'])
 		self.strt_elm = strt_elm
 		self.strt_row = strt_row
 		self.width  = width

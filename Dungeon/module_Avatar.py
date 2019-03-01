@@ -11,6 +11,7 @@ class Avatar(object):
 
 	empt_slot = 0
 	status    = []
+	used_items= []
 	count     = {}    # {'self.name': [start, stop, stat(on/off), self]}
 	chance    = {}	# {'potion': []}
 	location  = {'row': None, 'elm': None}
@@ -57,7 +58,7 @@ class Avatar(object):
 
 	crit = 0
 
-	def __init__(self, id, room='yes'):
+	def __init__(self, id, room=True):
 
 		self.hlt  = self.full_hlt
 		self.mana = self.full_mana
@@ -81,7 +82,7 @@ class Avatar(object):
 		self.chance['dodge MAtk'] = 100 - self.dodge_MAtk
 		self.chance['hit']        = 100 - self.hit
 
-		self.count['Source']    = [40, 0, 'on', None]
+		self.count['Source'] = [40, 0, 'on', None]
 
 		super().__init__()
 
@@ -90,7 +91,7 @@ class Avatar(object):
 		self._fst_row = int(float(self.area.rows)/2)
 		self._fst_elm = int(float(self.area.elms)/2)
 
-		if room == 'yes':
+		if room == True:
 			Room(self._fst_row - 1, self._fst_elm - 1, self.area, 'the initial room').spawn()
 		#	avatar_rooms = Rooms(self._fst_row - 1, self._fst_elm - 1, ['the initial room', 'room with the chest'])
 
@@ -169,11 +170,11 @@ class Avatar(object):
 
 	def select(self):
 		if self.selected != None:
-			if not(self.selected in used_items):
+			if not(self.selected in self.used_items):
 				self.selected.using(self)
 
 	def using_items(self):
-		for item in module_links.used_items:
+		for item in self.used_items:
 			item.using(self)
 
 	def game(self):
@@ -290,15 +291,15 @@ class Avatar(object):
 					self.inventory[1][self.empt_slot] = item
 					self.emp_slot()
 			elif item.type == 'Helmet' and self.inventory[0]['head'] == None:
-				self.inventory[0]['head'] = item
+				item.using(self)
 			elif item.type == 'Cuirass' and self.inventory[0]['body'] == None:
-				self.inventory[0]['body'] = item
+				item.using(self)
 			elif item.type == 'Wings' and self.inventory[0]['wings'] == None:
-				self.inventory[0]['wings'] = item
+				item.using(self)
 			elif item.type == 'Leggings' and self.inventory[0]['feet'] == None:
-				self.inventory[0]['feet'] = item
+				item.using(self)
 			elif item.type == 'Shoes' and self.inventory[0]['shoes'] == None:
-				self.inventory[0]['shoes'] = item
+				item.using(self)
 			elif self.empt_slot != None:
 				self.inventory[1][self.empt_slot] = item
 				self.emp_slot()
@@ -330,7 +331,7 @@ class Avatar(object):
 
 	def give_hit(self, obj):
 		if randint(1, 100) in range(self.chance['hit']):
-			obj.get_hit(self.dmg)
+			obj.get_hit(self.dmg, self)
 		else:
 			input('miss')
 
