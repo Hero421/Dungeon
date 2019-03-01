@@ -21,13 +21,13 @@ class Spike(object):
 
 	def walk(self, choice, obj):
 
-		from module_links import ses_area, ses_avatars
+		from module_links import ses_avatars
 		map = ses_area.map
 		if isinstance(obj, metaEnemy):
 			obj.res = False
 
 		else:
-			if obj in ses_avatars:
+			if obj in ses_avatars.values():
 				location = avatar.location
 				if obj.inventory[0]['wings']:
 					map[obj.location['row']][obj.location['elm']] = obj.memo()
@@ -58,7 +58,7 @@ class Spike(object):
 
 		from module_links import ses_avatars
 
-		if obj in ses_avatars:
+		if obj in ses_avatars.values():
 			self = Ground()
 
 		elif isinstance(obj, metaEnemy):
