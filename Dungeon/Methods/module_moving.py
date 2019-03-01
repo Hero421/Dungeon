@@ -1,5 +1,6 @@
 from Blocks.module_Surfaces import metaSurface as Surface, Wall
 from Blocks.module_Stone import Stone
+from Blocks.module_Containers import Container
 from Blocks.Trigers.module_Spike import Spike
 from Blocks.Trigers.module_Door  import Door
 from Blocks.Trigers.module_Chest import Chest
@@ -7,6 +8,9 @@ from Blocks.Trigers.module_Table import Table
 from Blocks.Trigers.module_Portal import Portal
 from Blocks.Trigers.module_Source import Source
 from Blocks.Trigers.module_DieChest import DieChest
+from Blocks.Trigers.module_Simulator import Simulator
+
+from Enemys.module_metaEnemy import metaEnemy
 
 import module_links
 
@@ -14,19 +18,19 @@ def moving(obj, *choice):
 
 	if not (choice[0] == 'act') and not (choice[0] == 'hit'):
 		if choice[0] == 'up':
-			if isinstance(obj.map[obj.row - 1][obj.elm], (Surface, Spike, Door, Stone)):
+			if isinstance(obj.map[obj.row - 1][obj.elm], (Surface, Spike, Door, Stone, Container)):
 				obj.map[obj.row - 1][obj.elm].walk(choice[0], obj)
 		
 		elif choice[0] == 'right':
-			if isinstance(obj.map[obj.row][obj.elm + 1], (Surface, Spike, Door, Stone)):
+			if isinstance(obj.map[obj.row][obj.elm + 1], (Surface, Spike, Door, Stone, Container)):
 				obj.map[obj.row][obj.elm + 1].walk(choice[0], obj)
 		
 		elif choice[0] == 'down':
-			if isinstance(obj.map[obj.row + 1][obj.elm], (Surface, Spike, Door, Stone)):
+			if isinstance(obj.map[obj.row + 1][obj.elm], (Surface, Spike, Door, Stone, Container)):
 				obj.map[obj.row + 1][obj.elm].walk(choice[0], obj)
 		
 		elif choice[0] == 'left':
-			if isinstance(obj.map[obj.row][obj.elm - 1], (Surface, Spike, Door, Stone)):
+			if isinstance(obj.map[obj.row][obj.elm - 1], (Surface, Spike, Door, Stone, Container)):
 				obj.map[obj.row][obj.elm - 1].walk(choice[0], obj)
 
 	elif choice[0] == 'act' or choice[0] == 'hit':
@@ -102,7 +106,7 @@ def moving(obj, *choice):
 			elif choice[0] == 'hit':
 				if obj.selected:
 					if obj.selected.type != 'Stick':
-						if type(dir) is Simulator or type(obj) is Goblin or type(obj) is Cravler:
+						if isinstance(dir, (metaEnemy, Simulator)):
 							obj.give_hit(dir)
 					else:
 						obj.selected.hit(row, elm)
