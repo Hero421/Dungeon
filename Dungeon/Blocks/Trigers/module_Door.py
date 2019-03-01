@@ -21,14 +21,14 @@ class Door(object):
 		Helps the subject walk on it.
 		'''
 		
-		from module_links import ses_avatars, ses_area
+		from module_links import ses_avatars
 
 		if self.stat == True:
 			map = ses_area.map
 
 			from Enemys.module_metaEnemy import metaEnemy
 
-			if obj in ses_avatars:
+			if obj in ses_avatars.values():
 				location = obj.location
 				map[location['row']][location['elm']] = obj.memo()
 				obj.memo = type(self)
