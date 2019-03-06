@@ -74,8 +74,8 @@ class Avatar(object):
 
 		module_links.ses_avatars[id] = self
 
-		self.chank = self.area.fst_chank
-		self.chank.generator(self)
+		self.area.fst_chank.generator(self.map)
+		self.area.fst_chank.msg(self)
 
 		self.chance['dodge Atk']  = 100 - self.dodge_Atk
 		self.chance['dodge MAtk'] = 100 - self.dodge_MAtk
@@ -89,7 +89,7 @@ class Avatar(object):
 		self._fst_elm = int(float(self.area.elms)/2)
 
 		if room:
-			Rooms(['the initial room', 'room with the chest', 'room with the chest'], height=6, lenght=1).spawn(self._fst_row - 1, self._fst_elm - 1, self.map)
+			Rooms(['the initial room', 'room with the chest', 'room with the chest', 'room with the chest'], doors='off', width=5, height=5, lenght=1).spawn(self._fst_row - 1, self._fst_elm - 1, self.map)
 
 
 		self.row, self.location['row'] = self._fst_row, self._fst_row

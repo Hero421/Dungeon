@@ -73,12 +73,12 @@ class Area(object):
 		new_rows = []
 
 		for row in ses_avatars[id].map:
-			if ses_avatars[id].map.index(row) in range(location['row'] - 5, location['row'] + 6):
+			if ses_avatars[id].map.index(row) in range(location['row'] - 11, location['row'] + 12):
 				new_rows.append(row)
 
 		for row in new_rows:
 			rows = []
 			for elm in row:
-				if row.index(elm) in range(location['elm'] - 5, location['elm'] + 6):
+				if row.index(elm) in range(location['elm'] - 11, location['elm'] + 12):
 					rows.append(elm)
 			print(' '.join([elm.des for elm in rows]))
