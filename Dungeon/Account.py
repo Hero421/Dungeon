@@ -16,8 +16,11 @@ while not esc:
 	clear()
 	
 	player.stat()
+	print(player.location, '\n')
 	player.area.print_map(str(id))
 	
 	dump(list(input()), open(path + uuid + str(id) + '.json', 'w'))
 	
 	global_turn(str(id))
+	
+	from module_links import esc

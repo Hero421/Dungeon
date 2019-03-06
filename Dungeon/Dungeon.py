@@ -32,8 +32,7 @@ import Items.Wings.module_Wings
 #		Chasms
 #		Choice(Enemy)
 
-Dungeon_1 = Area('Dungeon 1', 150, 150, stones=0, spikes=0, chasms=0, enemys=0)
-Dungeon_2 = Area('Dungeon 2', 150, 150)
+Dungeon_1 = Area('Dungeon 1', 50, 50, stones=50, spikes=0, chasms=5, enemys=3)
 
 def turn(avatar):
 
@@ -85,7 +84,7 @@ def turn(avatar):
 			avatar.skill_tree()
 
 		elif chk == 'esc':
-			module_links.esc == True
+			module_links.esc = True
 
 		avatar.check()
 

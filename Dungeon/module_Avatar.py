@@ -1,6 +1,6 @@
 from random import randint
 
-from module_Rooms import Room
+from module_Rooms import Room, Rooms, Corridor
 import module_links
 from module_links import clear, intoxicated
 
@@ -13,7 +13,7 @@ class Avatar(object):
 	status    = []
 	used_items= []
 	count     = {}    # {'self.name': [start, stop, stat(on/off), self]}
-	chance    = {}	# {'potion': []}
+	chance    = {}	  # {'potion': []}
 	location  = {'row': None, 'elm': None}
 	choices   = None
 	selected  = None
@@ -58,6 +58,8 @@ class Avatar(object):
 
 	crit = 0
 
+	memo = Floor
+
 	def __init__(self, id, room=True):
 
 		self.hlt  = self.full_hlt
@@ -69,10 +71,7 @@ class Avatar(object):
 
 		self.area = module_links.ses_area
 		self.map  = self.area.map
-		# if len(list(ses_avatars)) == 0:
-		# 	self.id == 'host'
-		# else:
-		# 	self.id = os.getpid()
+
 		module_links.ses_avatars[id] = self
 
 		self.chank = self.area.fst_chank
@@ -86,14 +85,11 @@ class Avatar(object):
 
 		super().__init__()
 
-		self.memo = Floor
-
 		self._fst_row = int(float(self.area.rows)/2)
 		self._fst_elm = int(float(self.area.elms)/2)
 
-		if room == True:
-			Room(self._fst_row - 1, self._fst_elm - 1, self.area, 'the initial room').spawn()
-		#	avatar_rooms = Rooms(self._fst_row - 1, self._fst_elm - 1, ['the initial room', 'room with the chest'])
+		if room:
+			Rooms(['the initial room', 'room with the chest', 'room with the chest'], height=6, lenght=1).spawn(self._fst_row - 1, self._fst_elm - 1, self.map)
 
 
 		self.row, self.location['row'] = self._fst_row, self._fst_row
@@ -102,6 +98,7 @@ class Avatar(object):
 		self.map[self.location['row']][self.location['elm']] = self
 
 		self.inventory = [
+
 			{
 				'head' : None, 
 				'torso': None, 
@@ -123,9 +120,7 @@ class Avatar(object):
 		self.row = self.location['row']
 		self.elm = self.location['elm']
 
-		self.chank = self.area.chank_map[int(self.location['row']/50)][int(self.location['elm']/50)]
-
-		self.chank.msg(self)
+		self.area.chank_map[int(self.location['row']/10)][int(self.location['elm']/10)].msg(self)
 
 		self.level()
 
@@ -315,7 +310,7 @@ class Avatar(object):
 		print('mana:   ' + str(self.mana))
 		print('gold:   ' + str(self.gold))
 		print()
-		print(str(self.Exp) + '/' + str(self.End_exp))
+		print('exp: ' + str(self.Exp) + '/' + str(self.End_exp))
 		print()
 
 
@@ -365,6 +360,8 @@ class Avatar(object):
 		print('Int: ', self.Int)
 		print('Dcs: ', self.Dcs)
 		print('Luc: ', self.Luc)
+		
+		input()
 
 	def skill_up(self):
 		

@@ -37,7 +37,7 @@ class Area(object):
 
 		self.map = [[None for elm in range(self.elms)] for row in range(self.rows)]
 
-		self.chank_map = [[Chank(row, elm) for elm in range(int(self.elms/50))] for row in range(int(self.rows/50))]
+		self.chank_map = [[Chank(row, elm) for elm in range(int(self.elms/10))] for row in range(int(self.rows/10))]
 
 		self.fst_chank = self.chank_map[int(len(self.chank_map)/2)][int(len(self.chank_map[int(len(self.chank_map)/2)])/2)]
 
@@ -52,31 +52,28 @@ class Area(object):
 					self.map[self.map.index(row)][row.index(elm)] = Wall()
 
 		while True:
-			room_elm  = randint(1, self.elms)
-			room_row = randint(1, self.rows)
-			if room_elm in range(self.elms//2 - 7, self.elms//2 + 7) or room_row in range(self.rows//2 - 7, self.rows//2 + 7) or room_elm > self.elms - 5 or room_row > self.rows - 5 or room_elm in range(self.elms//2 + 8, self.elms//2 - 8) or room_row in range(self.rows//2 + 8, self.elms//2 - 8):
+			end_room_elm = randint(1, self.elms)
+			end_room_row = randint(1, self.rows)
+			if end_room_elm in range(self.elms//2 - 7, self.elms//2 + 7) or end_room_row in range(self.rows//2 - 7, self.rows//2 + 7) or end_room_elm > self.elms - 5 or end_room_row > self.rows - 5 or end_room_elm in range(self.elms//2 + 8, self.elms//2 - 8) or end_room_row in range(self.rows//2 + 8, self.elms//2 - 8):
 				continue
 			else:
 				break
 
-		_End_room = Room(room_row, room_elm, self, 'end room')
-		_End_room.spawn()
+		Room('end room').spawn(end_room_row, end_room_elm, self.map)
 
 	def print_map(self, id):
 		'''
 		Create the map and the objects on it to the player
 		'''
-		
-		map = []
 
-		from module_links import ses_avatars, ses_area
+		from module_links import ses_avatars
 		
 		location = ses_avatars[id].location
 
 		new_rows = []
 
-		for row in ses_area.map:
-			if ses_area.map.index(row) in range(location['row'] - 5, location['row'] + 6):
+		for row in ses_avatars[id].map:
+			if ses_avatars[id].map.index(row) in range(location['row'] - 5, location['row'] + 6):
 				new_rows.append(row)
 
 		for row in new_rows:

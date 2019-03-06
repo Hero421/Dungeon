@@ -1,5 +1,6 @@
-from Blocks.module_Surfaces import Floor, Wall, Ground
+from random import choice, randint
 
+from Blocks.module_Surfaces import Floor, Wall, Ground
 from Blocks.Trigers.module_Simulator import Simulator
 from Blocks.Trigers.module_Portal import Portal
 from Blocks.Trigers.module_Source import Source
@@ -8,112 +9,229 @@ from Blocks.Trigers.module_Table  import Table
 from Blocks.Trigers.module_Spike  import Spike
 from Blocks.Trigers.module_Door   import Door
 
+from Blocks.module_Stone import Stone
+
+from Enemys.module_metaEnemy import Enemy
+
+from module_links import ways
+
+from pprint import pprint
+
 class Rooms(object):
 	'''
 	docstring for Rooms
 	'''
-	def __init__(self, row, elm, ses_area, veiws=[], width=5, height=5):
-		self.row = row
-		self.elm = elm
-		print(self.row)
-		print(self.elm)
-		input()
-		self.veiws = veiws
-		self.width = width
-		self.height= height
-		self.area = ses_area
-		self.map  = ses_area.map
-		self.choice()
 
-	def choice(self, ways):
-		room = Room(self.row, self.elm, self.veiws[0])
-		del self.veiws[0]
-		for veiw in self.veiws:
-			way = random.choice(ways)
-			self.spawn(way, veiw)
-	
-	def spawn(self, way, veiw, ways):
-		if way == 'up':
-			if self.row - 4 - self.height in range(self.area.rows):
-				Room(self.row - self.height - 4, self.elm, veiw, self.width, self.height).spawn()
-				self.row -= self.height - 4
-			else:
-				self.spawn(choice(ways), veiw)
+	def __init__(self, generations=None, num=None, doors='on', width=5, height=5, lenght=2):
 
-		elif way == 'right':
-			if self.elm + 4 + self.width in range(self.area.elms):
-				Room(self.row, self.elm + self.width + 4, veiw, self.width, self.height).spawn()
-				self.elm += self.width + 4
-			else:
-				self.spawn(choice(ways), veiw)
+		self.doors = doors
 
-		elif way == 'down':
-			if self.row + 4 + self.height in range(self.area.rows):
-				Room(self.row + self.height + 4, self.elm, veiw, self.width, self.height).spawn()
-				self.row += self.height + 4
-			else:
-				self.spawn(choice(ways), veiw)
+		if not num:
 
-		elif way == 'left':
-			if self.elm - 4 - self.width in range(self.area.elms):
-				Room(self.row, self.elm - self.width - 4, veiw, self.width, self.height).spawn()
-				self.elm += self.width + 4
+			chance = randint(1, 100)
+
+			if chance in range(2):
+				num = 5
+			elif chance in range(8):
+				num = 4
+			elif chance in range(20):
+				num = 3
+			elif chance in range(50):
+				num = 2
 			else:
-				self.spawn(choice(ways), veiw)
+				num = 1
+
+		self.map_of_rooms = [[None for elm in range(20)] for row in range(20)]
+		self.room_row = 10
+		self.room_elm = 10
+		
+		self.width  = width
+		self.height = height
+		
+		self.lenght = lenght
+
+		if not generations:
+			self.generations = [choice(['room with the monster', 'room with the chest', 'a room with a chest and a monster']) for count in range(num)]
+		else:
+			self.generations = generations
+
+	def spawn(self, row, elm, map_):
+
+		way = True
+		var = True
+
+		for generation in self.generations:
+
+			Room(way, generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
+
+			self.map_of_rooms[self.room_row][self.room_elm] = 'Room'
+
+			while True:
+
+				way = choice(['up', 'right', 'down', 'left'])
+
+				if way == 'up':
+					if self.map_of_rooms[self.room_row - 1][self.room_elm] != 'Room':
+						break
+				elif way == 'right':
+					if self.map_of_rooms[self.room_row][self.room_elm + 1] != 'Room':
+						break
+				elif way == 'down':
+					if self.map_of_rooms[self.room_row + 1][self.room_elm] != 'Room':
+						break
+				elif way == 'left':
+					if self.map_of_rooms[self.room_row][self.room_elm - 1] != 'Room':
+						break
+			
+			if way == 'up':
+				row -= self.height + self.lenght
+				self.room_row -= 1
+				if var:
+					Corridor('vertical', doors=self.doors, lenght=self.lenght).spawn(row+self.height-1, elm+1, map_) 
+
+			elif way == 'right':
+				elm += self.width + self.lenght
+				self.room_elm += 1
+				if var:
+					Corridor('horizontal', doors=self.doors, lenght=self.lenght).spawn(row+1, elm-self.lenght-1, map_)
+
+			elif way == 'down':
+				row += self.height + self.lenght
+				self.room_row += 1
+				if var:
+					Corridor('vertical', doors=self.doors, lenght=self.lenght).spawn(row-self.lenght-1, elm+1, map_)
+
+			elif way == 'left':
+				elm -= self.width + self.lenght
+				self.room_elm -= 1
+				if var:
+					Corridor('horizontal', doors=self.doors, lenght=self.lenght).spawn(row+1, elm+self.width-1, map_)
+
+			if generation == self.generations[-1]:
+				var = False
+				Room(way, type_='last_room', generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
+				break
+
 
 class Room(object):
 
-	def __init__(self, strt_row, strt_elm, ses_area, veiw=False, width=5, height=5):
-		if veiw:
-			self.veiw = veiw
-		else:
-			self.veiw = choice(['room with the monster', 'room with the chest', 'a room with a chest and a monster'])
-		self.strt_elm = strt_elm
-		self.strt_row = strt_row
+	def __init__(self, way=choice([ways]), type_='common', generation=choice(['room with the monster', 'room with the chest', 'a room with a chest and a monster']), doors='on', width=5, height=5):
+		self.generation = generation
+		self.way = way
+		self.type_ = type_
+		self.doors = doors
 		self.width  = width
 		self.height = height
-		self.fin_elm = self.strt_elm + self.width
-		self.fin_row = self.strt_row + self.height
-		self.map = ses_area.map
+
+	def spawn(self, strt_row, strt_elm, map_):
+
+		fin_elm = strt_elm + self.width
+		fin_row = strt_row + self.height
+
+		for row in range(-1, fin_row - strt_row - 1):
+			for elm in range(-1, fin_elm - strt_elm - 1):
+				if not type(map_[strt_row + row][strt_elm + elm]) in (Door, Floor):
+					map_[strt_row + row][strt_elm + elm] = Wall()
+
+		for row in range(fin_row - strt_row - 2):
+			for elm in range(fin_elm - strt_elm - 2):
+				map_[strt_row + row][strt_elm + elm] = Floor()
+
+		if self.way == 'up':
+			if self.type_ == 'last_room':
+				rand = randint(1, 3)
+				if rand == 1:
+					map_[strt_row + int(self.height/2)-1][strt_elm-1] = Door() if self.doors == 'on' else Floor()
+				elif rand == 2:
+					map_[strt_row-1][strt_elm + int(self.width/2)-1] = Door() if self.doors == 'on' else Floor()
+				elif rand == 3:
+					map_[strt_row + int(self.height/2)-1][fin_elm-2] = Door() if self.doors == 'on' else Floor()
+		elif self.way == 'right':
+			if self.type_ == 'last_room':
+				rand = randint(1, 3)
+				if rand == 1:
+					map_[fin_row-2][strt_elm + int(self.width/2)-1] = Door() if self.doors == 'on' else Floor()
+				elif rand == 2:
+					map_[strt_row-1][strt_elm + int(self.width/2)-1] = Door() if self.doors == 'on' else Floor()
+				elif rand == 3:
+					map_[strt_row + int(self.height/2)-1][fin_elm-2] = Door() if self.doors == 'on' else Floor()
+		elif self.way == 'down':
+			if self.type_ == 'last_room':
+				rand = randint(1, 3)
+				if rand == 1:
+					map_[fin_row-2][strt_elm + int(self.width/2)-1] = Door() if self.doors == 'on' else Floor()
+				elif rand == 2:
+					map_[strt_row + int(self.height/2)-1][strt_elm-1] = Door() if self.doors == 'on' else Floor()
+				elif rand == 3:
+					map_[strt_row + int(self.height/2)-1][fin_elm-2] = Door() if self.doors == 'on' else Floor()
+		elif self.way == 'left':
+			if self.type_ == 'last_room':
+				rand = randint(1, 3)
+				if rand == 1:
+					map_[fin_row-2][strt_elm + int(self.width/2)-1] = Door() if self.doors == 'on' else Floor()
+				if rand == 2:
+					map_[strt_row + int(self.height/2)-1][strt_elm-1] = Door() if self.doors == 'on' else Floor()
+				if rand == 3:
+					map_[strt_row-1][strt_elm + int(self.width/2)-1] = Door() if self.doors == 'on' else Floor()
+
+		if self.generation == 'the initial room':
+			map_[strt_row][strt_elm] = Chest()
+			map_[strt_row + 2][strt_elm] = Portal()
+			map_[strt_row][fin_elm - 3] = Source()
+			map_[fin_row - 1][strt_elm + int(self.width/2) - 2] = Table('Test table')
+			map_[fin_row][strt_elm] = Spike()
+			map_[fin_row - 1][strt_elm + int(self.width/2)] = Simulator()
+			map_[fin_row - 2][strt_elm + int(self.width/2) - 1] = Door() if self.doors == 'on' else Floor()
+
+		elif self.generation == 'end room':
+			map_[strt_row][strt_elm] = Portal()
+			map_[strt_row + 2][strt_elm] = Source()
+			map_[strt_row][strt_elm + 2] = Chest()
+
+		elif self.generation == 'room with the monster':
+			Enemy().spawn(strt_row + int(self.height/2), strt_elm + int(self.width/2), map_)
+
+		elif self.generation == 'room with the chest':
+			map_[strt_row + int(self.height/2)-1][strt_elm + int(self.width/2)-1] = Chest()
+
+		elif self.generation == 'a room with a chest and a monster':
+			map_[strt_row + int(self.height/2)][strt_elm + int(self.width/2)] = Chest()
+			Enemy().spawn(strt_row + int(self.height/2), strt_elm + int(self.width/2) + 1, map_)
+
+		elif self.generation == 'shop':
+			map_[strt_row + int(self.height/2)][strt_elm + int(self.width/2)] = Trader()
 
 
-	def spawn(self):
+class Corridor(object):
+	"""
+	docstring for Corridor
+	"""
+	def __init__(self, type_, doors='on', lenght=2):
+		
+		self.type_ = type_ # 'horizontal'/'vertical'
+		self.doors = doors
+		self.lenght = lenght
 
-		for row in range(-1, self.fin_row - self.strt_row - 1):
-			for elm in range(-1, self.fin_elm - self.strt_elm - 1):
-				self.map[self.strt_row + row][self.strt_elm + elm] = Wall()
+	def spawn(self, row, elm, map_):
 
-		for row in range(self.fin_row - self.strt_row - 2):
-			for elm in range(self.fin_elm - self.strt_elm - 2):
-				self.map[self.strt_row + row][self.strt_elm + elm] = Floor()
+		# start: {'row': start_row, 'elm': start_elem} on the map
+		
+		if self.type_ == 'horizontal':
 
-		self.map[self.fin_row - 2][self.strt_elm + int(self.width/2) - 1] = Ground()
-		self.map[self.fin_row - 1][self.strt_elm + int(self.width/2) - 1] = Ground()
+			for count in range(self.lenght):
+				map_[row][elm + count] = Floor()
+				map_[row+1][elm + count] = Wall()
+				map_[row-1][elm + count] = Wall()
 
-		if self.veiw == 'the initial room':
-			self.map[self.strt_row][self.strt_elm] = Chest()
-			self.map[self.strt_row + 1][self.strt_elm] = Portal()
-			self.map[self.strt_row][self.fin_elm - 3] = Source()
-			self.map[self.fin_row - 1][self.strt_elm + int(self.width/2) - 2] = Table('Test table')
-			self.map[self.fin_row][self.strt_elm] = Spike()
-			self.map[self.fin_row - 1][self.strt_elm + int(self.width/2)] = Simulator()
-			self.map[self.fin_row - 2][self.strt_elm + int(self.width/2) - 1] = Door()
+			map_[row][elm-1] = Door() if self.doors == 'on' else Floor()
+			map_[row][elm+self.lenght] = Door() if self.doors == 'on' else Floor()
 
-		elif self.veiw == 'end room':
-			self.map[self.strt_row][self.strt_elm] = Portal()
-			self.map[self.strt_row + 2][self.strt_elm] = Source()
-			self.map[self.strt_row][self.strt_elm + 2] = Chest()
+		elif self.type_ == 'vertical':
 
-		elif self.veiw == 'room with the monster':
-			self.map[self.strt_row + int(self.height/2)][self.strt_elm + int(self.width/2)] = Goblin()
+			for count in range(self.lenght):
+				map_[row + count][elm] = Floor()
+				map_[row + count][elm+1] = Wall()
+				map_[row + count][elm-1] = Wall()
 
-		elif self.veiw == 'room with the chest':
-			self.map[self.strt_row + int(self.height/2)][self.strt_elm + int(self.width/2)] = Chest()
-
-		elif self.veiw == 'a room with a chest and a monster':
-			self.map[self.strt_row + int(self.height/2)][self.strt_elm + int(self.width/2)] = Chest()
-			self.map[self.strt_row + int(self.height/2)][self.strt_elm + int(self.width/2) + 1] = Goblin()
-
-		elif self.veiw == 'shop':
-			self.map[self.strt_row + int(self.height/2)][self.strt_elm + int(self.width/2)] = Trader()
-			
+			map_[row-1][elm] = Door() if self.doors == 'on' else Floor()
+			map_[row+self.lenght][elm] = Door() if self.doors == 'on' else Floor()
