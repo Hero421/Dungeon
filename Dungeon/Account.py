@@ -14,7 +14,8 @@ from module_links import uuid, path, clear, esc
 while not esc:
 
 	clear()
-
+	
+	player.stat()
 	player.area.print_map(id)
 	
 	dump(list(input()), open(path + uuid + str(id) + '.json', 'w'))

@@ -114,9 +114,6 @@ class Rooms(object):
 			if generation == self.generations[-1]:
 				var = False
 				Room(way, type_='last_room', generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
-				for row in self.map_of_rooms:
-					print(' '.join([elm for elm in row]))
-				input()
 				break
 
 
