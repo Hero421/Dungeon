@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, choice
 
 from Blocks.module_Stone import Stone
 from Blocks.module_Surfaces import Wall, Ground, Chasm
@@ -20,93 +20,95 @@ class GameNone(object):
 	def act(self, row, elm):
 
 		from module_links import ses_area
-		self.area = ses_area
+		area = ses_area
+		map_ = area.map
 
 		random_num = randint(1, 10000)
 		
-		if random_num in range(1):
-			Rooms().spawn(row, elm, self.area.map)
+		if random_num in range(int(area.rooms*100)):
+			Rooms(width=randint(4, 6), height=randint(4, 6), doors=choice(['on', 'off'])).spawn(row, elm, map_)
 
 		elif random_num in range(70):
-			self.area.map[row][elm] = Wall()
+			map_[row][elm] = Wall()
 
-		elif random_num in range(self.area.enemys*100):
-			Enemy().spawn(row, elm, self.area.map)
+		elif random_num in range(area.enemys*100):
+			if type(map_[row][elm]) in (Stone, Ground):
+				Enemy().spawn(row, elm, map)
 
-		elif random_num in range(self.area.chasms*100):
+		elif random_num in range(area.chasms*100):
 			random_num = randint(1, 8)
 			if random_num == 1:
-				self.ch_generation_1(row, elm)
+				self.ch_generation_1(row, elm, map_)
 			elif random_num == 2:
-				self.ch_generation_2(row, elm)
+				self.ch_generation_2(row, elm, map_)
 			elif random_num == 3:
-				self.ch_generation_3(row, elm)
+				self.ch_generation_3(row, elm, map_)
 			elif random_num == 4:
-				self.ch_generation_4(row, elm)
+				self.ch_generation_4(row, elm, map_)
 			elif random_num == 5:
-				self.ch_generation_5(row, elm)
+				self.ch_generation_5(row, elm, map_)
 			elif random_num == 6:
-				self.ch_generation_6(row, elm)
+				self.ch_generation_6(row, elm, map_)
 			elif random_num == 7:
-				self.ch_generation_7(row, elm)
+				self.ch_generation_7(row, elm, map_)
 			elif random_num == 8:
 				random_num = randint(1, 100)
 				if random_num in range(20):
-					self.ch_generation_8(row, elm)
+					self.ch_generation_8(row, elm, map_)
 
-		elif random_num in range(self.area.spikes*100):
-			self.area.map[row][elm] = Spike()
+		elif random_num in range(area.spikes*100):
+			map_[row][elm] = Spike()
 
-		elif random_num in range(self.area.stones*100):
+		elif random_num in range(area.stones*100):
 			random_num = randint(1, 100)
 			if random_num in range(10):
-				self.area.map[row][elm] = GoldOre()
+				map_[row][elm] = GoldOre()
 			else:
-				self.area.map[row][elm] = Stone()
+				map_[row][elm] = Stone()
 
 		else:
-			self.area.map[row][elm] = Ground()
+			map_[row][elm] = Ground()
 
-	def ch_generation_1(self, row, elm):
-		self.area.map[row][elm] = Chasm()
-		self.area.map[row][elm + 1] = Chasm()
-		self.area.map[row][elm + 2] = Chasm()
+	def ch_generation_1(self, row, elm, map_):
+		map_[row][elm] = Chasm()
+		map_[row][elm + 1] = Chasm() if type(map_[row][elm+1]) in (Stone, Ground) else map_[row][elm+1]
+		map_[row][elm + 2] = Chasm() if type(map_[row][elm+2]) in (Stone, Ground) else map_[row][elm+2]
 
-	def ch_generation_2(self, row, elm):
-		self.area.map[row][elm] = Chasm()
-		self.area.map[row][elm + 1] = Chasm()
-		self.area.map[row][elm + 2] = Chasm()
-		self.area.map[row + 1][elm + 1] = Chasm()
+	def ch_generation_2(self, row, elm, map_):
+		map_[row][elm] = Chasm()
+		map_[row][elm + 1] = Chasm() if type(map_[row][elm+1]) in (Stone, Ground) else map_[row][elm+1]
+		map_[row][elm + 2] = Chasm() if type(map_[row][elm+2]) in (Stone, Ground) else map_[row][elm+2]
+		map_[row + 1][elm + 1] = Chasm() if type(map_[row+1][elm+1]) in (Stone, Ground) else map_[row+1][elm+1]
 
-	def ch_generation_3(self, row, elm):
-		self.area.map[row][elm] = Chasm()
-		self.area.map[row][elm + 1] = Chasm()
-		self.area.map[row][elm + 2] = Chasm()
-		self.area.map[row + 1][elm] = Chasm()
+	def ch_generation_3(self, row, elm, map_):
+		map_[row][elm] = Chasm()
+		map_[row][elm + 1] = Chasm() if type(map_[row][elm+1]) in (Stone, Ground) else map_[row][elm+1]
+		map_[row][elm + 2] = Chasm() if type(map_[row][elm+2]) in (Stone, Ground) else map_[row][elm+2]
+		map_[row + 1][elm] = Chasm() if type(map_[row+1][elm]) in (Stone, Ground) else map_[row+1][elm]
 
-	def ch_generation_4(self, row, elm):
-		self.area.map[row][elm] = Chasm()
-		self.area.map[row + 1][elm + 1] = Chasm()
-		self.area.map[row][elm + 2] = Chasm()
+	def ch_generation_4(self, row, elm, map_):
+		map_[row][elm] = Chasm()
+		map_[row + 1][elm + 1] = Chasm()
+		map_[row][elm + 2] = Chasm()
 
-	def ch_generation_5(self, row, elm):
-		self.area.map[row][elm] = Chasm()
-		self.area.map[row][elm + 1] = Chasm()
-		self.area.map[row + 1][elm] = Chasm()
-		self.area.map[row + 2][elm] = Chasm()
+	def ch_generation_5(self, row, elm, map_):
+		map_[row][elm] = Chasm()
+		map_[row][elm + 1] = Chasm()
+		map_[row + 1][elm] = Chasm()
+		map_[row + 2][elm] = Chasm()
 
-	def ch_generation_6(self, row, elm):
-		self.area.map[row][elm] = Chasm()
-		self.area.map[row + 1][elm + 1] = Chasm()
-		self.area.map[row + 2][elm] = Chasm()
+	def ch_generation_6(self, row, elm, map_):
+		map_[row][elm] = Chasm()
+		map_[row + 1][elm + 1] = Chasm()
+		map_[row + 2][elm] = Chasm()
 
-	def ch_generation_7(self, row, elm):
-		self.area.map[row][elm] = Chasm()
-		self.area.map[row][elm + 1] = Chasm()
+	def ch_generation_7(self, row, elm, map_):
+		map_[row][elm] = Chasm()
+		map_[row][elm + 1] = Chasm()
 
-	def ch_generation_8(self, row, elm):
-		self.area.map[row][elm] = Chest()
-		self.area.map[row - 1][elm] = Chasm()
-		self.area.map[row][elm - 1] = Chasm()
-		self.area.map[row][elm + 1] = Chasm()
-		self.area.map[row + 1][elm] = Chasm()
+	def ch_generation_8(self, row, elm, map_):
+		map_[row][elm] = Chest()
+		map_[row - 1][elm] = Chasm()
+		map_[row][elm - 1] = Chasm()
+		map_[row][elm + 1] = Chasm()
+		map_[row + 1][elm] = Chasm()
