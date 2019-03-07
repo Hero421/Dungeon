@@ -10,7 +10,7 @@ from Blocks.Trigers.module_Chest import Chest
 
 from Enemys.module_metaEnemy import Enemy
 
-from module_Rooms import Room
+from module_Rooms import Rooms, Room
 
 class GameNone(object):
 	"""docstring for GameNone"""
@@ -22,15 +22,18 @@ class GameNone(object):
 		from module_links import ses_area
 		self.area = ses_area
 
-		random_num = randint(1, 1000)
+		random_num = randint(1, 10000)
+		
+		if random_num in range(1):
+			Rooms().spawn(row, elm, self.area.map)
 
-		if random_num in range(7):
+		elif random_num in range(70):
 			self.area.map[row][elm] = Wall()
 
-		elif random_num in range(self.area.enemys*10):
-			self.area.map[row][elm] = Enemy(row, elm)
+		elif random_num in range(self.area.enemys*100):
+			Enemy().spawn(row, elm, self.area.map)
 
-		elif random_num in range(self.area.chasms*10):
+		elif random_num in range(self.area.chasms*100):
 			random_num = randint(1, 8)
 			if random_num == 1:
 				self.ch_generation_1(row, elm)
@@ -51,10 +54,10 @@ class GameNone(object):
 				if random_num in range(20):
 					self.ch_generation_8(row, elm)
 
-		elif random_num in range(self.area.spikes*10):
+		elif random_num in range(self.area.spikes*100):
 			self.area.map[row][elm] = Spike()
 
-		elif random_num in range(self.area.stones*10):
+		elif random_num in range(self.area.stones*100):
 			random_num = randint(1, 100)
 			if random_num in range(10):
 				self.area.map[row][elm] = GoldOre()
