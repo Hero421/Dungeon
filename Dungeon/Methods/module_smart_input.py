@@ -8,15 +8,16 @@ def on_release(key):
 		input_ = (return_[wait.index(key)])
 		return False
 
-def smart_input(*pairs):
+def smart_input(pairs):
 	
 	global input_, wait, return_
 
+	wait = []
+	return_ = []
+	input_ = None
+
 	for pair in pairs:
-		if type(pair[0]) is str:
-			wait.append(pair[0].char)
-		else:
-			wait.append(pair[0])
+		wait.append(pair[0])
 		return_.append(pair[1])
 
 	with keyboard.Listener(on_release=on_release) as listener:
@@ -26,5 +27,4 @@ def smart_input(*pairs):
 
 wait = []
 return_ = []
-
 input_ = None
