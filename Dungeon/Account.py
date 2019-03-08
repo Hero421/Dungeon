@@ -31,7 +31,7 @@ while not esc:
 
 	# try:
 	dump(
-		smart_input(
+		smart_input([
 
 			(Key.up, 'up'), 
 			(Key.right, 'right'), 
@@ -42,7 +42,7 @@ while not esc:
 			(keyboard.KeyCode(char='i'), 'inv'),
 			(keyboard.KeyCode(char='k'), 'skills')
 
-			), 
+			]), 
 
 		open(path + uuid + str(id) + '.json', 'w')
 	)

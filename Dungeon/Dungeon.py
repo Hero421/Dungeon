@@ -1,5 +1,6 @@
 from time import sleep
 from json import load
+from pynput.keyboard import Key
 
 from module_Area import Area
 from module_Avatar import Avatar
@@ -21,7 +22,6 @@ import Items.Swords.module_FireySword
 import Items.Swords.module_SwordRecovery1
 import Items.Sticks.module_StickCreateGoldOre
 import Items.Sticks.module_StickCreateStone
-import Items.Wings.module_TheWingsOfTheLordOfTheStorm
 import Items.Wings.module_Wings
 
 # Problems: type
@@ -62,10 +62,23 @@ def turn(avatar):
 
 			elif choice == 'act' or choice == 'hit':
 				if choice == 'act':
-					moving(avatar, 'act', choice[choice.index(choice) + 1])
+					moving(avatar, 'act', smart_input([
+
+										(Key.up, 'up'),
+										(Key.right, 'right'),
+										(Key.down, 'down'),
+										(Key.left, 'left')
+
+										]))
 				elif choice == 'hit':
-					moving(avatar, 'hit', choice[choice.index(choice) + 1])
-				choice.remove(choice[choice.index(choice) + 1])
+					moving(avatar, 'hit', smart_input([
+
+										(Key.up, 'up'),
+										(Key.right, 'right'),
+										(Key.down, 'down'),
+										(Key.left, 'left')
+
+										]))
 
 			avatar.check()
 		else:
