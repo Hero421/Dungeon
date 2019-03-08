@@ -1,4 +1,5 @@
 from random import randint
+from time import sleep
 
 from module_Rooms import Room, Rooms, Corridor
 import module_links
@@ -196,7 +197,7 @@ class Avatar(object):
 		if self in intoxicated:
 			del intoxicated[self]
 
-	def open_inventory(self, chest=0):
+	def open_inventory(self):
 		'''
 		Shows the contents of the inventory, 
 		allows the player to view the data on the desired item, 
@@ -300,6 +301,7 @@ class Avatar(object):
 				self.emp_slot()
 			else:
 				print('inventory is full')
+				sleep(0.3)
 				break
 
 	def stat(self):
@@ -318,17 +320,21 @@ class Avatar(object):
 		if randint(1, 100) in range(self.chance['dodge Atk']):
 			if self.armor < dmg:
 				self.hlt -= dmg - self.armor
-				input('get damage: ' + dmg - self.armor)
+				print('get damage: ' + dmg - self.armor)
+				sleep(0.3)
 			else:
-				input('miss')
+				print('miss')
+				sleep(0.3)
 		else:
-			input('miss')
+			print('miss')
+			sleep(0.3)
 
 	def give_hit(self, obj):
 		if randint(1, 100) in range(self.chance['hit']):
 			obj.get_hit(self.dmg, self)
 		else:
-			input('miss')
+			print('miss')
+			sleep(0.3)
 
 
 	def del_of_inventory(self, item):
@@ -400,5 +406,5 @@ class Avatar(object):
 			clear()
 		
 		self.skill_tree()
-		input()
+		sleep(0.3)
 		clear()

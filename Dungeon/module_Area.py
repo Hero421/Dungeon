@@ -59,7 +59,7 @@ class Area(object):
 			else:
 				break
 
-		Room('end room').spawn(end_room_row, end_room_elm, self.map)
+		Room(generation='end room').spawn(end_room_row, end_room_elm, self.map)
 
 	def print_map(self, id):
 		'''
