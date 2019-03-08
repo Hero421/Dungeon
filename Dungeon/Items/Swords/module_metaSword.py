@@ -26,11 +26,14 @@ class metaSword(metaItem):
 		If the sword does not stipulate the use, 
 		he uses it.
 		'''
+
+		from module_links import ses_avatars
+
 		if self.use == False:
 			self.use = True
 			if not(obj.selected is None):
 				obj.selected.stop_using(obj)
-			if obj.type == 'Avatar':
+			if obj in ses_avatars:
 				module_links.used_items.append(self)
 			obj.inventory[1].remove(self)
 			obj.selected = self
@@ -43,9 +46,10 @@ class metaSword(metaItem):
 		the cessation of the use, 
 		he uses it.
 		'''
+
+		from module_links import ses_avatars
+
 		obj.mid_dmg -= self.dmg
 		obj.crit -= self.crit
-		if obj.type == 'Avatar':
-			obj.add_to_inventory([self])
-			module_links.used_items.remove(self)
+		obj.add_to_inventory([self])
 		obj.selected = None
