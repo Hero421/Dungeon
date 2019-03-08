@@ -36,8 +36,6 @@ Dungeon_1 = Area('Dungeon 1', 48, 48, stones=40, spikes=1.5, chasms=1.4, enemys=
 
 def turn(avatar):
 
-	print(avatar.choice)
-
 	if avatar.choice:
 
 		choice = avatar.choice
