@@ -1,5 +1,8 @@
 from random import randint
 from time import sleep
+from pynput import keyboard
+from pynput.keyboard import Key
+from Methods.module_smart_input import smart_input
 
 from module_Rooms import Room, Rooms, Corridor
 import module_links
@@ -244,7 +247,11 @@ class Avatar(object):
 					print(str(count) + '. ' + item.name)
 			count += 1
 
-		choice = input()
+		choices = [(keyboard.KeyCode(char=str(slot_num)), slot_num-1) for slot_num in range(self.backpack)]
+
+		choices.append([(keyboard.KeyCode(char=str('s')), 'selected'), (Key.esc, 'esc')])
+
+		choice = smart_input(choices)
 
 		if choice == 'selected':
 			print()
@@ -255,9 +262,7 @@ class Avatar(object):
 			print(self.selected.rarity)
 			print(self.selected.desc)
 
-		self.corrected_choices = [str(slot_num) for slot_num in range(self.backpack)]
-		if choice in self.corrected_choices:
-			choice = int(choice) - 1
+		elif not choice == 'esc':
 			if self.inventory[1][choice]:
 				print()
 				print(self.inventory[1][choice].name)
@@ -267,7 +272,7 @@ class Avatar(object):
 			else:
 				print('None')
 
-			second_choice = input()
+			second_choice = smart_input([(keyboard.KeyCode(char=str('u')), 'use'), (keyboard.KeyCode(char=str('t')), 'transfer')])
 
 			if second_choice == 'use':
 				if self.inventory[1][choice]:
@@ -277,7 +282,7 @@ class Avatar(object):
 						self.selected.stop_using(self)
 					
 			elif second_choice == 'transfer':
-				third_choice = int(input()) - 1
+				third_choice = smart_input([(keyboard.KeyCode(char=str(slot_num)), slot_num-1) for slot_num in range(self.backpack)])
 				self.inventory[1][choice], self.inventory[1][third_choice] = self.inventory[1][third_choice], self.inventory[1][choice]
 
 	def add_to_inventory(self, items):
@@ -406,5 +411,5 @@ class Avatar(object):
 			clear()
 		
 		self.skill_tree()
-		sleep(0.3)
+		input()
 		clear()
