@@ -60,61 +60,64 @@ class Rooms(object):
 		way = True
 		var = True
 
-		for generation in self.generations:
+		if len(self.generations) > 1:
+			for generation in self.generations:
 
-			Room(way, generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
+				Room(way, generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
 
-			self.map_of_rooms[self.room_row][self.room_elm] = 'R'
+				self.map_of_rooms[self.room_row][self.room_elm] = 'R'
 
-			while True:
+				while True:
 
-				way = choice(['up', 'right', 'down', 'left'])
+					way = choice(['up', 'right', 'down', 'left'])
 
+					if way == 'up':
+						if self.map_of_rooms[self.room_row - 2][self.room_elm] != 'R':
+							break
+					elif way == 'right':
+						if self.map_of_rooms[self.room_row][self.room_elm + 2] != 'R':
+							break
+					elif way == 'down':
+						if self.map_of_rooms[self.room_row + 2][self.room_elm] != 'R':
+							break
+					elif way == 'left':
+						if self.map_of_rooms[self.room_row][self.room_elm - 2] != 'R':
+							break
+				
 				if way == 'up':
-					if self.map_of_rooms[self.room_row - 2][self.room_elm] != 'R':
-						break
+					row -= self.height + self.lenght
+					self.room_row -= 2
+					if var:
+						Corridor('vertical', doors=self.doors, lenght=self.lenght).spawn(row+self.height-1, elm+1, map_)
+						self.map_of_rooms[self.room_row + 1][self.room_elm] = 'C'
+
 				elif way == 'right':
-					if self.map_of_rooms[self.room_row][self.room_elm + 2] != 'R':
-						break
+					elm += self.width + self.lenght
+					self.room_elm += 2
+					if var:
+						Corridor('horizontal', doors=self.doors, lenght=self.lenght).spawn(row+1, elm-self.lenght-1, map_)
+						self.map_of_rooms[self.room_row][self.room_elm - 1] = 'C'
+
 				elif way == 'down':
-					if self.map_of_rooms[self.room_row + 2][self.room_elm] != 'R':
-						break
+					row += self.height + self.lenght
+					self.room_row += 2
+					if var:
+						Corridor('vertical', doors=self.doors, lenght=self.lenght).spawn(row-self.lenght-1, elm+1, map_)
+						self.map_of_rooms[self.room_row - 1][self.room_elm] = 'C'
+
 				elif way == 'left':
-					if self.map_of_rooms[self.room_row][self.room_elm - 2] != 'R':
-						break
-			
-			if way == 'up':
-				row -= self.height + self.lenght
-				self.room_row -= 2
-				if var:
-					Corridor('vertical', doors=self.doors, lenght=self.lenght).spawn(row+self.height-1, elm+1, map_)
-					self.map_of_rooms[self.room_row + 1][self.room_elm] = 'C'
+					elm -= self.width + self.lenght
+					self.room_elm -= 2
+					if var:
+						Corridor('horizontal', doors=self.doors, lenght=self.lenght).spawn(row+1, elm+self.width-1, map_)
+						self.map_of_rooms[self.room_row][self.room_elm + 1] = 'C'
 
-			elif way == 'right':
-				elm += self.width + self.lenght
-				self.room_elm += 2
-				if var:
-					Corridor('horizontal', doors=self.doors, lenght=self.lenght).spawn(row+1, elm-self.lenght-1, map_)
-					self.map_of_rooms[self.room_row][self.room_elm - 1] = 'C'
-
-			elif way == 'down':
-				row += self.height + self.lenght
-				self.room_row += 2
-				if var:
-					Corridor('vertical', doors=self.doors, lenght=self.lenght).spawn(row-self.lenght-1, elm+1, map_)
-					self.map_of_rooms[self.room_row - 1][self.room_elm] = 'C'
-
-			elif way == 'left':
-				elm -= self.width + self.lenght
-				self.room_elm -= 2
-				if var:
-					Corridor('horizontal', doors=self.doors, lenght=self.lenght).spawn(row+1, elm+self.width-1, map_)
-					self.map_of_rooms[self.room_row][self.room_elm + 1] = 'C'
-
-			if generation == self.generations[-1]:
-				var = False
-				Room(way, type_='last_room', generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
-				break
+				if generation == self.generations[-1]:
+					var = False
+					Room(way, type_='last_room', generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
+					break
+		else:
+			Room(way, type_='last_room', generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
 
 
 class Room(object):
@@ -141,7 +144,7 @@ class Room(object):
 			for elm in range(fin_elm - strt_elm - 2):
 				map_[strt_row + row][strt_elm + elm] = Floor()
 		
-		choice =  Door if self.doors == 'on' else Floor
+		choice = Door if self.doors == 'on' else Floor
 
 		if self.way == 'up':
 			if self.type_ == 'last_room':

@@ -4,7 +4,7 @@ from random import randint
 from Blocks.module_Surfaces import Wall
 
 from module_Rooms import Room
-from module_links import levels, ses_avatars
+from module_links import ses_avatars
 import module_links
 
 class Area(object):
@@ -39,8 +39,6 @@ class Area(object):
 
 		self.chank_map = [[Chank(row, elm) for elm in range(int(self.elms/10))] for row in range(int(self.rows/10))]
 
-		self.fst_chank = self.chank_map[int(len(self.chank_map)/2)][int(len(self.chank_map[int(len(self.chank_map)/2)])/2)]
-
 		for row in self.map:
 			self.map[self.map.index(row)][self.elms - 1] = Wall()
 
@@ -54,31 +52,30 @@ class Area(object):
 		while True:
 			end_room_elm = randint(1, self.elms)
 			end_room_row = randint(1, self.rows)
-			if end_room_elm in range(self.elms//2 - 7, self.elms//2 + 7) or end_room_row in range(self.rows//2 - 7, self.rows//2 + 7) or end_room_elm > self.elms - 5 or end_room_row > self.rows - 5 or end_room_elm in range(self.elms//2 + 8, self.elms//2 - 8) or end_room_row in range(self.rows//2 + 8, self.elms//2 - 8):
+			if end_room_elm in range(self.elms//2 - 7, self.elms//2 + 7) or end_room_row in range(self.rows//2 - 7, self.rows//2 + 7) or end_room_row in range(self.rows//2 + 8, self.elms//2 - 8) or end_room_elm in range(self.elms//2 + 8, self.elms//2 - 8) or end_room_elm > self.elms - 5 or end_room_row > self.rows - 5:
 				continue
 			else:
 				break
 
 		Room(generation='end room').spawn(end_room_row, end_room_elm, self.map)
 
-	def print_map(self, id):
+	def print_map(self, id_, radius=5):
 		'''
-		Create the map and the objects on it to the player
+		Show the map and the objects on it to the player
 		'''
+
+		radius_row = radius
+		radius_elm = radius
 
 		from module_links import ses_avatars
 		
-		location = ses_avatars[id].location
+		location = ses_avatars[id_].location
 
-		new_rows = []
+		if location['row'] < radius:
+			radius_row = location['row']
 
-		for row in ses_avatars[id].map:
-			if ses_avatars[id].map.index(row) in range(location['row'] - 11, location['row'] + 12):
-				new_rows.append(row)
+		if location['elm'] < radius:
+			radius_elm = location['elm']
 
-		for row in new_rows:
-			rows = []
-			for elm in row:
-				if row.index(elm) in range(location['elm'] - 11, location['elm'] + 12):
-					rows.append(elm)
-			print(' '.join([elm.des for elm in rows]))
+		for row in ses_avatars[id_].map[location['row'] - radius_row : location['row'] + radius+1]:
+			print(' '.join([elm.des for elm in row[location['elm'] - radius_elm : location['elm'] + radius+1]]))

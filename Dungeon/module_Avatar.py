@@ -11,6 +11,8 @@ from module_links import clear, intoxicated
 from Blocks.module_Surfaces import Floor
 from Blocks.Trigers.module_DieChest import DieChest
 
+from Items.Swords.module_metaSword import metaSword
+
 class Avatar(object):
 
 	empt_slot = 0
@@ -64,22 +66,19 @@ class Avatar(object):
 
 	memo = Floor
 
-	def __init__(self, id, room=True):
+	def __init__(self, id_, room=True):
 
 		self.hlt  = self.full_hlt
 		self.mana = self.full_mana
 		self.dmg  = randint(self.mid_dmg   - 1, self.mid_dmg   + 1)
 		self.m_dmg= randint(self.mid_m_dmg - 1, self.mid_m_dmg + 1)
 		
-		self.id = id
+		self.id_ = id_
 
 		self.area = module_links.ses_area
 		self.map  = self.area.map
 
-		module_links.ses_avatars[id] = self
-
-		self.area.fst_chank.generator(self.map)
-		self.area.fst_chank.msg(self)
+		module_links.ses_avatars[id_] = self
 
 		self.chance['dodge Atk']  = 100 - self.dodge_Atk
 		self.chance['dodge MAtk'] = 100 - self.dodge_MAtk
@@ -89,15 +88,11 @@ class Avatar(object):
 
 		super().__init__()
 
-		self._fst_row = int(float(self.area.rows)/2)
-		self._fst_elm = int(float(self.area.elms)/2)
+		self.location['row'] = int(float(self.area.rows)/2)
+		self.location['elm'] = int(float(self.area.elms)/2)
 
 		if room:
-			Rooms(['the initial room', 'room with the chest', 'room with the chest', 'room with the chest'], doors='off', width=5, height=5, lenght=1).spawn(self._fst_row - 1, self._fst_elm - 1, self.map)
-
-
-		self.row, self.location['row'] = self._fst_row, self._fst_row
-		self.elm, self.location['elm'] = self._fst_elm, self._fst_row
+			Rooms(['the initial room', 'room with the chest', 'room with the chest', 'room with the chest'], doors='off', width=5, height=5, lenght=1).spawn(self.location['row'] - 1, self.location['elm'] - 1, self.map)
 
 		self.map[self.location['row']][self.location['elm']] = self
 
@@ -124,7 +119,10 @@ class Avatar(object):
 		self.row = self.location['row']
 		self.elm = self.location['elm']
 
-		self.area.chank_map[int(self.location['row']/10)][int(self.location['elm']/10)].msg(self)
+		chank = self.area.chank_map[int(self.location['row']/10)][int(self.location['elm']/10)]
+
+		chank.msg(self)
+		chank.generator(self.map)
 
 		self.level()
 
@@ -186,11 +184,14 @@ class Avatar(object):
 		'''
 		Restart the level and Avatar
 		'''
+		fst_row = int(float(self.area.rows)/2)
+		fst_elm = int(float(self.area.elms)/2)
 		if self.selected:
 			self.selected.use = False
 		self.map[self.location['row']][self.location['elm']] = DieChest()
-		self.location['row'], self.location['elm'] = self._fst_row, self._fst_elm
-		self.map[self._fst_row + 1][self._fst_elm] = Floor()
+		self.location['row'] = fst_row
+		self.location['elm'] = fst_elm
+		self.map[fst_row + 1][fst_elm] = Floor()
 		for slot in self.inventory[1]:
 			slot = None
 		self.hlt = self.full_hlt
@@ -206,6 +207,9 @@ class Avatar(object):
 		allows the player to view the data on the desired item, 
 		as well as to use this item
 		'''
+
+		clear()
+
 		if self.selected:
 			print(self.selected.name)
 
@@ -232,38 +236,44 @@ class Avatar(object):
 		for item in self.inventory[1]:
 			if item is None:
 				if len(str(count)) == 1:
-					print(str(count) +'.  None')
+					print(str(count) +'.   None')
 				else:
-					print(str(count) + '. None')
+					print(str(count) + '.  None')
 			elif type(item) is list:
 				if len(str(count)) == 1:
-					print(str(count) + '. ', item[0].name, 'x' + str(len(item)))
+					print(str(count) + '.  ', item[0].name, 'x' + str(len(item)))
 				else:
-					print(str(count) + '.' , item[0].name, 'x' + str(len(item)))
+					print(str(count) + '. ' , item[0].name, 'x' + str(len(item)))
 			else:
 				if len(str(count)) == 1:
-					print(str(count) + '.  '+ item.name)
+					print(str(count) + '.   '+ item.name)
 				else:
-					print(str(count) + '. ' + item.name)
+					print(str(count) + '.  ' + item.name)
 			count += 1
 
 		choices = [(keyboard.KeyCode(char=str(slot_num)), slot_num-1) for slot_num in range(self.backpack)]
 
-		choices.append([(keyboard.KeyCode(char=str('s')), 'selected'), (Key.esc, 'esc')])
+		choices.append((keyboard.KeyCode(char=('s')), 'selected'))
+		choices.append((Key.esc, 'esc'))
+		choices.append((keyboard.KeyCode(char=('i')), 'esc'))
 
 		choice = smart_input(choices)
 
-		if choice == 'selected':
-			print()
-			print(self.selected.name)
-			print(self.selected.type)
-			if type(self.selected) is Sword:
-				print(self.selected.dmg)
-			print(self.selected.rarity)
-			print(self.selected.desc)
+		if not choice == 'esc':
 
-		elif not choice == 'esc':
-			if self.inventory[1][choice]:
+			if choice == 'selected':
+				if self.selected:
+					print()
+					print(self.selected.name)
+					print(self.selected.type)
+					if type(self.selected) is metaSword:
+						print(self.selected.dmg)
+					print(self.selected.rarity)
+					print(self.selected.desc)
+				else:
+					print('None')
+
+			elif self.inventory[1][choice]:
 				print()
 				print(self.inventory[1][choice].name)
 				print(self.inventory[1][choice].type)
@@ -272,7 +282,9 @@ class Avatar(object):
 			else:
 				print('None')
 
-			second_choice = smart_input([(keyboard.KeyCode(char=str('u')), 'use'), (keyboard.KeyCode(char=str('t')), 'transfer')])
+			choices = [('u', 'use'), ('t', 'transfer'), (Key.esc, 'esc')]
+
+			second_choice = smart_input(choices)
 
 			if second_choice == 'use':
 				if self.inventory[1][choice]:
@@ -341,10 +353,6 @@ class Avatar(object):
 			print('miss')
 			sleep(0.3)
 
-
-	def del_of_inventory(self, item):
-		self.inventory.remove(item)
-		pass
 
 	def recovery(self):
 		if self.mana < self.full_mana:

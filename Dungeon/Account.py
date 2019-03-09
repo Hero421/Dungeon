@@ -9,9 +9,9 @@ from Dungeon import create_player, global_turn
 
 import module_links
 
-id = uuid4()
+id_ = uuid4()
 
-player = create_player(id)
+player = create_player(str(id_))
 
 from module_links import uuid, path, clear, esc
 
@@ -26,30 +26,31 @@ while not esc:
 
 	clear()
 	
-	#player.stat()
-	player.area.print_map(id)
+	player.stat()
+	player.area.print_map(str(id_))
 
-	# try:
-	dump(
-		smart_input([
+	try:
+		dump(
+			smart_input([
 
-			(Key.up, 'up'), 
-			(Key.right, 'right'), 
-			(Key.down, 'down'), 
-			(Key.left, 'left'), 
-			(Key.esc, 'esc'), 
-			(keyboard.KeyCode(char='e'), 'act'),
-			(keyboard.KeyCode(char='i'), 'inv'),
-			(keyboard.KeyCode(char='k'), 'skills')
+				(Key.up, 'up'), 
+				(Key.right, 'right'), 
+				(Key.down, 'down'), 
+				(Key.left, 'left'), 
+				(Key.esc, 'esc'), 
+				('e', 'act'),
+				('i', 'inv'),
+				('k', 'skills')
 
-			]), 
+				]), 
 
-		open(path + uuid + str(id) + '.json', 'w')
-	)
+			open(path + uuid + str(id_) + '.json', 'w')
+		)
 	
-	global_turn(id)
-	# except TypeError:
-	# 	print('Oups!')
+		global_turn(id_)
+
+	except TypeError:
+		print('Oups!')
 	
 	from module_links import esc
 

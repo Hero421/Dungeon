@@ -32,7 +32,7 @@ import Items.Wings.module_Wings
 #		 Portal
 #		 Choice(Enemy)
 
-Dungeon_1 = Area('Dungeon 1', 48, 48, stones=40, spikes=1.5, chasms=1.4, enemys=0.5)
+Dungeon_1 = Area('Dungeon 1', 1048, 1048, stones=40, spikes=1.5, chasms=1.4, enemys=0.5)
 
 def turn(avatar):
 
@@ -82,18 +82,18 @@ def turn(avatar):
 
 			avatar.check()
 		else:
-			res = False
+			module_links.res = False
 
 		avatar.check()
 
 
-def global_turn(id):
+def global_turn(id_):
 
 	for avatar in ses_avatars.values():
 		avatar.recovery()
 		avatar.check()
 
-	ses_avatars[id].choice = load(open(path + uuid + str(id) + '.json', 'r'))
+	ses_avatars[str(id_)].choice = load(open(path + uuid + str(id_) + '.json', 'r'))
 
 	for avatar in ses_avatars.values():
 		turn(avatar)
@@ -102,9 +102,9 @@ def global_turn(id):
 		enemy.act()
 		enemy.check()
 
-def create_player(id, room=True):
+def create_player(id_, room=True):
 	
-	created_player = Avatar(id, room=room)
+	created_player = Avatar(id_, room=room)
 	
 	from Items.Drugs.module_SmallHealthDrug import SmallHealthDrug
 	from Items.Swords.module_Sword import Sword
