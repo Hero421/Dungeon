@@ -32,7 +32,7 @@ import Items.Wings.module_Wings
 #		 Portal
 #		 Choice(Enemy)
 
-Dungeon_1 = Area('Dungeon 1', 1048, 1048, stones=40, spikes=1.5, chasms=1.4, enemys=0.5)
+Dungeon_1 = Area('Dungeon 1', 48, 48, stones=40, spikes=1.5, chasms=1.4, enemys=1.3)
 
 def turn(avatar):
 
@@ -62,23 +62,23 @@ def turn(avatar):
 
 			elif choice == 'act' or choice == 'hit':
 				if choice == 'act':
-					moving(avatar, 'act', smart_input([
+					moving(avatar, smart_input([
 
-										(Key.up, 'up'),
-										(Key.right, 'right'),
-										(Key.down, 'down'),
-										(Key.left, 'left')
+									(Key.up, 'up'),
+									(Key.right, 'right'),
+									(Key.down, 'down'),
+									(Key.left, 'left')
 
-										]))
+									]), 'act')
 				elif choice == 'hit':
-					moving(avatar, 'hit', smart_input([
+					moving(avatar, smart_input([
 
-										(Key.up, 'up'),
-										(Key.right, 'right'),
-										(Key.down, 'down'),
-										(Key.left, 'left')
+									(Key.up, 'up'),
+									(Key.right, 'right'),
+									(Key.down, 'down'),
+									(Key.left, 'left')
 
-										]))
+									]), 'hit')
 
 			avatar.check()
 		else:

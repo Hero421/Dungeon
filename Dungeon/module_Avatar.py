@@ -58,7 +58,7 @@ class Avatar(object):
 	Lvl  = 1
 
 	Exp = 0
-	End_exp = 100
+	End_exp = 50
 
 	Skill_points = 0
 
@@ -322,6 +322,7 @@ class Avatar(object):
 				break
 
 	def stat(self):
+		print('level:  ' + str(self.Lvl))
 		if self in intoxicated:
 			print(*list(set(self.status)))
 		print('health: ' + str(self.hlt))

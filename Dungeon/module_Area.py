@@ -4,7 +4,7 @@ from random import randint
 from Blocks.module_Surfaces import Wall
 
 from module_Rooms import Room
-from module_links import ses_avatars
+from module_links import ses_avatars, clear
 import module_links
 
 class Area(object):
@@ -35,9 +35,21 @@ class Area(object):
 
 		module_links.ses_area = self
 
+		clear()
+
+		print(self.name)
+
+		print('\ncreate a big dummy')
+
 		self.map = [[None for elm in range(self.elms)] for row in range(self.rows)]
 
 		self.chank_map = [[Chank(row, elm) for elm in range(int(self.elms/10))] for row in range(int(self.rows/10))]
+
+		clear()
+
+		print(self.name)
+
+		print('\ncreate the boundaries of the world')
 
 		for row in self.map:
 			self.map[self.map.index(row)][self.elms - 1] = Wall()
@@ -49,10 +61,20 @@ class Area(object):
 				elif self.map[self.map.index(row)][0] == elm:
 					self.map[self.map.index(row)][row.index(elm)] = Wall()
 
+		clear()
+
+		print(self.name)
+
+		print('\ncreate the final room')
+
 		while True:
 			end_room_elm = randint(1, self.elms)
 			end_room_row = randint(1, self.rows)
-			if end_room_elm in range(self.elms//2 - 7, self.elms//2 + 7) or end_room_row in range(self.rows//2 - 7, self.rows//2 + 7) or end_room_row in range(self.rows//2 + 8, self.elms//2 - 8) or end_room_elm in range(self.elms//2 + 8, self.elms//2 - 8) or end_room_elm > self.elms - 5 or end_room_row > self.rows - 5:
+			if  end_room_elm in range(self.elms//2 - 7, self.elms//2 + 7) or \
+				end_room_row in range(self.rows//2 - 7, self.rows//2 + 7) or \
+				end_room_row in range(self.rows//2 + 8, self.elms//2 - 8) or \
+				end_room_elm in range(self.elms//2 + 8, self.elms//2 - 8) or \
+				end_room_elm > self.elms - 5 or end_room_row > self.rows - 5:
 				continue
 			else:
 				break
@@ -69,13 +91,13 @@ class Area(object):
 
 		from module_links import ses_avatars
 		
-		location = ses_avatars[id_].location
+		avatar = ses_avatars[id_]
 
-		if location['row'] < radius:
-			radius_row = location['row']
+		if avatar.location['row'] < radius:
+			radius_row = avatar.location['row']
 
-		if location['elm'] < radius:
-			radius_elm = location['elm']
+		if avatar.location['elm'] < radius:
+			radius_elm = avatar.location['elm']
 
-		for row in ses_avatars[id_].map[location['row'] - radius_row : location['row'] + radius+1]:
-			print(' '.join([elm.des for elm in row[location['elm'] - radius_elm : location['elm'] + radius+1]]))
+		for row in avatar.map[avatar.location['row'] - radius_row : avatar.location['row'] + radius+1]:
+			print(' '.join([elm.des for elm in row[avatar.location['elm'] - radius_elm : avatar.location['elm'] + radius+1]]))
