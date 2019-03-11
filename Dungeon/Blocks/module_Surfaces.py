@@ -46,29 +46,17 @@ class Chasm(object):
 	
 	des = '~'
 
-	def __init__(self):
-		super().__init__()
-
 	def walk(self, choice, obj):
 
 		from module_links import ses_avatars
 		from Enemys.module_metaEnemy import metaEnemy
 
-		if isinstanse(obj, metaEnemy):
-			obj.res = False
-
-		else:
-			for avatar in ses_avatars.values():
-				if obj == avatar:
-					if obj.inventory[0]['wings']:
-						location = avatar.location
-						obj.map[location['row']][location['elm']] = obj.memo()
-						obj.memo = Chasm
-						if choice == obj.map[obj.row - 1][obj.elm]:
-							location['row'] -= 1
-						elif choice == obj.map[obj.row][obj.elm + 1]:
-							location['elm'] += 1
-						elif choice == obj.map[obj.row + 1][obj.elm]:
-							location['row'] += 1
-						elif choice == obj.map[obj.row][obj.elm - 1]:
-							location['elm'] -= 1
+		if obj in ses_avatars.values():
+			if obj.inventory[0]['wings']:
+				location = obj.location
+				obj.map[location['row']][location['elm']] = obj.memo()
+				obj.memo = Chasm
+				if choice == 'up':   location['row'] -= 1
+				elif choice == 'right': location['elm'] += 1
+				elif choice == 'down': location['row'] += 1
+				elif choice == 'left': location['elm'] -= 1
