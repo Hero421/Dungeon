@@ -1,4 +1,4 @@
-from Blocks.module_Surfaces import metaSurface as Surface, Wall
+from Blocks.module_Surfaces import metaSurface as Surface, Chasm
 from Blocks.module_Stone import Stone
 from Blocks.Trigers.module_Spike import Spike
 from Blocks.Trigers.module_Door  import Door
@@ -23,7 +23,7 @@ def moving(obj, *choice):
 	elif choice[0] == 'left':  dir_= obj.map[obj.row][obj.elm - 1]
 
 	if len(choice) == 1:
-		if isinstance(dir_, (Surface, Spike, Door, Stone, Container)):
+		if isinstance(dir_, (Surface, Spike, Door, Stone, Container, Chasm)):
 			dir_.walk(choice[0], obj)
 
 	elif choice[1] == 'act':
@@ -31,7 +31,7 @@ def moving(obj, *choice):
 			dir_.act(obj)
 
 		elif type(dir_) is Spike:
-			dir_.act(obj, choice[1], obj)
+			dir_.act(obj, choice[0])
 
 	elif choice[1] == 'hit':
 		if obj.selected:
