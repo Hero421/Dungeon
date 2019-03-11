@@ -1,5 +1,8 @@
 from random import choice as ch
 from termcolor import colored
+from pynput import keyboard
+from pynput.keyboard import Key
+from Methods.module_smart_input import smart_input
 
 class Chest(object):
 	'''
@@ -11,7 +14,6 @@ class Chest(object):
 	def __init__(self, rarity=None):
 		self.stat  = False
 		self.items_= []
-		self.items = []
 		self.rarity= rarity
 		if self.rarity is None:
 		#	rarity_of(self)
@@ -27,8 +29,7 @@ class Chest(object):
 		'''
 		
 		from module_links import items
-		
-		print(items)
+
 		types_of_items = ['Sword', 'Wings', 'Drug', 'Stick']
 
 		if self.stat == False:
@@ -37,7 +38,7 @@ class Chest(object):
 
 			if self.rarity == 'common':
 				for count in range(3):
-					self.items_.append(ch(items['common']['Sword']))
+					self.items_.append(ch(items['common'][ch(types_of_items)]))
 
 			elif self.rarity == 'rare':
 				for count in range(6):
@@ -63,28 +64,59 @@ class Chest(object):
 				for count in range(2):
 					self.items_.append(ch(items['GODLY'][ch(types_of_items)]))
 
-		self.items = [slot.name if not(slot is None) else slot for slot in self.items_]
+		items = [slot.name if not slot is None else slot for slot in self.items_]
 
 		print(self.rarity)
 
 		count = 1
-		for slot in self.items:
-			if len(self.items) < 10:
-				if len(str(self.items.index(slot))) == 1:
+		for slot in items:
+			if len(items) < 10:
+				if len(str(items.index(slot))) == 1:
 					print(str(count) + '.' , slot)
-			elif len(self.items) < 100:
-				if len(str(self.items.index(slot))) == 1:
+			elif len(items) < 100:
+				if len(str(items.index(slot))) == 1:
 					print(str(count) + '. ', slot)
-				if len(str(self.items.index(slot))) == 2:
+				if len(str(items.index(slot))) == 2:
 					print(str(count) + '.' , slot)
 			count += 1
 
-		choice = input()
+		choices = [(keyboard.KeyCode(char=str(slot)), slot-1) for slot in range(len(items)+1)]
 
-		self.corrected_choices = [str(slot) for slot in range(len(self.items)+1)]
+		choices.append((Key.esc, 'esc'))
 
-		if choice in self.corrected_choices:
-			choice = int(choice) - 1
-			obj.add_to_inventory([self.items_[choice]()])
-			self.items_[choice] = None
-			self.items [choice] = None
+		choice = smart_input(choices)
+
+		if not choice == 'esc':
+
+			item = self.items_[choice]
+
+			if item:
+				print()
+				try:
+					print(item.name)
+				except AttributeError:
+					pass
+				try:
+					print(item.type)
+				except AttributeError:
+					pass
+				try:
+					print(item.rarity)
+				except AttributeError:
+					pass
+				try:
+					print(item.desc)
+				except AttributeError:
+					pass
+			else:
+				print('None')
+
+			print('\nGet?')
+
+			choices = [(Key.enter, 'yes'), (Key.esc, 'no')]
+
+			second_choice = smart_input(choices)
+			
+			if second_choice == 'yes':
+				obj.add_to_inventory([item()])
+				self.items_[choice] = None

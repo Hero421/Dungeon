@@ -8,6 +8,6 @@ class Simulator(object):
 
 		super().__init__()
 	
-	def get_hit(self, dmg):
+	def get_hit(self, dmg, obj):
 		print('Taked domage:', dmg)
 		input()
