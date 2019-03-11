@@ -1,37 +1,22 @@
 from random import randint, choice
 from termcolor import colored
 
-from module_links import ses_avatars, items, types_of_items
+from time import sleep
 
-class Container(object):
-	"""docstring for GoldOre"""
-	
-	des = ':'
+from Blocks.module_metaContainer import Container
 
-	def __init__(self):
-
-		super().__init__()
-		
-	def walk(self, choice, obj):
-		'''
-		Breaks the block
-		'''
-
-		if obj in ses_avatars:
-			self = Ground()
-			self.give(obj)
-
-		elif isinstance(obj, metaEnemy):
-			obj.res = False
+from module_links import items, types_of_items
 
 class GoldOre(Container):
 	
 	des = colored('*', 'yellow')
 	
 	def give(self, obj):
-		random_num = randint(1, 15)
+		random_num = randint(5, 15)
 		obj.gold += random_num
-		input('You got', random_num, 'gold')
+		obj.Exp += 5
+		print('You got: ' + str(random_num) + ' gold')
+		sleep(0.5)
 
 class Pot(Container):
 	
