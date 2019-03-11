@@ -17,7 +17,11 @@ def smart_input(pairs):
 	input_ = None
 
 	for pair in pairs:
-		wait.append(pair[0])
+		if type(pair[0]) is str:
+			if len(pair[0]) == 1:
+				wait.append(keyboard.KeyCode(char=pair[0]))
+		else:
+			wait.append(pair[0])
 		return_.append(pair[1])
 
 	with keyboard.Listener(on_release=on_release) as listener:
