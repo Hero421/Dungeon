@@ -1,4 +1,5 @@
 from random import randint
+from time import sleep
 
 from Blocks.module_Surfaces import Ground, metaSurface as Surface
 
@@ -42,8 +43,8 @@ class Enemy(object):
 
 class metaEnemy(object):
 
-	dir  = 'up'
-	memo = Ground
+	dir_ = 'up'
+	memo = Ground 
 	chance= {}
 	count = 0
 
@@ -98,8 +99,6 @@ class metaEnemy(object):
 
 	def cond_move(self):
 
-		self.res = False
-
 		from module_links import ses_avatars
 		from Methods.module_random_moving import random_moving
 		from Methods.module_moving import moving
@@ -109,13 +108,13 @@ class metaEnemy(object):
 
 			if self.row == location['row']:
 
-				if location['elm'] < self.elm and self.dir in ['left', 'up-left', 'down-left']:
+				if location['elm'] < self.elm and self.dir_ in ['left', 'up-left', 'down-left']:
 					if self.elm - location['elm'] == 1:
 						self.give_hit('left')
 					else:
 						moving(self, 'left')
 
-				elif self.elm < location['elm'] and self.dir in ['right', 'up-right', 'down-right']:
+				elif self.elm < location['elm'] and self.dir_ in ['right', 'up-right', 'down-right']:
 					if location['elm'] - self.elm == 1:
 						self.give_hit('right')
 					else:
@@ -123,13 +122,13 @@ class metaEnemy(object):
 
 			elif self.elm == location['elm']:
 
-				if location['row'] < self.row and self.dir in ['up-left', 'up', 'up-right']:
+				if location['row'] < self.row and self.dir_ in ['up-left', 'up', 'up-right']:
 					if self.row - location['row'] == 1:
 						self.give_hit('up')
 					else:
 						moving(self, 'up')
 
-				elif self.row < location['row'] and self.dir in ['down-left', 'down', 'down-right']:
+				elif self.row < location['row'] and self.dir_ in ['down-left', 'down', 'down-right']:
 					if location['row'] - self.row == 1:
 						self.give_hit('down')
 					else:
@@ -137,17 +136,17 @@ class metaEnemy(object):
 
 
 			elif location['row'] in range(self.row - self.radius, self.row):
-				if location['elm'] in range(self.elm - self.radius, self.elm) and self.dir in ['up', 'up-left', 'left']:
+				if location['elm'] in range(self.elm - self.radius, self.elm) and self.dir_ in ['up', 'up-left', 'left']:
 					random_moving(self, 'up', 'left')
 
-				elif location['elm'] in range(self.elm, self.elm + self.radius) and self.dir in ['up', 'up-right', 'right']:
+				elif location['elm'] in range(self.elm, self.elm + self.radius) and self.dir_ in ['up', 'up-right', 'right']:
 					random_moving(self, 'up', 'right')
 
 			elif location['row'] in range(self.row, self.row + self.radius):
-				if location['elm'] in range(self.elm - self.radius, self.elm) and self.dir in ['down', 'down-left', 'left']:
+				if location['elm'] in range(self.elm - self.radius, self.elm) and self.dir_ in ['down', 'down-left', 'left']:
 					random_moving(self, 'down', 'left')
 
-				elif location['elm'] in range(self.elm, self.elm + self.radius) and self.dir in ['down', 'down-right', 'right']:
+				elif location['elm'] in range(self.elm, self.elm + self.radius) and self.dir_ in ['down', 'down-right', 'right']:
 					random_moving(self, 'down', 'right')
 
 			else:
@@ -171,7 +170,9 @@ class metaEnemy(object):
 				self.map[self.row][self.elm - 1].get_hit(self.dmg)
 
 		else:
-			input('miss')
+			print(self.hlt)
+			print('miss')
+			sleep(0.3)
 
 		self.count += 1
 
@@ -206,7 +207,7 @@ class metaEnemy(object):
 
 			}
 
-		self.cage_bef = cage_bef_dict[self.dir]
+		self.cage_bef = cage_bef_dict[self.dir_]
 
 		return {
 

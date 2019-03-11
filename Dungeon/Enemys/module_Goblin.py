@@ -4,13 +4,12 @@ from termcolor import colored
 
 class Goblin(metaEnemy):
 	
-	des  = colored('g', 'red')
+	des = colored('g', 'red')
 	
-	def __init__(self, row, elm):
+	def __init__(self, row, elm, map_):
 		self.row = row
 		self.elm = elm
-		from module_links import ses_area
-		self.map = ses_area.map
+		self.map = map_
 		super().__init__( self.row, 
 						  self.elm, 
 						  hlt=15, 
@@ -21,4 +20,4 @@ class Goblin(metaEnemy):
 						  chance_hit=70, 
 						  exp=3
 						)
-		self.list = ['move' for count in range(64)]
+		self.list = ['move' for count in range(100)]
