@@ -7,26 +7,6 @@ from module_Rooms import Room
 from module_links import ses_avatars, clear
 import module_links
 
-class Map(list):
-
-	def __new__(cls, lst):
-		return list.__new__(cls, list)
-
-	def __init__(self, lst):
-		self.list = lst
-		self.len  = 0
-		for _ in self.list:
-			self.len += 1
-
-	def __getitem__(self, n):
-
-		idx = -int(len(self.list)/2)
-
-		for elm in self.list:
-			if idx == n:
-				return elm
-			idx += 1
-
 class Area(object):
 
 	def __init__( self, 
@@ -59,25 +39,22 @@ class Area(object):
 		print(self.name)
 		print('\ncreate a big dummy')
 
-		self.map = Map([Map([None for elm in range(self.elms)]) for row in range(self.rows)])
-		self.chank_map = Map([Map([Chank(row, elm) for elm in range(int(self.elms/10))]) for row in range(int(self.rows/10))])
+		self.map = [[None for elm in range(self.elms)] for row in range(self.rows)]
+		self.chank_map = [[Chank(row, elm) for elm in range(int(self.elms/10))] for row in range(int(self.rows/10))]
 
 		clear()
 		print(self.name)
 		print('\ncreate the boundaries of the world')
 
-		for row in range(len(self.map)):
-			self.map[row][self.elms - 1] = Wall()
-
-		for elm in self.map[-int(self.map.len/2)]:
+		for elm in self.map[0]:
 			elm = Wall()
 
-		for elm in self.map[int(self.map.len/2)]:
+		for elm in self.map[-1]:
 			elm = Wall()
 
 		for row in self.map:
-			row[-int(self.map.len/2)] = Wall()
-			row[ int(self.map.len/2)] = Wall()
+			row[0] = Wall()
+			row[-1] = Wall()
 
 		clear()
 		print(self.name)

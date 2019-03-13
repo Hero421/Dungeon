@@ -15,10 +15,6 @@ class Chank(object):
 
 		from module_links import ses_area
 
-		print(ses_area.map[-25][-25])
-
-		print('\n', self.row)
-
 		for row in range(self.fin_row - self.strt_row):
 			for elm in range(self.fin_elm - self.strt_elm):
 

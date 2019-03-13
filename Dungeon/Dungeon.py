@@ -32,7 +32,7 @@ import Items.Wings.module_Wings
 #		 Portal
 #		 Choice(Enemy)
 
-Dungeon_1 = Area('Dungeon 1', 50, 50, stones=40, spikes=2, chasms=1.8, enemys=1.3)
+Dungeon_1 = Area('Dungeon 1', 100, 100, stones=40, spikes=2, chasms=1.8, enemys=1.3)
 
 def turn(avatar):
 
