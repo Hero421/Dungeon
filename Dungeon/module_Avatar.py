@@ -34,7 +34,7 @@ class Avatar(object):
 	full_hlt = 100
 	full_mana = 0
 
-	mid_dmg   = 20
+	mid_dmg   = 2
 	mid_m_dmg = 1
 
 	dodge_Atk = 5
