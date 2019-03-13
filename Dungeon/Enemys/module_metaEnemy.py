@@ -101,7 +101,7 @@ class metaEnemy(object):
 
 		from module_links import ses_avatars
 		from Methods.module_random_moving import random_moving
-		from Methods.module_moving import moving
+		from Methods.module_distributor import distributor
 
 		for avatar in ses_avatars.values():
 			location = avatar.location
@@ -112,13 +112,13 @@ class metaEnemy(object):
 					if self.elm - location['elm'] == 1:
 						self.give_hit('left')
 					else:
-						moving(self, 'left')
+						distributor(self, 'left', 'mov')
 
 				elif self.elm < location['elm'] and self.dir_ in ['right', 'up-right', 'down-right']:
 					if location['elm'] - self.elm == 1:
 						self.give_hit('right')
 					else:
-						moving(self, 'right')
+						distributor(self, 'right', 'mov')
 
 			elif self.elm == location['elm']:
 
@@ -126,13 +126,13 @@ class metaEnemy(object):
 					if self.row - location['row'] == 1:
 						self.give_hit('up')
 					else:
-						moving(self, 'up')
+						distributor(self, 'up', 'mov')
 
 				elif self.row < location['row'] and self.dir_ in ['down-left', 'down', 'down-right']:
 					if location['row'] - self.row == 1:
 						self.give_hit('down')
 					else:
-						moving(self, 'down')
+						distributor(self, 'down', 'mov')
 
 
 			elif location['row'] in range(self.row - self.radius, self.row):
