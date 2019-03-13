@@ -19,6 +19,8 @@ print(player.area.name)
 
 var = False
 
+player.map[0][0] = type('Test', (), {'des': '?'})
+
 while not esc:
 	
 	if var:
@@ -29,6 +31,7 @@ while not esc:
 	clear()
 	
 	player.stat()
+	print(player.location)
 	player.area.print_map(str(id_))
 
 	# try:

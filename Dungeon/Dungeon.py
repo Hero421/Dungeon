@@ -6,7 +6,7 @@ from module_Area import Area
 from module_Avatar import Avatar
 
 from Methods.module_effect import effect
-from Methods.module_moving import moving
+from Methods.module_distributor import distributor
 
 from module_links import game, esc, ses_avatars, ses_area, clear, enemys, res, path, uuid
 import module_links
@@ -32,7 +32,7 @@ import Items.Wings.module_Wings
 #		 Portal
 #		 Choice(Enemy)
 
-Dungeon_1 = Area('Dungeon 1', 48, 48, stones=40, spikes=1.5, chasms=1.4, enemys=1.3)
+Dungeon_1 = Area('Dungeon 1', 50, 50, stones=40, spikes=2, chasms=1.8, enemys=1.3)
 
 def turn(avatar):
 
@@ -42,27 +42,23 @@ def turn(avatar):
 
 		effect()
 		
-		if choice == 'esc':
-			module_links.esc = True
+		if choice == 'esc': module_links.esc = True
 
-		elif choice == 'skills':
-			avatar.skill_tree()
+		elif choice == 'skills': avatar.skill_tree()
 
-		elif choice == 'inv':
-			avatar.open_inventory()
+		elif choice == 'inv': avatar.open_inventory()
 
 		elif module_links.res == False:
 
-			if choice in ['up', 'left', 'down', 'right']:
-				moving(avatar, choice)
+			if choice in ['up', 'left', 'down', 'right']: distributor(avatar, choice, 'mov')
 
 			elif len(choice) == 1:
 				if choice == 'hit':
-					moving(avatar, 'hit')
+					distributor(avatar, 'hit')
 
 			elif choice == 'act' or choice == 'hit':
 				if choice == 'act':
-					moving(avatar, smart_input([
+					distributor(avatar, smart_input([
 
 									(Key.up, 'up'),
 									(Key.right, 'right'),
@@ -71,7 +67,7 @@ def turn(avatar):
 
 									]), 'act')
 				elif choice == 'hit':
-					moving(avatar, smart_input([
+					distributor(avatar, smart_input([
 
 									(Key.up, 'up'),
 									(Key.right, 'right'),

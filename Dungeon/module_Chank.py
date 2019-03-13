@@ -6,7 +6,6 @@ class Chank(object):
 
 		self.row = row
 		self.elm = elm
-		self.num = num
 
 		self.strt_row = row*num
 		self.strt_elm = elm*num
@@ -16,8 +15,13 @@ class Chank(object):
 
 		from module_links import ses_area
 
-		for row in range(-1, self.fin_row - self.strt_row - 1):
-			for elm in range(-1, self.fin_elm - self.strt_elm - 1):
+		print(ses_area.map[-25][-25])
+
+		print('\n', self.row)
+
+		for row in range(self.fin_row - self.strt_row):
+			for elm in range(self.fin_elm - self.strt_elm):
+
 				ses_area.map[self.strt_row + row][self.strt_elm + elm] = GameNone()
 
 	def generator(self, map_):

@@ -7,6 +7,26 @@ from module_Rooms import Room
 from module_links import ses_avatars, clear
 import module_links
 
+class Map(list):
+
+	def __new__(cls, lst):
+		return list.__new__(cls, list)
+
+	def __init__(self, lst):
+		self.list = lst
+		self.len  = 0
+		for _ in self.list:
+			self.len += 1
+
+	def __getitem__(self, n):
+
+		idx = -int(len(self.list)/2)
+
+		for elm in self.list:
+			if idx == n:
+				return elm
+			idx += 1
+
 class Area(object):
 
 	def __init__( self, 
@@ -18,8 +38,8 @@ class Area(object):
 				  enemys=3
 				  ):
 		self.name   = name
-		self.rows   = rows + 2
-		self.elms   = elms + 2
+		self.rows   = rows
+		self.elms   = elms
 		self.stones = stones
 		self.spikes = spikes
 		self.chasms = chasms
@@ -36,45 +56,42 @@ class Area(object):
 		module_links.ses_area = self
 
 		clear()
-
 		print(self.name)
-
 		print('\ncreate a big dummy')
 
-		self.map = [[None for elm in range(self.elms)] for row in range(self.rows)]
-
-		self.chank_map = [[Chank(row, elm) for elm in range(int(self.elms/10))] for row in range(int(self.rows/10))]
+		self.map = Map([Map([None for elm in range(self.elms)]) for row in range(self.rows)])
+		self.chank_map = Map([Map([Chank(row, elm) for elm in range(int(self.elms/10))]) for row in range(int(self.rows/10))])
 
 		clear()
-
 		print(self.name)
-
 		print('\ncreate the boundaries of the world')
 
-		for row in self.map:
-			self.map[self.map.index(row)][self.elms - 1] = Wall()
+		for row in range(len(self.map)):
+			self.map[row][self.elms - 1] = Wall()
+
+		for elm in self.map[-int(self.map.len/2)]:
+			elm = Wall()
+
+		for elm in self.map[int(self.map.len/2)]:
+			elm = Wall()
 
 		for row in self.map:
-			for elm in row:
-				if self.map[0] == row or self.map[self.rows - 1] == row:
-					self.map[self.map.index(row)][row.index(elm)] = Wall()
-				elif self.map[self.map.index(row)][0] == elm:
-					self.map[self.map.index(row)][row.index(elm)] = Wall()
+			row[-int(self.map.len/2)] = Wall()
+			row[ int(self.map.len/2)] = Wall()
 
 		clear()
-
 		print(self.name)
-
 		print('\ncreate the final room')
 
 		while True:
 			end_room_elm = randint(1, self.elms)
 			end_room_row = randint(1, self.rows)
-			if  end_room_elm in range(self.elms//2 - 7, self.elms//2 + 7) or \
-				end_room_row in range(self.rows//2 - 7, self.rows//2 + 7) or \
+			if  end_room_row in range(self.rows//2 - 7, self.rows//2 + 7) or \
 				end_room_row in range(self.rows//2 + 8, self.elms//2 - 8) or \
+				end_room_elm in range(self.elms//2 - 7, self.elms//2 + 7) or \
 				end_room_elm in range(self.elms//2 + 8, self.elms//2 - 8) or \
-				end_room_elm > self.elms - 5 or end_room_row > self.rows - 5:
+				end_room_elm > self.elms - 5 or \
+				end_room_row > self.rows - 5:
 				continue
 			else:
 				break

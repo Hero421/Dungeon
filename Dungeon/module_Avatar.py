@@ -41,7 +41,7 @@ class Avatar(object):
 	dodge_MAtk= 1
 
 	hit   = 20
-	armor = 15
+	armor = 0
 	
 	power = 1
 
@@ -58,7 +58,7 @@ class Avatar(object):
 	Lvl  = 1
 
 	Exp = 0
-	End_exp = 50
+	End_exp = 20
 
 	Skill_points = 0
 
@@ -338,7 +338,7 @@ class Avatar(object):
 		if randint(1, 100) in range(self.chance['dodge Atk']):
 			if self.armor < dmg:
 				self.hlt -= dmg - self.armor
-				print('get damage: ' + dmg - self.armor)
+				print('get damage: ' + str(dmg - self.armor))
 				sleep(0.3)
 			else:
 				print('miss')
@@ -370,32 +370,42 @@ class Avatar(object):
 							self.selected = None
 							self.inventory[1][self.selected[1] - 1] = None
 
-	def skill_tree(self):
+	def skill_tree(self, nums=False):
 
 		print()
-		print('Atk: ', self.Atk)
-		print('MAtk:', self.MAtk)
-		print('Agi: ', self.Agi)
-		print('Vit: ', self.Vit)
-		print('Int: ', self.Int)
-		print('Dcs: ', self.Dcs)
-		print('Luc: ', self.Luc)
+		print('Atk: ' if not nums else '1 Atk: ', self.Atk)
+		print('MAtk:' if not nums else '2 MAtk:', self.MAtk)
+		print('Agi: ' if not nums else '3 Agi: ', self.Agi)
+		print('Vit: ' if not nums else '4 Vit: ', self.Vit)
+		print('Int: ' if not nums else '5 Int: ', self.Int)
+		print('Dcs: ' if not nums else '6 Dcs: ', self.Dcs)
+		print('Luc: ' if not nums else '7 Luc: ', self.Luc)
 		
-		input()
+		if not nums:
+			input()
 
 	def skill_up(self):
+
+		clear()
+
+		skl_nams = ['Atk', 'MAtk', 'Agi', 'Vit', 'Int', 'Dcs', 'Luc']
 		
 		while self.Skill_points > 0:
 
 			print('Skill points:', self.Skill_points)
 
-			self.skill_tree()
+			self.skill_tree(nums=True)
 
-			choice = input()
+			choices = [(str(skl_nams.index(skl)+1), skl) for skl in skl_nams]
+
+			choices.append((Key.esc, 'esc'))
+
+			choice = smart_input(choices)
+
 			if choice == 'Atk':
 				self.Atk += 1
-				if self.Atk % 5 == 0:
-					self.mid_dmg += 100
+				if self.Atk % 10 == 0:
+					self.mid_dmg += 20
 			elif choice == 'MAtk':
 				self.MAtk += 1
 				self.mid_m_dmg += 100
@@ -403,10 +413,12 @@ class Avatar(object):
 				self.Agi += 1
 			elif choice == 'Vit':
 				self.Vit += 1
-
-				self.hlt += 100
+				if self.Vit % 10 == 0:
+					self.hlt += 10
 			elif choice == 'Int':
 				self.Int += 1
+				if self.Int % 10 == 0:
+					self.mid_m_dmg += 5
 			elif choice == 'Dcs':
 				self.Dcs += 1
 			elif choice == 'Luc':
@@ -419,6 +431,8 @@ class Avatar(object):
 			
 			clear()
 		
-		self.skill_tree()
+		clear()
+
+		self.skill_tree(nums=True)
 		input()
 		clear()
