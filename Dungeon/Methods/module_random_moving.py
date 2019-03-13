@@ -1,6 +1,6 @@
 from random import choice
 from module_links import ways
-from Methods.module_moving import moving
+from Methods.module_distributor import distributor
 
 def random_moving(obj, *dirs):
 
@@ -8,4 +8,4 @@ def random_moving(obj, *dirs):
 		random_dir = choice(ways)
 	else:
 		random_dir = choice(dirs)
-	moving(obj, random_dir)
+	distributor(obj, random_dir, 'mov')
