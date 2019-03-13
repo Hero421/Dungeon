@@ -5,7 +5,7 @@ class Table(object):
 	Plaque with the inscription
 	'''
 
-	des = colored('=', 'grey')
+	des = colored('=', 'yellow')
 
 	def __init__(self, text):
 		self.text = text
