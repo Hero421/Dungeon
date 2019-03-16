@@ -18,17 +18,17 @@ class GameNone(object):
 	des = ' '
 
 	def act(self, row, elm):
-
+		
 		from module_links import ses_area
 		area = ses_area
 		map_ = area.map
 
 		random_num = randint(1, 10000)
 		
-		if random_num in range(1):
-			Rooms().spawn(row, elm, map_)
+		# if random_num in range(1):
+		# 	Rooms().spawn(row, elm, map_)
 
-		elif random_num in range(70):
+		if random_num in range(70):
 			map_[row][elm] = Wall()
 
 		elif random_num in range(int(area.enemys*100)):
