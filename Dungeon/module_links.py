@@ -1,14 +1,4 @@
-import Dungeon
-
-path_= list(Dungeon.__file__)
-
-for count in range(11):
-	del path_[-1]
-
-path = ''
-
-for ltr in path_:
-	path += ltr
+from os import system
 
 intoxicated = {}
 
@@ -49,20 +39,12 @@ enemys = []
 
 esc = False
 
+clear = lambda: system('cls')
+
 game = None
 
 ses_avatars = {}
 
 ses_area = None
-
-from os import system as os_sys
-from platform import system as platform_sys
-
-if platform_sys() == 'Windows':
-	clear = lambda: os_sys('cls')
-	uuid = '\\uuid\\'
-elif platform_sys() == 'Linux':
-	clear = lambda: os_sys('clear')
-	uuid = '/uuid/'
 
 res = False

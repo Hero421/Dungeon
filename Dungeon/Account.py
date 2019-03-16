@@ -4,9 +4,12 @@ from time import sleep
 from pynput import keyboard
 from pynput.keyboard import Key
 from Methods.module_smart_input import smart_input
-from Dungeon import create_player, global_turn
+from Methods.module_create_player import create_player
+from Methods.module_global_turn import global_turn
+from Methods.module_get_script_dir import get_script_dir
 import module_links
-from module_links import clear, esc, get_script_dir
+from module_links import clear, esc, game
+import Dungeon
 
 id_ = uuid4()
 
