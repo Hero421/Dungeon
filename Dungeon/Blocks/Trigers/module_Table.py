@@ -15,4 +15,4 @@ class Table(object):
 		'''
 		Shows the inscription on the plate
 		'''
-		input(self.text)
+		input(self.text + '\n')
