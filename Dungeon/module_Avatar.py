@@ -213,61 +213,106 @@ class Avatar(object):
 		as well as to use this item
 		'''
 
-		clear()
+		types = ['rings', 'shoes', 'feet', 'wings', 'torso', 'head']
 
-		if self.selected:
-			print(self.selected.name)
+		transfer = False
 
-		for key in self.inventory[0].keys():
-			if key != 'rings':
-				if self.inventory[0][key] != None:
-					if key == 'head' or key == 'feet':
-						print(key + ':  ' + self.inventory[0][key].name)
-					else:
-						print(key + ': '  + self.inventory[0][key].name)
+		select = 1
+		idx = select
+
+		while True:
+
+			clear()
+
+			self.stat()
+
+			names = {-types.index(type_): type_ for type_ in types}
+
+			if self.selected:
+				names[-6] = 'selected'
+
+				if select == 'selected':
+					mark = ' <'
 				else:
-					if key == 'head' or key == 'feet':
-						print(key + ':  ' + 'None')
-					else:
-						print(key + ': '  + 'None' )
-			else:
-				if self.inventory[0][key] != None:
-					print(key + ': ' + ' '.join(ring.name + ', ' if not(type(ring) is None) else 'None' for ring in self.inventory[0]['rings']))
-				else:
-					print(key + ': ' + 'None')
+					mark = ''
+				name = self.selected.name
+				print(f'{name}{mark}')
 
-		print()
-		count = 1
-		for item in self.inventory[1]:
-			if item is None:
+			prints = []
+
+			for key in self.inventory[0].keys():
+				item = self.inventory[0][key]
+				if item:
+					name = item.name
+				else:
+					name = 'None'
+				if key in ('head', 'feet'):
+					dub_point = ':  '
+				else:
+					dub_point = ': '
+				if select == key:
+					mark = ' <'
+				else:
+					mark = ''
+				print(f'{key}{dub_point}{name}{mark}')
+
+			print()
+			count = 1
+			for item in self.inventory[1]:
 				if len(str(count)) == 1:
-					print(str(count) +'.   None')
+					point = '.   '
 				else:
-					print(str(count) + '.  None')
-			elif type(item) is list:
-				if len(str(count)) == 1:
-					print(str(count) + '.  ', item[0].name, 'x' + str(len(item)))
+					point = '.  '
+				if not item:
+					item = str(item)
+				elif type(item) is list:
+					item = str(str(item[0].name) + ' x' + str(len(item)))
 				else:
-					print(str(count) + '. ' , item[0].name, 'x' + str(len(item)))
-			else:
-				if len(str(count)) == 1:
-					print(str(count) + '.   '+ item.name)
+					item = item.name
+				if select == count:
+					mark = ' <'
 				else:
-					print(str(count) + '.  ' + item.name)
-			count += 1
+					mark = ''
+				print(f'{count}{point}{item}{mark}')
+				count += 1
 
-		choices = [(keyboard.KeyCode(char=str(slot_num)), slot_num-1) for slot_num in range(self.backpack)]
+			choices = [(Key.up, 'up'), (Key.down, 'down'), (Key.enter, 'select'), (Key.right, 'transfer'), (Key.esc, 'esc'), ('i', 'esc')]
 
-		choices.append((keyboard.KeyCode(char=('s')), 'selected'))
-		choices.append((Key.esc, 'esc'))
-		choices.append((keyboard.KeyCode(char=('i')), 'esc'))
+			choice = smart_input(choices)
 
-		choice = smart_input(choices)
+			if choice == 'esc': 
+				break
 
-		if not choice == 'esc':
-
-			if choice == 'selected':
+			elif choice == 'up':
 				if self.selected:
+					num = -6
+				elif transfer:
+					num = 1
+				else:
+					num = -5
+				if idx > num:
+					idx -= 1 
+					if 1 < idx+1 < self.backpack:
+						select -= 1
+					else:
+						select = names[idx]
+
+			elif choice == 'down':
+				if idx < self.backpack-1:
+					idx += 1
+					if 1 < idx+1:
+						try:
+							select += 1
+						except TypeError:
+							select = 1
+					else:
+						select = names[idx]
+
+			elif choice == 'select':
+				if transfer:
+					trans_item = self.inventory[1][idx]	
+
+				elif select == 'selected':
 					print()
 					print(self.selected.name)
 					print(self.selected.type)
@@ -275,32 +320,36 @@ class Avatar(object):
 						print(self.selected.dmg)
 					print(self.selected.rarity)
 					print(self.selected.desc)
-				else:
-					print('None')
 
-			elif self.inventory[1][choice]:
-				print()
-				print(self.inventory[1][choice].name)
-				print(self.inventory[1][choice].type)
-				print(self.inventory[1][choice].rarity)
-				print(self.inventory[1][choice].desc)
-			else:
-				print('None')
+				elif idx > 0:
+					item = self.inventory[1][idx]
+					print()
+					if item:
+						print(item.name)
+						print(item.type)
+						print(item.rarity)
+						print(item.desc)
+					else:
+						print('None')
 
-			choices = [('u', 'use'), (Key.enter, 'use'), ('t', 'transfer'), (Key.esc, 'esc')]
+				if not transfer:
+					choices = [(Key.enter, 'use'), (Key.esc, 'esc')]
+					second_choice = smart_input(choices)
 
-			second_choice = smart_input(choices)
+					if second_choice == 'use' and not transfer:
+						if self.inventory[1][idx-1]:
+							self.inventory[1][idx-1].using(self)
+						elif self.selected:
+							self.selected.stop_using(self)
+						
+			elif choice == 'transfer':
 
-			if second_choice == 'use':
-				if self.inventory[1][choice]:
-					self.inventory[1][choice].using(self)
-				else:
-					if self.selected:
-						self.selected.stop_using(self)
-					
-			elif second_choice == 'transfer':
-				third_choice = smart_input([(keyboard.KeyCode(char=str(slot_num)), slot_num-1) for slot_num in range(self.backpack)])
-				self.inventory[1][choice], self.inventory[1][third_choice] = self.inventory[1][third_choice], self.inventory[1][choice]
+				if not transfer:
+					transfer = True
+					memo = self.inventory[1][idx]
+				elif transfer:
+					transfer = False
+					memo, trans_item = trans_item, memo
 
 	def add_to_inventory(self, items):
 		for item in items:
@@ -441,4 +490,4 @@ class Avatar(object):
 		self.skill_tree(nums=True)
 		input()
 
-		self.clear()
+		clear()

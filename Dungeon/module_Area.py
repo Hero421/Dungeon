@@ -34,6 +34,8 @@ class Map(list):
 				return idx
 			idx += 1
 
+		raise AttributeError(str(obj) + 'is not in list')
+
 	def __getitem__(self, n):
 
 		idx = -int(len(self.list)/2)
@@ -48,10 +50,10 @@ class Map(list):
 					return elm
 				idx += 1
 
-			raise IndexError('index ' + str(n) + ' is not in list')
-
-			if -(4*radius) < n < -radius:
+			if -(3*radius) < n < -radius:
 				return self.list[n + radius]
+
+			raise IndexError('index ' + str(n) + ' is not in list')
 
 	def __setitem__(self, n, value):
 
@@ -59,19 +61,23 @@ class Map(list):
 		radius = -idx
 
 		error = True
+		cont  = True
 
 		for index in range(len(self.list)):
 			if idx == n:
 				self.list[index] = value
-				error = False
+				cont = False
 				break
 			idx += 1
 
-		if error:
-			raise IndexError('index ' + str(n) + ' is not in list')
+		if cont:
 
-			if -(4*radius) < n < -radius:
+			if -(3*radius) < n < -radius:
 				self.list[n + radius] = value
+				error = False
+
+			if error:
+				raise IndexError('index ' + str(n) + ' is not in list')
 
 class Area(object):
 
@@ -110,7 +116,7 @@ class Area(object):
 
 		self.map = Map([
 						Map(
-							[1 for elm in range(self.elms)]
+							[Wall() for elm in range(self.elms)]
 							) 
 						for row in range(self.rows)
 						])
@@ -179,7 +185,7 @@ class Area(object):
 		fin_row  = avatar.location['row'] + min([radius+1, int(len(self.map)/2) - avatar.location['row']-1])
 
 		strt_elm = min([avatar.location['elm'] - radius  , len(self.map) - avatar.location['elm']])
-		fin_elm  = min([avatar.location['elm'] + radius+1, len(self.map) + avatar.location['elm']])
+		fin_elm  = avatar.location['elm'] + min([radius+1, int(len(self.map)/2) - avatar.location['elm']-1])
 
 		for row in avatar.map[strt_row : fin_row]:
-			print(' '.join([elm.des for elm in row[strt_elm : fin_elm]]))
+			print(' '.join([str(elm) if type(elm) is int else elm.des for elm in row[strt_elm : fin_elm]]))
