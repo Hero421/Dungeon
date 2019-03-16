@@ -8,7 +8,7 @@ from module_Avatar import Avatar
 from Methods.module_effect import effect
 from Methods.module_distributor import distributor
 
-from module_links import game, esc, ses_avatars, ses_area, clear, enemys, res, path, uuid
+from module_links import game, esc, ses_avatars, ses_area, enemys, res, get_script_dir
 import module_links
 
 from Methods.module_smart_input import smart_input
@@ -32,7 +32,7 @@ import Items.Wings.module_Wings
 #		 Portal
 #		 Choice(Enemy)
 
-Dungeon_1 = Area('Dungeon 1', 100, 100, stones=40, spikes=2, chasms=1.8, enemys=1.3)
+Dungeon_1 = Area('Dungeon 1', 100, 100, stones=30, spikes=0, chasms=0, enemys=0)
 
 def turn(avatar):
 
@@ -89,7 +89,9 @@ def global_turn(id_):
 		avatar.recovery()
 		avatar.check()
 
-	ses_avatars[str(id_)].choice = load(open(path + uuid + str(id_) + '.json', 'r'))
+	avatar = ses_avatars[str(id_)]
+
+	avatar.choice = load(open(get_script_dir() + '\\uuid\\' + str(id_) + '.json', 'r'))
 
 	for avatar in ses_avatars.values():
 		turn(avatar)
@@ -109,7 +111,3 @@ def create_player(id_, room=True):
 	created_player.add_to_inventory([Sword(), SmallHealthDrug(), StickCreateStone(), StickCreateGoldOre()])
 	
 	return created_player
-
-clear()
-if game:
-	print(game)

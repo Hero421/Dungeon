@@ -2,11 +2,12 @@ from random import randint
 from time import sleep
 from pynput import keyboard
 from pynput.keyboard import Key
+
 from Methods.module_smart_input import smart_input
 
 from module_Rooms import Room, Rooms, Corridor
 import module_links
-from module_links import clear, intoxicated
+from module_links import intoxicated, clear
 
 from Blocks.module_Surfaces import Floor
 from Blocks.Trigers.module_DieChest import DieChest
@@ -34,7 +35,7 @@ class Avatar(object):
 	full_hlt = 100
 	full_mana = 0
 
-	mid_dmg   = 2
+	mid_dmg   = 20
 	mid_m_dmg = 1
 
 	dodge_Atk = 5
@@ -88,11 +89,20 @@ class Avatar(object):
 
 		super().__init__()
 
-		self.location['row'] = int(float(self.area.rows)/2)
-		self.location['elm'] = int(float(self.area.elms)/2)
+		self.location['row'] = 0
+		self.location['elm'] = 0
 
 		if room:
-			Rooms(['the initial room', 'room with the chest', 'room with the chest', 'room with the chest'], doors='off', width=5, height=5, lenght=1).spawn(self.location['row'] - 1, self.location['elm'] - 1, self.map)
+			Rooms(
+
+				['the initial room', 'room with the chest'], 
+				doors='off', 
+				width=5, height=5, lenght=1
+
+				).spawn(
+					- 1, 
+					- 1, 
+					self.map)
 
 		self.map[self.location['row']][self.location['elm']] = self
 
@@ -121,19 +131,14 @@ class Avatar(object):
 
 		chank = self.area.chank_map[int(self.location['row']/10)][int(self.location['elm']/10)]
 
-		chank.msg(self)
-		chank.generator(self.map)
+		if not chank.message:
+			chank.msg()
 
 		self.level()
-
 		self.crity()
-
 		self.emp_slot()
-
 		self.select()
-
 		self.using_items()
-
 		self.game()
 
 	def level(self):
@@ -282,7 +287,7 @@ class Avatar(object):
 			else:
 				print('None')
 
-			choices = [('u', 'use'), ('t', 'transfer'), (Key.esc, 'esc')]
+			choices = [('u', 'use'), (Key.enter, 'use'), ('t', 'transfer'), (Key.esc, 'esc')]
 
 			second_choice = smart_input(choices)
 
@@ -435,4 +440,5 @@ class Avatar(object):
 
 		self.skill_tree(nums=True)
 		input()
-		clear()
+
+		self.clear()

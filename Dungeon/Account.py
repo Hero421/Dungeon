@@ -4,12 +4,9 @@ from time import sleep
 from pynput import keyboard
 from pynput.keyboard import Key
 from Methods.module_smart_input import smart_input
-
 from Dungeon import create_player, global_turn
-
 import module_links
-
-from module_links import uuid, path, clear, esc
+from module_links import clear, esc, get_script_dir
 
 id_ = uuid4()
 
@@ -18,8 +15,6 @@ player = create_player(str(id_))
 print(player.area.name)
 
 var = False
-
-player.map[0][0] = type('Test', (), {'des': '?'})
 
 while not esc:
 	
@@ -31,8 +26,7 @@ while not esc:
 	clear()
 	
 	player.stat()
-	print(player.location)
-	player.area.print_map(str(id_))
+	player.area.print_map(str(id_), radius=8)
 
 	# try:
 	dump(
@@ -50,7 +44,7 @@ while not esc:
 
 			]), 
 
-		open(path + uuid + str(id_) + '.json', 'w')
+		open(get_script_dir() + '\\uuid\\' + str(id_) + '.json', 'w')
 	)
 
 	global_turn(id_)
@@ -60,4 +54,7 @@ while not esc:
 	
 	from module_links import esc
 
+
 clear()
+if game:
+	print(game)

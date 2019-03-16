@@ -2,69 +2,56 @@ from Blocks.module_GameNone import GameNone
 
 class Chank(object):
 
-	def __init__(self, row, elm, num=10):   # number of rows and elms
+	def __init__(self, row, elm, area, length=10):   # lengthber of rows and elms
+
+		self.length = length
+
+		self.gen = False
+		self.message = False
 
 		self.row = row
 		self.elm = elm
 
-		self.strt_row = row*num
-		self.strt_elm = elm*num
+		self.strt_row = row*length
+		self.strt_elm = elm*length
 
-		self.fin_row = self.strt_row + num
-		self.fin_elm = self.strt_elm + num
+		# print(row, elm)
 
-		from module_links import ses_area
+		self.map_ = area.map
+		self.area = area
 
-		for row in range(self.fin_row - self.strt_row):
-			for elm in range(self.fin_elm - self.strt_elm):
+		for row in range(length):
+			for elm in range(length):
+				self.map_[self.strt_row + row][self.strt_elm + elm] = GameNone()
 
-				ses_area.map[self.strt_row + row][self.strt_elm + elm] = GameNone()
+		self.generator()
 
-	def generator(self, map_):
+	def generator(self):
 
-		for row in range(self.strt_row, self.fin_row):
-			for elm in range(self.strt_elm, self.fin_elm):
-				if type(map_[row][elm]) is GameNone:
-					map_[row][elm].act(row, elm)
+		self.gen = True
 
-	def msg(self, avatar):
-		
-		try:
-			avatar.area.chank_map[self.row - 1][self.elm].generator(avatar.map)
-		except IndexError:
-			pass
-		
-		try:
-			avatar.area.chank_map[self.row - 1][self.elm + 1].generator(avatar.map)
-		except IndexError:
-			pass
-			
-		try:
-			avatar.area.chank_map[self.row][self.elm + 1].generator(avatar.map)
-		except IndexError:
-			pass
-		
-		try:
-			avatar.area.chank_map[self.row + 1][self.elm + 1].generator(avatar.map)
-		except IndexError:
-			pass
-			
-		try:
-			avatar.area.chank_map[self.row + 1][self.elm].generator(avatar.map)
-		except IndexError:
-			pass
-		
-		try:
-			avatar.area.chank_map[self.row + 1][self.elm - 1].generator(avatar.map)
-		except IndexError:
-			pass
-			
-		try:
-			avatar.area.chank_map[self.row][self.elm - 1].generator(avatar.map)
-		except IndexError:
-			pass
-			
-		try:
-			avatar.area.chank_map[self.row - 1][self.elm - 1].generator(avatar.map)
-		except IndexError:
-			pass
+		for row in range(self.length):
+			for elm in range(self.length):
+				if type(self.map_[self.strt_row + row][self.strt_elm + elm]) is GameNone:
+					self.map_[self.strt_row + row][self.strt_elm + elm].act(self.strt_row + row, self.strt_elm + elm)
+
+		del self.length
+		del self.strt_row
+		del self.strt_elm
+		del self.map_
+
+	def msg(self):
+
+		self.message = True
+
+		for row in self.area.chank_map[self.row-1 : self.row+1]:
+			for chank in row[self.elm-1 : self.elm+1]:
+				try:
+					if not chank.gen:
+						chank.generator()
+				except IndexError:
+					pass
+
+		del self.area
+		del self.row
+		del self.elm

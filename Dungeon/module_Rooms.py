@@ -26,24 +26,25 @@ class Rooms(object):
 
 		self.doors = doors
 
-		if not num:
+		if len(generations) > 1:
+			if not num:
 
-			chance = randint(1, 100)
+				chance = randint(1, 100)
 
-			if chance in range(2):
-				num = 5
-			elif chance in range(8):
-				num = 4
-			elif chance in range(20):
-				num = 3
-			elif chance in range(50):
-				num = 2
-			else:
-				num = 1
+				if chance in range(2):
+					num = 5
+				elif chance in range(8):
+					num = 4
+				elif chance in range(20):
+					num = 3
+				elif chance in range(50):
+					num = 2
+				else:
+					num = 1
 
-		self.map_of_rooms = [[' ' for elm in range(20)] for row in range(20)]
-		self.room_row = 10
-		self.room_elm = 10
+			self.map_of_rooms = [[' ' for elm in range(20)] for row in range(20)]
+			self.room_row = 10
+			self.room_elm = 10
 		
 		self.width  = width
 		self.height = height
@@ -117,7 +118,7 @@ class Rooms(object):
 					Room(way, type_='last_room', generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
 					break
 		else:
-			Room(way, type_='last_room', generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
+			Room(way, type_='last_room', generation=self.generations, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
 
 
 class Room(object):
