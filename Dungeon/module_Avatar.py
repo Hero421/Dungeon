@@ -19,29 +19,26 @@ class Avatar(object):
 	empt_slot = 0
 	status    = []
 	used_items= []
-	count     = {}    # {'self.name': [start, stop, stat(on/off), self]}
-	chance    = {}	  # {'potion': []}
+	count     = {}  # {'self.name': [start, stop, stat(on/off), self]}
+	chance    = {}	# {'ivent': chance}
 	location  = {'row': None, 'elm': None}
 	choices   = None
 	selected  = None
-	chank     = None
-
-	bool_ = False
 
 	gold = 0
 
 	des  = '0'
 
-	full_hlt = 100
+	full_hlt  = 10
 	full_mana = 0
 
-	mid_dmg   = 20
+	mid_dmg   = 2
 	mid_m_dmg = 1
 
 	dodge_Atk = 5
 	dodge_MAtk= 1
 
-	hit   = 20
+	hit   = 1
 	armor = 0
 	
 	power = 1
@@ -87,8 +84,6 @@ class Avatar(object):
 
 		self.count['Source'] = [40, 0, 'on', None]
 
-		super().__init__()
-
 		self.location['row'] = 0
 		self.location['elm'] = 0
 
@@ -102,7 +97,8 @@ class Avatar(object):
 				).spawn(
 					- 1, 
 					- 1, 
-					self.map)
+					self.map
+					)
 
 		self.map[self.location['row']][self.location['elm']] = self
 
@@ -217,21 +213,26 @@ class Avatar(object):
 
 		transfer = False
 
-		select = 1
-		idx = select
+		slot = 1
+		idx = slot
 
 		while True:
 
 			clear()
 
+			print(self.inventory)
+
+			self.check()
 			self.stat()
+
+			print(idx, slot)
 
 			names = {-types.index(type_): type_ for type_ in types}
 
 			if self.selected:
 				names[-6] = 'selected'
 
-				if select == 'selected':
+				if slot == 'selected':
 					mark = ' <'
 				else:
 					mark = ''
@@ -245,12 +246,12 @@ class Avatar(object):
 				if item:
 					name = item.name
 				else:
-					name = 'None'
+					name = '_____'
 				if key in ('head', 'feet'):
 					dub_point = ':  '
 				else:
 					dub_point = ': '
-				if select == key:
+				if slot == key:
 					mark = ' <'
 				else:
 					mark = ''
@@ -264,12 +265,12 @@ class Avatar(object):
 				else:
 					point = '.  '
 				if not item:
-					item = str(item)
+					item = '_____'
 				elif type(item) is list:
 					item = str(str(item[0].name) + ' x' + str(len(item)))
 				else:
 					item = item.name
-				if select == count:
+				if slot == count:
 					mark = ' <'
 				else:
 					mark = ''
@@ -293,26 +294,26 @@ class Avatar(object):
 				if idx > num:
 					idx -= 1 
 					if 1 < idx+1 < self.backpack:
-						select -= 1
+						slot -= 1
 					else:
-						select = names[idx]
+						slot = names[idx]
 
 			elif choice == 'down':
 				if idx < self.backpack-1:
 					idx += 1
 					if 1 < idx+1:
 						try:
-							select += 1
+							slot += 1
 						except TypeError:
-							select = 1
+							slot = 1
 					else:
-						select = names[idx]
+						slot = names[idx]
 
 			elif choice == 'select':
 				if transfer:
 					trans_item = self.inventory[1][idx]	
 
-				elif select == 'selected':
+				elif slot == 'selected':
 					print()
 					print(self.selected.name)
 					print(self.selected.type)
@@ -322,7 +323,7 @@ class Avatar(object):
 					print(self.selected.desc)
 
 				elif idx > 0:
-					item = self.inventory[1][idx]
+					item = self.inventory[1][idx-1]
 					print()
 					if item:
 						print(item.name)
@@ -351,8 +352,9 @@ class Avatar(object):
 					transfer = False
 					memo, trans_item = trans_item, memo
 
-	def add_to_inventory(self, items):
+	def add_to_inventory(self, *items):
 		for item in items:
+			self.check()
 			if type(item) is list:
 				if self.empt_slot:
 					self.inventory[1][self.empt_slot] = item
@@ -387,28 +389,6 @@ class Avatar(object):
 		print('exp: ' + str(self.Exp) + '/' + str(self.End_exp))
 		print()
 
-
-	def get_hit(self, dmg):
-		if randint(1, 100) in range(self.chance['dodge Atk']):
-			if self.armor < dmg:
-				self.hlt -= dmg - self.armor
-				print('get damage: ' + str(dmg - self.armor))
-				sleep(0.3)
-			else:
-				print('miss')
-				sleep(0.3)
-		else:
-			print('miss')
-			sleep(0.3)
-
-	def give_hit(self, obj):
-		if randint(1, 100) in range(self.chance['hit']):
-			obj.get_hit(self.dmg, self)
-		else:
-			print('miss')
-			sleep(0.3)
-
-
 	def recovery(self):
 		if self.mana < self.full_mana:
 			self.mana += 1
@@ -420,9 +400,7 @@ class Avatar(object):
 					elif self.count[para][0] > self.count[para][1]:
 						self.count[para][0] -= 1
 					elif self.count[para][0] == self.count[para][1]:
-						if self.count[para][3].ablity == 'break':
-							self.selected = None
-							self.inventory[1][self.selected[1] - 1] = None
+						self.count[para][2] = 'off'
 
 	def skill_tree(self, nums=False):
 
@@ -491,3 +469,24 @@ class Avatar(object):
 		input()
 
 		clear()
+
+
+	def get_hit(self, dmg):
+		if randint(1, 100) in range(self.chance['dodge Atk']):
+			if self.armor < dmg:
+				self.hlt -= dmg - self.armor
+				print('get damage: ' + str(dmg - self.armor))
+				sleep(0.3)
+			else:
+				print('miss')
+				sleep(0.3)
+		else:
+			print('miss')
+			sleep(0.3)
+
+	def give_hit(self, obj):
+		if randint(1, 100) in range(self.chance['hit']):
+			obj.get_hit(self.dmg, self)
+		else:
+			print('miss')
+			sleep(0.3)

@@ -34,7 +34,7 @@ class Map(list):
 				return idx
 			idx += 1
 
-		raise AttributeError(str(obj) + 'is not in list')
+		raise AttributeError(f'{obj} is not in list')
 
 	def __getitem__(self, n):
 
@@ -53,7 +53,7 @@ class Map(list):
 			if -(3*radius) < n < -radius:
 				return self.list[n + radius]
 
-			raise IndexError('index ' + str(n) + ' is not in list')
+			raise IndexError(f'index {n} is not in list')
 
 	def __setitem__(self, n, value):
 
@@ -77,7 +77,7 @@ class Map(list):
 				error = False
 
 			if error:
-				raise IndexError('index ' + str(n) + ' is not in list')
+				raise IndexError(f'index {n} is not in list')
 
 class Area(object):
 
@@ -142,15 +142,12 @@ class Area(object):
 		print(self.name)
 		print('\ncreate the boundaries of the world')
 
-		for row in self.map:
-			row[int(len(row)/2)-1] = Wall()
-
 		for elm in range(-int(len(self.map[0])/2), int(len(self.map[0])/2)-1):
 			self.map[-int(len(self.map)/2)][elm] = Wall()
 			self.map[ int(len(self.map)/2)-2][elm] = Wall()
 
 		for row in self.map.list:
-			row[-int(len(self.map)/2)  ] = Wall()
+			row[-int(len(self.map)/2)-1] = Wall()
 			row[ int(len(self.map)/2)-1] = Wall()
 
 		clear()

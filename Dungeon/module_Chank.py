@@ -24,8 +24,6 @@ class Chank(object):
 			for elm in range(length):
 				self.map_[self.strt_row + row][self.strt_elm + elm] = GameNone()
 
-		self.generator()
-
 	def generator(self):
 
 		self.gen = True
