@@ -1,5 +1,4 @@
 from Items.module_metaItem import metaItem
-import module_links
 
 class metaStickCreate(metaItem):
 	"""docstring for StickCreateStone"""
@@ -23,11 +22,18 @@ class metaStickCreate(metaItem):
 			obj.inventory[1].remove(self)
 			obj.selected = self
 
-	def hit(self, row, elm):
-		module_links.ses_area.map[row][elm] = self.object()
+	def hit(self, row, elm, map_):
+		map_[row][elm] = self.object()
 		
 	def stop_using(self, obj):
 
 		obj.add_to_inventory(self)
 		obj.selected = None
 		self.use = False
+
+	def print_details(self):
+
+		print(f'name:   {self.name}')
+		print(f'type:   {self.type}')
+		print(f'rarity: {self.rarity}')
+		print(f'desc:   {self.desc}')
