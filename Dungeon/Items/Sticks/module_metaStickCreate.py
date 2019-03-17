@@ -16,7 +16,7 @@ class metaStickCreate(metaItem):
 	
 	def using(self, obj):
 
-		if self.use == False:
+		if not self.use:
 			self.use = True
 			if not(obj.selected is None):
 				obj.selected.stop_using(obj)
@@ -28,8 +28,6 @@ class metaStickCreate(metaItem):
 		
 	def stop_using(self, obj):
 
-		from module_links import ses_avatars
-
-		if obj in ses_avatar:
-			obj.add_to_inventory([self])
+		obj.add_to_inventory(self)
 		obj.selected = None
+		self.use = False
