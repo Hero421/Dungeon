@@ -2,7 +2,9 @@ from random import choice as ch
 from termcolor import colored
 from pynput import keyboard
 from pynput.keyboard import Key
+
 from Methods.module_smart_input import smart_input
+from module_links import clear, items
 
 class Chest(object):
 	'''
@@ -12,8 +14,8 @@ class Chest(object):
 	des = colored('C', 'yellow')
 
 	def __init__(self, rarity=None):
-		self.stat  = False
-		self.items_= []
+		self.open  = False
+		self.items = []
 		self.rarity= rarity
 		if self.rarity is None:
 		#	rarity_of(self)
@@ -21,102 +23,117 @@ class Chest(object):
 
 		super().__init__()
 
+	def generator(self):
+
+		types_of_items = ['Sword', 'Wings', 'Drug', 'Stick']
+
+		if self.rarity == 'common':
+			for count in range(3):
+				self.items.append(ch(items['common'][ch(types_of_items)]))
+
+		elif self.rarity == 'rare':
+			for count in range(6):
+				self.items.append(ch(items['common'][ch(types_of_items)]))
+			for count in range(3):
+				self.items.append(ch(items['rare'][ch(types_of_items)]))
+
+		elif self.rarity == 'Epic':
+			for count in range(9):
+				self.items.append(ch(items['common'][ch(types_of_items)]))
+			for count in range(6):
+				self.items.append(ch(items['rare'][ch(types_of_items)]))
+			for count in range(3):
+				self.items.append(ch(items['Epic'][ch(types_of_items)]))
+
+		elif self.rarity == 'GODLY':
+			for count in range(15):
+				self.items.append(ch(items['common'][ch(types_of_items)]))
+			for count in range(10):
+				self.items.append(ch(items['rare'][ch(types_of_items)]))
+			for count in range(5):
+				self.items.append(ch(items['Epic'][ch(types_of_items)]))
+			for count in range(2):
+				self.items.append(ch(items['GODLY'][ch(types_of_items)]))
+
+	def print_items(self, index):
+
+		items = [slot.name if slot else '_____' for slot in self.items]
+
+		count = 0
+		for slot in items:
+			if len(items) < 10:
+				if len(str(items.index(slot))) == 1:
+					dot = '.'
+			elif len(items) < 100:
+				if len(str(items.index(slot))) == 1:
+					dot = '. '
+				if len(str(items.index(slot))) == 2:
+					dot = '.'
+
+			if index == count:
+				mark = ' <'
+			else:
+				mark = ''
+
+			print(f'{count+1}{dot}{slot}{mark}')
+
+			count += 1
+
 	def act(self, obj):
 		'''
 		The first time creates in the chest of random things, 
 		depending on the rarity of the chest. 
 		Open it.
 		'''
-		
-		from module_links import items
 
-		types_of_items = ['Sword', 'Wings', 'Drug', 'Stick']
+		if not self.open:
 
-		if self.stat == False:
-			self.stat = True
+			self.generator()
+
+			self.open = True
 			self.des  = colored('c', 'yellow')
 
-			if self.rarity == 'common':
-				for count in range(3):
-					self.items_.append(ch(items['common'][ch(types_of_items)]))
+		index = 0
 
-			elif self.rarity == 'rare':
-				for count in range(6):
-					self.items_.append(ch(items['common'][ch(types_of_items)]))
-				for count in range(3):
-					self.items_.append(ch(items['rare'][ch(types_of_items)]))
+		while True:
 
-			elif self.rarity == 'Epic':
-				for count in range(9):
-					self.items_.append(ch(items['common'][ch(types_of_items)]))
-				for count in range(6):
-					self.items_.append(ch(items['rare'][ch(types_of_items)]))
-				for count in range(3):
-					self.items_.append(ch(items['Epic'][ch(types_of_items)]))
+			clear()
 
-			elif self.rarity == 'GODLY':
-				for count in range(15):
-					self.items_.append(ch(items['common'][ch(types_of_items)]))
-				for count in range(10):
-					self.items_.append(ch(items['rare'][ch(types_of_items)]))
-				for count in range(5):
-					self.items_.append(ch(items['Epic'][ch(types_of_items)]))
-				for count in range(2):
-					self.items_.append(ch(items['GODLY'][ch(types_of_items)]))
+			print(f'\n{self.rarity}\n')
 
-		items = [slot.name if not slot is None else slot for slot in self.items_]
+			self.print_items(index)
 
-		print(self.rarity)
+			choices = [(Key.up, 'up'), (Key.down, 'down'), (Key.enter, 'select'), (Key.esc, 'esc')]
 
-		count = 1
-		for slot in items:
-			if len(items) < 10:
-				if len(str(items.index(slot))) == 1:
-					print(str(count) + '.' , slot)
-			elif len(items) < 100:
-				if len(str(items.index(slot))) == 1:
-					print(str(count) + '. ', slot)
-				if len(str(items.index(slot))) == 2:
-					print(str(count) + '.' , slot)
-			count += 1
+			choice = smart_input(choices)
 
-		choices = [(keyboard.KeyCode(char=str(slot)), slot-1) for slot in range(len(items)+1)]
+			if choice == 'esc': break
 
-		choices.append((Key.esc, 'esc'))
+			elif choice == 'up':
+				if 0 < index:
+					index -= 1
 
-		choice = smart_input(choices)
+			elif choice == 'down':
+				if index < len(self.items):
+					index += 1
 
-		if not choice == 'esc':
+			elif choice == 'select':
 
-			item = self.items_[choice]
+				item = self.items[index]
 
-			if item:
-				print()
-				try:
-					print(item.name)
-				except AttributeError:
-					pass
-				try:
-					print(item.type)
-				except AttributeError:
-					pass
-				try:
-					print(item.rarity)
-				except AttributeError:
-					pass
-				try:
-					print(item.desc)
-				except AttributeError:
-					pass
-			else:
-				print('None')
+				if item:
+					print()
+					item.print_details(item)
 
-			print('\nGet?')
+				else:
+					print('None')
 
-			choices = [(Key.enter, 'yes'), (Key.esc, 'no')]
+				print('\nGet?')
 
-			second_choice = smart_input(choices)
-			
-			if second_choice == 'yes':
-				obj.add_to_inventory([item()])
-				self.items_[choice] = None
+				choices = [(Key.enter, 'yes'), (Key.esc, 'no')]
+
+				second_choice = smart_input(choices)
+				
+				if second_choice == 'yes':
+					obj.add_to_inventory([item()])
+					self.items[index] = None
