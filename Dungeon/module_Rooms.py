@@ -19,7 +19,21 @@ from pprint import pprint
 
 class Rooms(object):
 	'''
-	docstring for Rooms
+	Rooms(
+
+		  [the generation you need] or None, 
+		  quantity you need or None, 
+		  doors='on'/'off', 
+		  width= and height= of rooms,
+		  lenght=corridor length
+
+		 ).spawn(
+
+		  row on the map,
+		  elm on the map,
+		  and map
+
+		 )
 	'''
 
 	def __init__(self, generations=None, num=None, doors='on', width=5, height=5, lenght=2):
@@ -64,8 +78,12 @@ class Rooms(object):
 		if len(self.generations) > 1:
 			for generation in self.generations:
 
-				Room(way, generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
+				if generation == self.generations[-1]:
+					var = False
+					Room(way, type_='last_room', generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
+					break
 
+				Room(way, generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
 				self.map_of_rooms[self.room_row][self.room_elm] = 'R'
 
 				while True:
@@ -113,10 +131,6 @@ class Rooms(object):
 						Corridor('horizontal', doors=self.doors, lenght=self.lenght).spawn(row+1, elm+self.width-1, map_)
 						self.map_of_rooms[self.room_row][self.room_elm + 1] = 'C'
 
-				if generation == self.generations[-1]:
-					var = False
-					Room(way, type_='last_room', generation=generation, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
-					break
 		else:
 			Room(way, type_='last_room', generation=self.generations, doors=self.doors, width=self.width, height=self.height).spawn(row, elm, map_)
 

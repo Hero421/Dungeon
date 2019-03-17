@@ -15,8 +15,6 @@ class Chank(object):
 		self.strt_row = row*length
 		self.strt_elm = elm*length
 
-		# print(row, elm)
-
 		self.map_ = area.map
 		self.area = area
 
@@ -42,8 +40,8 @@ class Chank(object):
 
 		self.message = True
 
-		for row in self.area.chank_map[self.row-1 : self.row+1]:
-			for chank in row[self.elm-1 : self.elm+1]:
+		for row in self.area.chank_map[self.row-2 : self.row+2]:
+			for chank in row[self.elm-2 : self.elm+2]:
 				try:
 					if not chank.gen:
 						chank.generator()

@@ -136,7 +136,7 @@ class Area(object):
 											)
 							])
 
-		# self.chank_map[0][0].msg()
+		self.chank_map[0][0].msg()
 
 		clear()
 		print(self.name)
