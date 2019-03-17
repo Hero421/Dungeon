@@ -52,3 +52,11 @@ class metaSword(metaItem):
 		obj.add_to_inventory(self)
 		obj.selected = None
 		self.use = False
+
+	def print_details(self):
+
+		print(f'name:   {self.name}')
+		print(f'type:   {self.type}')
+		print(f'damage: {self.dmg}')
+		print(f'rarity: {self.rarity}')
+		print(f'desc:   {self.desc}')
