@@ -13,6 +13,7 @@ from Blocks.module_Surfaces import Floor
 from Blocks.Trigers.module_DieChest import DieChest
 
 from Items.Swords.module_metaSword import metaSword
+from Items.Sticks.module_metaStickCreate import metaStickCreate
 
 class Avatar(object):
 
@@ -150,11 +151,8 @@ class Avatar(object):
 			Exp = 0
 
 	def crity(self):
-		if self.selected:
-			if randint(1, 100) in range(self.crit):
-				self.dmg = 2*randint(self.mid_dmg - 1, self.mid_dmg + 1)
-			else:
-				self.dmg =   randint(self.mid_dmg - 1, self.mid_dmg + 1)
+		if self.selected and randint(1, 100) in range(self.crit):
+			self.dmg = 2*randint(self.mid_dmg - 1, self.mid_dmg + 1)
 		else:
 			self.dmg = randint(self.mid_dmg - 1, self.mid_dmg + 1)
 
@@ -202,6 +200,56 @@ class Avatar(object):
 		if self in intoxicated:
 			del intoxicated[self]
 
+	def print_inventory(self, names, slot):
+
+		if self.selected:
+			names[-6] = 'selected'
+
+			if slot == 'selected':
+				mark = ' <'
+			else:
+				mark = ''
+			name = self.selected.name
+			print(f'{name}{mark}')
+
+		prints = []
+
+		for key in self.inventory[0].keys():
+			item = self.inventory[0][key]
+			if item:
+				name = item.name
+			else:
+				name = '_____'
+			if key in ('head', 'feet'):
+				dub_point = ':  '
+			else:
+				dub_point = ': '
+			if slot == key:
+				mark = ' <'
+			else:
+				mark = ''
+			print(f'{key}{dub_point}{name}{mark}')
+
+		print()
+		count = 1
+		for item in self.inventory[1]:
+			if len(str(count)) == 1:
+				point = '.   '
+			else:
+				point = '.  '
+			if not item:
+				item = '_____'
+			elif type(item) is list:
+				item = str(f'{item[0].name} x{len(item)}')
+			else:
+				item = item.name
+			if slot == count:
+				mark = ' <'
+			else:
+				mark = ''
+			print(f'{count}{point}{item}{mark}')
+			count += 1
+
 	def open_inventory(self):
 		'''
 		Shows the contents of the inventory, 
@@ -220,62 +268,12 @@ class Avatar(object):
 
 			clear()
 
-			print(self.inventory)
-
 			self.check()
 			self.stat()
 
-			print(idx, slot)
-
 			names = {-types.index(type_): type_ for type_ in types}
 
-			if self.selected:
-				names[-6] = 'selected'
-
-				if slot == 'selected':
-					mark = ' <'
-				else:
-					mark = ''
-				name = self.selected.name
-				print(f'{name}{mark}')
-
-			prints = []
-
-			for key in self.inventory[0].keys():
-				item = self.inventory[0][key]
-				if item:
-					name = item.name
-				else:
-					name = '_____'
-				if key in ('head', 'feet'):
-					dub_point = ':  '
-				else:
-					dub_point = ': '
-				if slot == key:
-					mark = ' <'
-				else:
-					mark = ''
-				print(f'{key}{dub_point}{name}{mark}')
-
-			print()
-			count = 1
-			for item in self.inventory[1]:
-				if len(str(count)) == 1:
-					point = '.   '
-				else:
-					point = '.  '
-				if not item:
-					item = '_____'
-				elif type(item) is list:
-					item = str(str(item[0].name) + ' x' + str(len(item)))
-				else:
-					item = item.name
-				if slot == count:
-					mark = ' <'
-				else:
-					mark = ''
-				print(f'{count}{point}{item}{mark}')
-				count += 1
+			self.print_inventory(names, slot)
 
 			choices = [(Key.up, 'up'), (Key.down, 'down'), (Key.enter, 'select'), (Key.right, 'transfer'), (Key.esc, 'esc'), ('i', 'esc')]
 
@@ -293,13 +291,13 @@ class Avatar(object):
 					num = -5
 				if idx > num:
 					idx -= 1 
-					if 1 < idx+1 < self.backpack:
+					if 1 < idx+1 < self.backpack+1:
 						slot -= 1
 					else:
 						slot = names[idx]
 
 			elif choice == 'down':
-				if idx < self.backpack-1:
+				if idx < self.backpack:
 					idx += 1
 					if 1 < idx+1:
 						try:
@@ -313,25 +311,25 @@ class Avatar(object):
 				if transfer:
 					trans_item = self.inventory[1][idx]	
 
-				elif slot == 'selected':
-					print()
-					print(self.selected.name)
-					print(self.selected.type)
-					if type(self.selected) is metaSword:
-						print(self.selected.dmg)
-					print(self.selected.rarity)
-					print(self.selected.desc)
-
-				elif idx > 0:
-					item = self.inventory[1][idx-1]
+				elif idx > 0 or slot == 'selected':
+					if slot == 'selected':
+						item = self.selected
+						idx += 1
+					else:
+						item = self.inventory[1][idx-1]
 					print()
 					if item:
-						print(item.name)
-						print(item.type)
-						print(item.rarity)
-						print(item.desc)
+						item.print_details()
 					else:
 						print('None')
+
+				else:
+					item = self.inventory[0][slot]
+
+					if item:
+						item.print_details()
+					else:
+						print('\nNone')
 
 				if not transfer:
 					choices = [(Key.enter, 'use'), (Key.esc, 'esc')]
@@ -378,15 +376,15 @@ class Avatar(object):
 				break
 
 	def stat(self):
-		print('level:  ' + str(self.Lvl))
+		print(f'level:  {self.Lvl}')
 		if self in intoxicated:
 			print(*list(set(self.status)))
-		print('health: ' + str(self.hlt))
-		print('armor:  ' + str(self.armor))
-		print('mana:   ' + str(self.mana))
-		print('gold:   ' + str(self.gold))
+		print(f'health: {self.hlt}')
+		print(f'armor:  {self.armor}')
+		print(f'mana:   {self.mana}')
+		print(f'gold:   {self.gold}')
 		print()
-		print('exp: ' + str(self.Exp) + '/' + str(self.End_exp))
+		print(f'exp: {self.Exp}/{self.End_exp}')
 		print()
 
 	def recovery(self):
@@ -424,7 +422,7 @@ class Avatar(object):
 		
 		while self.Skill_points > 0:
 
-			print('Skill points:', self.Skill_points)
+			print(f'Skill points: {self.Skill_points}')
 
 			self.skill_tree(nums=True)
 
@@ -470,23 +468,30 @@ class Avatar(object):
 
 		clear()
 
-
 	def get_hit(self, dmg):
-		if randint(1, 100) in range(self.chance['dodge Atk']):
-			if self.armor < dmg:
-				self.hlt -= dmg - self.armor
-				print('get damage: ' + str(dmg - self.armor))
-				sleep(0.3)
-			else:
-				print('miss')
-				sleep(0.3)
+		if randint(1, 100) in range(self.chance['dodge Atk']) and self.armor < dmg:
+			self.hlt -= dmg - self.armor
+			print(f'get damage: {dmg - self.armor}')
+			sleep(0.3)
 		else:
 			print('miss')
 			sleep(0.3)
 
-	def give_hit(self, obj):
-		if randint(1, 100) in range(self.chance['hit']):
+	def give_hit(self, obj, dir_):
+		if isinstance(self.selected, metaStickCreate):
+			stick = self.selected
+			if dir_ == 'up':
+				stick.hit(self.row-1, self.elm, self.map)
+			elif dir_ == 'right':
+				stick.hit(self.row, self.elm+1, self.map)
+			elif dir_ == 'down':
+				stick.hit(self.row+1, self.elm, self.map)
+			elif dir_ == 'left':
+				stick.hit(self.row, self.elm-1, self.map)
+
+		elif randint(1, 100) in range(self.chance['hit']):
 			obj.get_hit(self.dmg, self)
+
 		else:
 			print('miss')
 			sleep(0.3)
