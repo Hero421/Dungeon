@@ -29,7 +29,7 @@ class metaSword(metaItem):
 
 		from module_links import ses_avatars
 
-		if self.use == False:
+		if not self.use:
 			self.use = True
 			if not(obj.selected is None):
 				obj.selected.stop_using(obj)
@@ -47,9 +47,8 @@ class metaSword(metaItem):
 		he uses it.
 		'''
 
-		from module_links import ses_avatars
-
 		obj.mid_dmg -= self.dmg
 		obj.crit -= self.crit
-		obj.add_to_inventory([self])
+		obj.add_to_inventory(self)
 		obj.selected = None
+		self.use = False
