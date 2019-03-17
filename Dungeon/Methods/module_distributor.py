@@ -23,5 +23,5 @@ def distributor(obj, dir_, type_):
 	elif dir_ == 'left':  cell = obj.map[obj.row][obj.elm - 1]
 
 	if   type_== 'mov' and isinstance(cell, (Surface, Spike, Door, Stone, Container, Chasm)):   cell.walk(dir_, obj)
-	elif type_== 'hit' and isinstance(cell, (Simulator, metaEnemy)): obj.give_hit(cell)
+	elif type_== 'hit': obj.give_hit(cell, dir_)
 	elif type_== 'act' and type(cell) in (Chest, Table, Source, Portal, DieChest, Door, Spike): cell.act(obj, dir_) if type(cell) is Spike else cell.act(obj)
