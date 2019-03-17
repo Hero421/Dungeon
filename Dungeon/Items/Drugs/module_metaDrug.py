@@ -18,3 +18,14 @@ class metaDrug(metaItem):
 	def using(self, obj):
 		effect_overlay(obj, self.degree, self.num, self.ability)
 		obj.inventory[1].remove(self)
+
+	def print_details(self):
+
+		print(self.num)
+
+		print(f'name:   {self.name}')
+		print(f'type:   {self.type}')
+		print(f'health: {self.num}/turn ')
+		print(f'degree: {self.degree} turns')
+		print(f'rarity: {self.rarity}')
+		print(f'desc:   {self.desc}')
