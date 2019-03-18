@@ -11,3 +11,13 @@ class metaResource(metaItem):
 		self.rarity = rarity
 
 		super().__init__(link)
+
+	def print_details(self):
+
+		print(f'name:   {self.name}')
+		print(f'type:   {self.type_}')
+		print(f'desc:   {self.desc}')
+		print(f'rarity: {self.rarity}')
+
+	def using(self, obj):
+		pass
