@@ -7,6 +7,7 @@ from Blocks.Trigers.module_Source import Source
 from Blocks.Trigers.module_Chest  import Chest
 from Blocks.Trigers.module_Table  import Table
 from Blocks.Trigers.module_Spike  import Spike
+from Blocks.Trigers.module_Oven   import Oven
 from Blocks.Trigers.module_Door   import Door
 
 from Blocks.module_Stone import Stone
@@ -200,7 +201,7 @@ class Room(object):
 
 		if self.generation == 'the initial room':
 			map_[strt_row][strt_elm] = Chest()
-			map_[strt_row + 2][strt_elm] = Portal()
+			map_[strt_row + 2][strt_elm] = Oven()
 			map_[strt_row][fin_elm - 3] = Source()
 			map_[fin_row - 1][strt_elm + int(self.width/2) - 2] = Table('Test table')
 			map_[fin_row][strt_elm] = Spike()

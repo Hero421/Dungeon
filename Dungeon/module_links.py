@@ -5,15 +5,16 @@ intoxicated = {}
 raritys = ['common', 'rare', 'Epic', 'GODLY']
 
 types_of_items = [
-	'Helmet',
-	'Torso' ,
+	'Helmet' ,
+	'Torso'  ,
 	'Leggings',
-	'Shoes' ,
-	'Sword' ,
-	'Drug'  ,
-	'Wings' ,
-	'Stick' ,
-	'Ring'
+	'Shoes'  ,
+	'Sword'  ,
+	'Drug'   ,
+	'Wings'  ,
+	'Stick'  ,
+	'Ring'   ,
+	'Resource'
 ]
 
 items = {
