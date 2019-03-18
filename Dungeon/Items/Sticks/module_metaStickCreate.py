@@ -3,7 +3,7 @@ from Items.module_metaItem import metaItem
 class metaStickCreate(metaItem):
 	"""docstring for StickCreateStone"""
 
-	type = 'Stick'
+	type_= 'Stick'
 	use  = False
 
 	def __init__(self, name, desc, rarity, object_, nam):
@@ -34,6 +34,6 @@ class metaStickCreate(metaItem):
 	def print_details(self):
 
 		print(f'name:   {self.name}')
-		print(f'type:   {self.type}')
+		print(f'type:   {self.type_}')
 		print(f'rarity: {self.rarity}')
 		print(f'desc:   {self.desc}')
