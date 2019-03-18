@@ -10,5 +10,8 @@ import Items.Swords.module_SwordRecovery1
 import Items.Sticks.module_StickCreateGoldOre
 import Items.Sticks.module_StickCreateStone
 import Items.Wings.module_Wings
+import Items.Resources.module_Gold_Ore
+import Items.Resources.module_Gold_Bar
+import Items.Resources.module_Broken_Board
 
-Dungeon_1 = Area('Dungeon 1', 100, 100, stones=30, spikes=1.8, chasms=1.4, enemys=1.3)
+Dungeon_1 = Area('Dungeon 1', 100, 100, stones=30, spikes=0, chasms=0, enemys=0)
