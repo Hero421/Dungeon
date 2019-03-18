@@ -19,7 +19,7 @@ class metaStickCreate(metaItem):
 			self.use = True
 			if not(obj.selected is None):
 				obj.selected.stop_using(obj)
-			obj.inventory[1].remove(self)
+			obj.backpack.remove(self)
 			obj.selected = self
 
 	def hit(self, row, elm, map_):
