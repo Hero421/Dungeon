@@ -29,31 +29,31 @@ class Chest(object):
 
 		if self.rarity == 'common':
 			for count in range(3):
-				self.items.append(ch(items['common'][ch(types_of_items)]))
+				self.items.append(ch(items['common'][ch(types_of_items)])())
 
 		elif self.rarity == 'rare':
 			for count in range(6):
-				self.items.append(ch(items['common'][ch(types_of_items)]))
+				self.items.append(ch(items['common'][ch(types_of_items)])())
 			for count in range(3):
-				self.items.append(ch(items['rare'][ch(types_of_items)]))
+				self.items.append(ch(items['rare'][ch(types_of_items)])())
 
 		elif self.rarity == 'Epic':
 			for count in range(9):
-				self.items.append(ch(items['common'][ch(types_of_items)]))
+				self.items.append(ch(items['common'][ch(types_of_items)])())
 			for count in range(6):
-				self.items.append(ch(items['rare'][ch(types_of_items)]))
+				self.items.append(ch(items['rare'][ch(types_of_items)])())
 			for count in range(3):
-				self.items.append(ch(items['Epic'][ch(types_of_items)]))
+				self.items.append(ch(items['Epic'][ch(types_of_items)])())
 
 		elif self.rarity == 'GODLY':
 			for count in range(15):
-				self.items.append(ch(items['common'][ch(types_of_items)]))
+				self.items.append(ch(items['common'][ch(types_of_items)])())
 			for count in range(10):
-				self.items.append(ch(items['rare'][ch(types_of_items)]))
+				self.items.append(ch(items['rare'][ch(types_of_items)])())
 			for count in range(5):
-				self.items.append(ch(items['Epic'][ch(types_of_items)]))
+				self.items.append(ch(items['Epic'][ch(types_of_items)])())
 			for count in range(2):
-				self.items.append(ch(items['GODLY'][ch(types_of_items)]))
+				self.items.append(ch(items['GODLY'][ch(types_of_items)])())
 
 	def print_items(self, index):
 
@@ -123,10 +123,11 @@ class Chest(object):
 
 				if item:
 					print()
-					item.print_details(item)
+					item.print_details()
 
 				else:
 					print('None')
+					continue
 
 				print('\nGet?')
 
@@ -135,5 +136,5 @@ class Chest(object):
 				second_choice = smart_input(choices)
 				
 				if second_choice == 'yes':
-					obj.add_to_inventory([item()])
+					obj.add_to_inventory(item)
 					self.items[index] = None
