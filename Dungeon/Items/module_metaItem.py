@@ -4,9 +4,9 @@ class metaItem(object):
 	Adds items to the items dictionary 
 	using rarity and item type.
 	'''
-	def __init__(self, name):
+	def __init__(self, link):
 
 		from module_links import items
 		
-		if not(name in items[self.rarity][self.type]):
-			items[self.rarity][self.type].append(name)
+		if not link in items[self.rarity][self.type_]:
+			items[self.rarity][self.type_].append(link)
