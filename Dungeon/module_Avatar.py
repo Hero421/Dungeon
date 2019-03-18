@@ -200,37 +200,40 @@ class Avatar(object):
 		if self in intoxicated:
 			del intoxicated[self]
 
-	def print_inventory(self, names, slot):
+	def print_inventory(self, slot, names=None):
 
-		if self.selected:
-			names[-6] = 'selected'
+		if names:
+			if self.selected:
+				names[-6] = 'selected'
 
-			if slot == 'selected':
-				mark = ' <'
-			else:
-				mark = ''
-			name = self.selected.name
-			print(f'{name}{mark}')
+				if slot == 'selected':
+					mark = ' <'
+				else:
+					mark = ''
+				name = self.selected.name
+				print(f'{name}{mark}')
 
-		prints = []
+			prints = []
 
-		for key in self.inventory[0].keys():
-			item = self.inventory[0][key]
-			if item:
-				name = item.name
-			else:
-				name = '_____'
-			if key in ('head', 'feet'):
-				dub_point = ':  '
-			else:
-				dub_point = ': '
-			if slot == key:
-				mark = ' <'
-			else:
-				mark = ''
-			print(f'{key}{dub_point}{name}{mark}')
+			for key in self.inventory[0].keys():
+				item = self.inventory[0][key]
+				if item:
+					name = item.name
+				else:
+					name = '_____'
+				if key in ('head', 'feet'):
+					dub_point = ':  '
+				else:
+					dub_point = ': '
+				if slot == key:
+					mark = ' <'
+				else:
+					mark = ''
+				print(f'{key}{dub_point}{name}{mark}')
 
-		print()
+			print()
+
+				
 		count = 1
 		for item in self.inventory[1]:
 			if len(str(count)) == 1:
@@ -273,7 +276,7 @@ class Avatar(object):
 
 			names = {-types.index(type_): type_ for type_ in types}
 
-			self.print_inventory(names, slot)
+			self.print_inventory(slot, names)
 
 			choices = [(Key.up, 'up'), (Key.down, 'down'), (Key.enter, 'select'), (Key.right, 'transfer'), (Key.esc, 'esc'), ('i', 'esc')]
 
@@ -318,7 +321,9 @@ class Avatar(object):
 					else:
 						item = self.inventory[1][idx-1]
 					print()
-					if item:
+					if type(item) is list:
+						item[0].print_details()
+					elif item:
 						item.print_details()
 					else:
 						print('None')
@@ -336,8 +341,11 @@ class Avatar(object):
 					second_choice = smart_input(choices)
 
 					if second_choice == 'use' and not transfer:
-						if self.inventory[1][idx-1]:
-							self.inventory[1][idx-1].using(self)
+						item = self.inventory[1][idx-1]
+						if type(item) is list:
+							item[0].using(self)
+						elif item:
+							item.using(self)
 						elif self.selected:
 							self.selected.stop_using(self)
 						
@@ -357,15 +365,15 @@ class Avatar(object):
 				if self.empt_slot:
 					self.inventory[1][self.empt_slot] = item
 					self.emp_slot()
-			elif item.type == 'Helmet' and self.inventory[0]['head'] == None:
+			elif item.type_ == 'Helmet' and self.inventory[0]['head'] == None:
 				item.using(self)
-			elif item.type == 'Cuirass' and self.inventory[0]['body'] == None:
+			elif item.type_ == 'Cuirass' and self.inventory[0]['body'] == None:
 				item.using(self)
-			elif item.type == 'Wings' and self.inventory[0]['wings'] == None:
+			elif item.type_ == 'Wings' and self.inventory[0]['wings'] == None:
 				item.using(self)
-			elif item.type == 'Leggings' and self.inventory[0]['feet'] == None:
+			elif item.type_ == 'Leggings' and self.inventory[0]['feet'] == None:
 				item.using(self)
-			elif item.type == 'Shoes' and self.inventory[0]['shoes'] == None:
+			elif item.type_ == 'Shoes' and self.inventory[0]['shoes'] == None:
 				item.using(self)
 			elif self.empt_slot != None:
 				self.inventory[1][self.empt_slot] = item
