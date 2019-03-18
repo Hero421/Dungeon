@@ -9,17 +9,17 @@ class metaSword(metaItem):
 	using the ancestor Item.
 	'''
 	
-	type = 'Sword'
+	type_= 'Sword'
 	use  = False
 	
-	def __init__(self, name, desc, dmg, rarity, crit, ability, nam):
+	def __init__(self, name, desc, dmg, rarity, crit, ability, link):
 		self.dmg = dmg
 		self.name = name
 		self.rarity = rarity
 		self.desc = desc
 		self.crit = crit
 		self.ability = ability
-		super().__init__(nam)
+		super().__init__(link)
 		
 	def using(self, obj):
 		'''
@@ -56,7 +56,7 @@ class metaSword(metaItem):
 	def print_details(self):
 
 		print(f'name:   {self.name}')
-		print(f'type:   {self.type}')
+		print(f'type:   {self.type_}')
 		print(f'damage: {self.dmg}')
 		print(f'rarity: {self.rarity}')
 		print(f'desc:   {self.desc}')
