@@ -44,7 +44,7 @@ class Avatar(object):
 	
 	power = 1
 
-	backpack = 20
+	backpack_slots = 20
 
 	Atk  = 1
 	MAtk = 1
@@ -103,19 +103,18 @@ class Avatar(object):
 
 		self.map[self.location['row']][self.location['elm']] = self
 
-		self.inventory = [
+		self.inventory = {
 
-			{
 				'head' : None, 
 				'torso': None, 
 				'wings': None, 
 				'feet' : None, 
 				'shoes': None, 
 				'rings': []
-			}, 
+			}
 
-			[None for count in range(1, self.backpack + 1)]
-		]
+		self.backpack = [None for _ in range(self.backpack_slots)]
+
 
 	def check(self):
 		'''
@@ -130,6 +129,12 @@ class Avatar(object):
 
 		if not chank.message:
 			chank.msg()
+
+		for index in range(len(self.backpack)):
+			slot = self.backpack[index]
+			if type(slot) is list:
+				if len(slot) == 0:
+					self.backpack[index] = None
 
 		self.level()
 		self.crity()
@@ -157,9 +162,9 @@ class Avatar(object):
 			self.dmg = randint(self.mid_dmg - 1, self.mid_dmg + 1)
 
 	def emp_slot(self):
-		for slot in self.inventory[1]:
+		for slot in self.backpack:
 			if slot is None:
-				self.empt_slot = self.inventory[1].index(slot)
+				self.empt_slot = self.backpack.index(slot)
 				break
 			else:
 				self.empt_slot = None
@@ -191,7 +196,7 @@ class Avatar(object):
 		self.location['row'] = fst_row
 		self.location['elm'] = fst_elm
 		self.map[fst_row + 1][fst_elm] = Floor()
-		for slot in self.inventory[1]:
+		for slot in self.backpack:
 			slot = None
 		self.hlt = self.full_hlt
 		self.armor = self.full_armor
@@ -215,8 +220,8 @@ class Avatar(object):
 
 			prints = []
 
-			for key in self.inventory[0].keys():
-				item = self.inventory[0][key]
+			for key in self.inventory.keys():
+				item = self.inventory[key]
 				if item:
 					name = item.name
 				else:
@@ -235,7 +240,7 @@ class Avatar(object):
 
 				
 		count = 1
-		for item in self.inventory[1]:
+		for item in self.backpack:
 			if len(str(count)) == 1:
 				point = '.   '
 			else:
@@ -294,13 +299,13 @@ class Avatar(object):
 					num = -5
 				if idx > num:
 					idx -= 1 
-					if 1 < idx+1 < self.backpack+1:
+					if 1 < idx+1 < len(self.backpack)+1:
 						slot -= 1
 					else:
 						slot = names[idx]
 
 			elif choice == 'down':
-				if idx < self.backpack:
+				if idx < len(self.backpack):
 					idx += 1
 					if 1 < idx+1:
 						try:
@@ -312,14 +317,14 @@ class Avatar(object):
 
 			elif choice == 'select':
 				if transfer:
-					trans_item = self.inventory[1][idx]	
+					trans_item = self.backpack[idx]	
 
 				elif idx > 0 or slot == 'selected':
 					if slot == 'selected':
 						item = self.selected
 						idx += 1
 					else:
-						item = self.inventory[1][idx-1]
+						item = self.backpack[idx-1]
 					print()
 					if type(item) is list:
 						item[0].print_details()
@@ -329,7 +334,7 @@ class Avatar(object):
 						print('None')
 
 				else:
-					item = self.inventory[0][slot]
+					item = self.inventory[slot]
 
 					if item:
 						item.print_details()
@@ -341,7 +346,7 @@ class Avatar(object):
 					second_choice = smart_input(choices)
 
 					if second_choice == 'use' and not transfer:
-						item = self.inventory[1][idx-1]
+						item = self.backpack[idx-1]
 						if type(item) is list:
 							item[0].using(self)
 						elif item:
@@ -353,7 +358,7 @@ class Avatar(object):
 
 				if not transfer:
 					transfer = True
-					memo = self.inventory[1][idx]
+					memo = self.backpack[idx]
 				elif transfer:
 					transfer = False
 					memo, trans_item = trans_item, memo
@@ -362,9 +367,17 @@ class Avatar(object):
 		for item in items:
 			self.check()
 			if type(item) is list:
-				if self.empt_slot:
-					self.inventory[1][self.empt_slot] = item
-					self.emp_slot()
+				cont = True
+				for index in range(len(self.backpack)):
+					slot = self.backpack[index]
+					if type(slot) is list:
+						if type(slot[0]) == type(item[0]):
+							self.backpack[index].extend(item)
+							cont = False
+				if cont:
+					if self.empt_slot:
+						self.backpack[self.empt_slot] = item
+						self.emp_slot()
 			elif item.type_ == 'Helmet' and self.inventory[0]['head'] == None:
 				item.using(self)
 			elif item.type_ == 'Cuirass' and self.inventory[0]['body'] == None:
@@ -376,7 +389,7 @@ class Avatar(object):
 			elif item.type_ == 'Shoes' and self.inventory[0]['shoes'] == None:
 				item.using(self)
 			elif self.empt_slot != None:
-				self.inventory[1][self.empt_slot] = item
+				self.backpack[self.empt_slot] = item
 				self.emp_slot()
 			else:
 				print('inventory is full')
@@ -408,18 +421,30 @@ class Avatar(object):
 					elif self.count[para][0] == self.count[para][1]:
 						self.count[para][2] = 'off'
 
-	def skill_tree(self, nums=False):
+	def skill_tree(self, index='off'):
 
-		print()
-		print('Atk: ' if not nums else '1 Atk: ', self.Atk)
-		print('MAtk:' if not nums else '2 MAtk:', self.MAtk)
-		print('Agi: ' if not nums else '3 Agi: ', self.Agi)
-		print('Vit: ' if not nums else '4 Vit: ', self.Vit)
-		print('Int: ' if not nums else '5 Int: ', self.Int)
-		print('Dcs: ' if not nums else '6 Dcs: ', self.Dcs)
-		print('Luc: ' if not nums else '7 Luc: ', self.Luc)
-		
-		if not nums:
+		skl_nams = ['Atk', 'MAtk', 'Agi', 'Vit', 'Int', 'Dcs', 'Luc']
+		skls = [self.Atk, self.MAtk, self.Agi, self.Vit, self.Int, self.Dcs, self.Luc]
+
+		count = 0
+
+		for skl in skl_nams:
+
+			if skl == 'MAtk':
+				dub_dot = ': '
+			else:
+				dub_dot = ':  '
+
+			if count == index:
+				mark = ' <'
+			else:
+				mark = ''
+
+			print(f'{skl}{dub_dot}{skls[skl_nams.index(skl)]}{mark}')
+
+			count += 1
+
+		if index == 'off':
 			input()
 
 	def skill_up(self):
@@ -427,52 +452,63 @@ class Avatar(object):
 		clear()
 
 		skl_nams = ['Atk', 'MAtk', 'Agi', 'Vit', 'Int', 'Dcs', 'Luc']
+		skls = [self.Atk, self.MAtk, self.Agi, self.Vit, self.Int, self.Dcs, self.Luc]
+
+		index = 0
 		
 		while self.Skill_points > 0:
 
 			print(f'Skill points: {self.Skill_points}')
 
-			self.skill_tree(nums=True)
+			self.skill_tree(index)
 
-			choices = [(str(skl_nams.index(skl)+1), skl) for skl in skl_nams]
-
-			choices.append((Key.esc, 'esc'))
+			choices = [(Key.up, 'up'), (Key.down, 'down'), (Key.enter, 'select'), (Key.esc, 'esc')]
 
 			choice = smart_input(choices)
 
-			if choice == 'Atk':
-				self.Atk += 1
-				if self.Atk % 10 == 0:
-					self.mid_dmg += 20
-			elif choice == 'MAtk':
-				self.MAtk += 1
-				self.mid_m_dmg += 100
-			elif choice == 'Agi':
-				self.Agi += 1
-			elif choice == 'Vit':
-				self.Vit += 1
-				if self.Vit % 10 == 0:
-					self.hlt += 10
-			elif choice == 'Int':
-				self.Int += 1
-				if self.Int % 10 == 0:
-					self.mid_m_dmg += 5
-			elif choice == 'Dcs':
-				self.Dcs += 1
-			elif choice == 'Luc':
-				self.Luc += 1
-			
-			elif choice == 'esc': break
-			
-			if choice != 'esc' and choice != '':
+			if choice == 'esc': break
+
+			elif choice == 'up':
+				if index > 0:
+					index -= 1
+
+			elif choice == 'down':
+				if index < len(skl_nams)-1:
+					index += 1
+
+			elif choice == 'select':
+
+				choice = skl_nams[index]
+
+				if choice == 'Atk':
+					self.Atk += 1
+					if self.Atk % 10 == 0:
+						self.mid_dmg += 20
+				elif choice == 'MAtk':
+					self.MAtk += 1
+					self.mid_m_dmg += 100
+				elif choice == 'Agi':
+					self.Agi += 1
+				elif choice == 'Vit':
+					self.Vit += 1
+					if self.Vit % 10 == 0:
+						self.hlt += 10
+				elif choice == 'Int':
+					self.Int += 1
+					if self.Int % 10 == 0:
+						self.mid_m_dmg += 5
+				elif choice == 'Dcs':
+					self.Dcs += 1
+				elif choice == 'Luc':
+					self.Luc += 1
+				
 				self.Skill_points -= 1
 			
 			clear()
 		
 		clear()
 
-		self.skill_tree(nums=True)
-		input()
+		self.skill_tree()
 
 		clear()
 
