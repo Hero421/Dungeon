@@ -4,19 +4,21 @@ from termcolor import colored
 from time import sleep
 
 from Blocks.module_metaContainer import Container
+from Items.Resources.module_Gold_Ore import GoldOre
 
 from module_links import items, types_of_items
 
-class GoldOre(Container):
+class GoldOreBlock(Container):
 	
 	des = colored('*', 'yellow')
 	
 	def give(self, obj):
-		random_num = randint(5, 15)
-		obj.gold += random_num
-		obj.Exp += 5
-		print('You got: ' + str(random_num) + ' gold')
-		sleep(0.5)
+		num = randint(5, 15)
+		exp = randint(3, 8)
+		obj.add_to_inventory([GoldOre() for _ in range(num)])
+		obj.Exp += exp
+		print(f'You got: {num} gold ore and {exp} exp')
+		sleep(0.8)
 
 class Pot(Container):
 	

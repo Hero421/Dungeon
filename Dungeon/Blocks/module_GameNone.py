@@ -2,7 +2,7 @@ from random import randint
 
 from Blocks.module_Stone import Stone
 from Blocks.module_Surfaces import Wall, Ground, Chasm
-from Blocks.module_Containers import GoldOre
+from Blocks.module_Containers import GoldOreBlock
 
 from Blocks.Trigers.module_Spike import Spike
 from Blocks.Trigers.module_Simulator import Simulator
@@ -61,7 +61,7 @@ class GameNone(object):
 		elif random_num in range(int(area.stones*100)):
 			random_num = randint(1, 100)
 			if random_num in range(10):
-				map_[row][elm] = GoldOre()
+				map_[row][elm] = GoldOreBlock()
 			else:
 				map_[row][elm] = Stone()
 
