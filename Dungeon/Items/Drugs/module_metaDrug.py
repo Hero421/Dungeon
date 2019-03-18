@@ -3,7 +3,7 @@ from Methods.module_effect_overlay import effect_overlay
 
 class metaDrug(metaItem):
 	
-	type = 'Drug'
+	type_= 'Drug'
 	
 	def __init__(self, name, num, degree, ability, rarity, desc, nam):
 		self.name = name
@@ -24,7 +24,7 @@ class metaDrug(metaItem):
 		print(self.num)
 
 		print(f'name:   {self.name}')
-		print(f'type:   {self.type}')
+		print(f'type:   {self.type_}')
 		print(f'health: {self.num}/turn ')
 		print(f'degree: {self.degree} turns')
 		print(f'rarity: {self.rarity}')
