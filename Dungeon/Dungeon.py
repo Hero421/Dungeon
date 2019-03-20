@@ -1,17 +1,18 @@
-from module_Area import Area
+from Area import Area
 
-import Items.Drugs.module_SmallHealthDrug
-import Items.Drugs.module_MediumHealthDrug
-import Items.Swords.module_RustyBlade
-import Items.Swords.module_BrokenSword
-import Items.Swords.module_Sword
-import Items.Swords.module_FireySword
-import Items.Swords.module_SwordRecovery1
-import Items.Sticks.module_StickCreateGoldOre
-import Items.Sticks.module_StickCreateStone
-import Items.Wings.module_Wings
-import Items.Resources.module_Gold_Ore
-import Items.Resources.module_Gold_Bar
-import Items.Resources.module_Broken_Board
+import Items.Drugs.SmallHealthDrug
+import Items.Drugs.MediumHealthDrug
+import Items.Swords.RustyBlade
+import Items.Swords.BrokenSword
+import Items.Swords.Sword
+import Items.Swords.FireySword
+import Items.Swords.SwordRecovery1
+import Items.Sticks.StickCreateGoldOre
+import Items.Sticks.StickCreateStone
+import Items.Wings.Wings
+import Items.Resources.Gold_Ore
+import Items.Resources.Gold_Bar
+import Items.Resources.Broken_Board
+import Items.Resources.Board
 
 Dungeon_1 = Area('Dungeon 1', 100, 100, stones=30, spikes=0, chasms=0, enemys=0)

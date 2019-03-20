@@ -3,12 +3,12 @@ from json import dump
 from time import sleep
 from pynput import keyboard
 from pynput.keyboard import Key
-from Methods.module_smart_input import smart_input
-from Methods.module_create_player import create_player
-from Methods.module_global_turn import global_turn
-from Methods.module_get_script_dir import get_script_dir
-import module_links
-from module_links import clear, esc, game
+from Methods.smart_input import smart_input
+from Methods.create_player import create_player
+from Methods.global_turn import global_turn
+from Methods.get_script_dir import get_script_dir
+import links
+from links import clear, esc, game
 import Dungeon
 
 id_ = uuid4()
@@ -19,7 +19,20 @@ print(player.area.name)
 
 var = False
 
-while not esc:
+while True:
+
+	if esc:
+
+		clear()
+
+		print('exit?')
+
+		choices = [(Key.enter, 'yes'), (Key.esc, 'no')]
+		choice  = smart_input(choices)
+
+		if choice == 'yes': break
+
+		links.esc = False
 	
 	if var:
 		print(player.area.name)
@@ -31,7 +44,6 @@ while not esc:
 	player.stat()
 	player.area.print_map(str(id_), radius=8)
 
-	# try:
 	dump(
 		smart_input([
 
@@ -51,11 +63,8 @@ while not esc:
 	)
 
 	global_turn(id_)
-
-	# except TypeError:
-	# 	print('Oups!')
 	
-	from module_links import esc
+	from links import esc
 
 
 clear()
