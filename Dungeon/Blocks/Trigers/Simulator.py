@@ -1,10 +1,15 @@
 from termcolor import colored
 
-class Simulator(object):
+from Blocks.Trigers.metaTriger import Triger
+
+class Simulator(Triger):
 	
 	des = colored('{', 'yellow')
 	
 	def __init__(self):
+
+		self.name = 'Simulator'
+		self.desc = 'Something'
 
 		super().__init__()
 	

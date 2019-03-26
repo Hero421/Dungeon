@@ -1,14 +1,19 @@
 from pynput.keyboard import Key
 
-from Items.Resources.metaResource import Resource
 from Methods.smart_input import smart_input
 from links import clear
 
-class Oven:
+from Blocks.Trigers.metaTriger import Triger
+from Items.Resources.metaResource import Resource
+
+class Oven(Triger):
 
 	des = '&'
 
 	def __init__(self):
+		self.name = 'Oven'
+		self.type_= 'Triger'
+		self.desc = 'Something'
 		self.slots = [[] for _ in range(5)]
 
 	def act(self, obj):
@@ -25,7 +30,7 @@ class Oven:
 
 			print()
 
-			choices = [(Key.up, 'up'), (Key.down, 'down'), (Key.left, 'left'), (Key.right, 'right'), (Key.enter, 'select'), (Key.esc, 'esc')]
+			choices = {Key.up: 'up', Key.down: 'down', Key.left: 'left', Key.right: 'right', Key.enter: 'select', Key.esc: 'esc'}
 			choice = smart_input(choices)
 
 			if choice == 'esc': break

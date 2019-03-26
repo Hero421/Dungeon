@@ -1,7 +1,12 @@
-class Door(object):
+from Blocks.Trigers.metaTriger import Triger
+
+class Door(Triger):
 	"""open-close-open-close"""
 
 	def __init__(self, stat=False):
+		self.name = 'Door'
+		self.type_= 'Triger'
+		self.desc = 'Something'
 		self.stat = stat
 		if self.stat == False:
 			self.des = '<'

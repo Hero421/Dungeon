@@ -4,9 +4,16 @@ from pynput.keyboard import Key
 from links import clear
 from Methods.smart_input import smart_input
 
-class Workbench:
+from Blocks.Trigers.metaTriger import Triger
+
+class Workbench(Triger):
 
 	des = 'W'
+
+	def __init__(self):
+		self.name = 'Workbench'
+		self.type_= 'Triger'
+		self.desc = 'Something'
 
 	def act(self, obj):
 
@@ -19,11 +26,10 @@ class Workbench:
 			obj.check()
 
 			clear()
-			print(index)
 
 			obj.print_inventory(index, prints=self.print_recepts(index-len(obj.backpack)-1, obj))
 
-			choices = [(Key.up, 'up'), (Key.down, 'down'), (Key.left, 'left'), (Key.right, 'right'), (Key.enter, 'select'), (Key.esc, 'esc')]
+			choices = {Key.up: 'up', Key.down: 'down', Key.left: 'left', Key.right: 'right', Key.enter: 'select', Key.esc: 'esc'}
 			choice = smart_input(choices)
 
 			if choice == 'esc': break
@@ -55,11 +61,12 @@ class Workbench:
 						var = True
 						for slot in obj.backpack:
 							if type(slot) is list and var:
-								if type(slot[0]) == resource:
-									for _ in range(selected_recept[resource]):
-										del slot[0]
-									var = False
-									break
+								if len(slot) > 0:
+									if type(slot[0]) == resource:
+										for _ in range(selected_recept[resource]):
+											del slot[0]
+										var = False
+										break
 
 					obj.add_to_inventory(selected_recept['result'])
 
@@ -69,19 +76,17 @@ class Workbench:
 
 	def print_recepts(self, index, obj):
 
-		recepts_print = []
-
 		self.resources_in_backpack = {}
 		for slot in obj.backpack:
-			if type(slot) is list:
-				idx  = obj.backpack.index(slot)
-				slot = slot[0]
-			try:
-				if slot.type_== 'Resource':
-					if not type(slot) in self.resources_in_backpack:
-						self.resources_in_backpack[type(slot)] = len(obj.backpack[idx])
-			except AttributeError:
-				pass
+			if slot:
+				if type(slot) is list:
+					if slot[0].type_== 'Resource':
+						if not type(slot[0]) in self.resources_in_backpack.keys():
+							self.resources_in_backpack[type(slot[0])] = len(slot)
+				else:
+					if slot.type_== 'Resource':
+						if not type(slot) in self.resources_in_backpack.keys():
+							self.resources_in_backpack[type(slot)] = 1
 
 		resources_in_obj_recepts = {}
 		for recept in obj.recepts:
@@ -92,37 +97,38 @@ class Workbench:
 							resources_in_obj_recepts[resource] = obj.recepts.index(recept)
 
 		count = 0
-
 		recepts = []
+		strings = []
 
 		for res_b in self.resources_in_backpack.keys():
 			if res_b in resources_in_obj_recepts.keys():
-				string = ''
 				recept = obj.recepts[resources_in_obj_recepts[res_b]]
-				if not recept in recepts:
-					recepts.append(recept)
-					if not recept in self.recepts:
-						self.recepts.append(recept)
-					var = False
-					for key in recept:
-						if key == 'result':
-							result = recept['result']
-							string += f' = {result.name}'
-							break
-						elif not key == 'place':
-							if var:
-								plus = ' + '
-							else:
-								var = True
-								plus= ''
-							num = recept[key]
-							string += f'{plus}{key.name} x{num}'
-					if count == index:
-						string += ' <'
-					count += 1
-					if not string in recepts_print:
-						recepts_print.append(string)
+				if not recept in self.recepts:
+					self.recepts.append(recept)
 
-		recepts_print = list(set(recepts_print))
-		return recepts_print
+		for recept in self.recepts:
+			string = ''	
+			var = False
+			for key in recept:
+				if key == 'result':
+					result = recept['result']
+					string += f' = {result.name}'
+					break
+				elif not key == 'place':
+					if var:
+						plus = ' + '
+					else:
+						var = True
+						plus= ''
+					num = recept[key]
+					string += f'{plus}{key.name} x{num}'
+			if count == index:
+				string += ' <'
+			count += 1
+			if not string in strings:
+				strings.insert(self.recepts.index(recept), string)
+
+		print(strings)
+
+		return strings
 

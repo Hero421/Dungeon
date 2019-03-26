@@ -4,7 +4,9 @@ from pynput.keyboard import Key
 
 from Methods.smart_input import smart_input
 
-class DieChest(object):
+from Blocks.Trigers.metaTriger import Triger
+
+class DieChest(Triger):
 	'''
 	Chest with all the things of the Avatar, which is created at death
 	'''
@@ -12,6 +14,9 @@ class DieChest(object):
 	des = colored('%', 'blue')
 
 	def __init__(self, obj):
+		self.name = 'Die chest'
+		self.type_= 'Triger'
+		self.desc = 'Something'
 		self.obj = obj
 		self.inventory = self.obj.inventory[1].copy()
 		self.inv = {num: (self.inventory[key].name if not(key is None) else None) for num in range(1, len(self.inventory) + 1) for key in list(self.inventory)}
@@ -63,7 +68,7 @@ class DieChest(object):
 
 			print('\nGet?')
 
-			choices = [(Key.enter, 'yes'), (Key.esc, 'no')]
+			choices = {Key.enter: 'yes', Key.esc: 'no'}
 
 			second_choice = smart_input(choices)
 			

@@ -6,7 +6,13 @@ from pynput.keyboard import Key
 from Methods.smart_input import smart_input
 from links import clear, items
 
-class Chest(object):
+from Blocks.Trigers.metaTriger import Triger
+from Blocks.Trigers.Workbench import Workbench
+
+from Items.Resources.Board import Board
+from Items.Resources.Iron_bar import IronBar
+
+class Chest(Triger):
 	'''
 	The chest for the Avatar
 	'''
@@ -14,6 +20,11 @@ class Chest(object):
 	des = colored('C', 'yellow')
 
 	def __init__(self, rarity=None):
+
+		self.recept = {Board: 5, IronBar: 1, 'place': Workbench, 'resut': Chest}
+		self.name = 'Chest'
+		self.type_= 'Triger'
+		self.desc = 'Something'
 		self.open  = False
 		self.items = []
 		self.rarity= rarity
@@ -28,7 +39,7 @@ class Chest(object):
 		types_of_items = ['Sword', 'Drug', 'Resource']
 
 		if self.rarity == 'common':
-			for count in range(3):
+			for count in range(randint(3, 6)):
 				type_= ch(types_of_items)
 				if type_ == 'Resource':
 					num = randint(5, 20)
@@ -124,7 +135,7 @@ class Chest(object):
 
 			obj.print_inventory(index, prints=self.print_items(index, obj))
 
-			choices = [(Key.up, 'up'), (Key.down, 'down'), (Key.left, 'left'), (Key.right, 'right'), (Key.enter, 'select'), (Key.esc, 'esc')]
+			choices = {Key.up: 'up', Key.down: 'down', Key.left: 'left', Key.right: 'right', Key.enter: 'select', Key.esc: 'esc'}
 
 			choice = smart_input(choices)
 
@@ -169,7 +180,7 @@ class Chest(object):
 
 					print('\nGet?')
 
-					choices = [(Key.enter, 'yes'), (Key.esc, 'no')]
+					choices = {Key.enter: 'yes', Key.esc: 'no'}
 
 					second_choice = smart_input(choices)
 					
