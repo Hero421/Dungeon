@@ -1,6 +1,5 @@
 from pynput import keyboard
-from pynput.keyboard import Key
-from os import system
+from pynput.keyboard import Key, KeyCode
 
 def on_release(key):
 	global input_, wait, return_
@@ -16,13 +15,16 @@ def smart_input(pairs):
 	return_ = []
 	input_ = None
 
-	for pair in pairs:
-		if type(pair[0]) is str:
-			if len(pair[0]) == 1:
-				wait.append(keyboard.KeyCode(char=pair[0]))
+	for keycode, result in pairs.items():
+		if type(keycode) is str:
+			try:
+				wait.append(getattr(Key, keycode))
+			except:
+				wait.append(KeyCode(char=keycode))
 		else:
-			wait.append(pair[0])
-		return_.append(pair[1])
+			wait.append(keycode)
+			
+		return_.append(result)
 
 	with keyboard.Listener(on_release=on_release) as listener:
 		listener.join()
