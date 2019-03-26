@@ -1,8 +1,7 @@
 from random import randint
 from time import sleep
 
-from Blocks.Surfaces import Ground, metaSurface as Surface
-
+from Blocks.Air import Air
 
 class Enemy(object):
 
@@ -44,7 +43,7 @@ class Enemy(object):
 class metaEnemy(object):
 
 	dir_ = 'up'
-	memo = Ground 
+	memo = Air
 	chance= {}
 	count = 0
 
