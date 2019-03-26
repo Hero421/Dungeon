@@ -1,3 +1,4 @@
+from time import sleep
 from pynput.keyboard import Key
 
 from Methods.smart_input import smart_input
@@ -8,6 +9,8 @@ import links
 def turn(avatar):
 
 	if avatar.choice:
+
+		avatar.check()
 
 		choice = avatar.choice
 
@@ -21,31 +24,19 @@ def turn(avatar):
 
 		elif links.res == False:
 
-			if choice in ['up', 'left', 'down', 'right']: distributor(avatar, choice, 'mov')
+			if choice in ['North', 'East', 'South', 'West', 'up', 'down']: distributor(avatar, choice, 'mov')
 
-			elif len(choice) == 1:
-				if choice == 'hit':
-					distributor(avatar, 'hit')
+			else:
+				distributor(avatar, smart_input({
 
-			elif choice == 'act' or choice == 'hit':
-				if choice == 'act':
-					distributor(avatar, smart_input([
+								Key.up: 'North',
+								Key.right: 'East',
+								Key.down: 'South',
+								Key.left: 'West',
+								Key.space:'up',
+								Key.ctrl_l:'down'
 
-									(Key.up, 'up'),
-									(Key.right, 'right'),
-									(Key.down, 'down'),
-									(Key.left, 'left')
-
-									]), 'act')
-				elif choice == 'hit':
-					distributor(avatar, smart_input([
-
-									(Key.up, 'up'),
-									(Key.right, 'right'),
-									(Key.down, 'down'),
-									(Key.left, 'left')
-
-									]), 'hit')
+								}), choice)
 
 			avatar.check()
 		else:
