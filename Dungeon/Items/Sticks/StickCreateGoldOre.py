@@ -1,5 +1,5 @@
 from Items.Sticks.metaStickCreate import StickCreate
-from Blocks.Containers import GoldOreBlock
+from Blocks.Containers.Gold_ore_block import GoldOreBlock
 
 class StickCreateGoldOre(StickCreate):
 	"""docstring for StickCreateGold"""
