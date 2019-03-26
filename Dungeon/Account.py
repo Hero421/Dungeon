@@ -43,6 +43,7 @@ while True:
 
 	clear()
 
+	player.stat()
 	print(player.lay, player.row, player.elm)
 	print()
 	player.area.print_map(str(id_), radius=8)
