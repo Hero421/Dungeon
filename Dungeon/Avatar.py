@@ -5,11 +5,11 @@ from pynput.keyboard import Key
 
 from Methods.smart_input import smart_input
 
-from Rooms import Room, Rooms, Corridor
+from Generations.Rooms import Room, Rooms, Corridor
 import links
 from links import intoxicated, clear
 
-from Blocks.Surfaces import Floor
+from Blocks.Air import Air
 from Blocks.Trigers.DieChest import DieChest
 
 from Items.Swords.metaSword import Sword
@@ -22,7 +22,6 @@ class Avatar(object):
 	used_items= []
 	count     = {}  # {'self.name': [start, stop, stat(on/off), self]}
 	chance    = {}	# {'ivent': chance}
-	location  = {'row': None, 'elm': None}
 	choices   = None
 	selected  = None
 
@@ -63,8 +62,6 @@ class Avatar(object):
 
 	crit = 0
 
-	memo = Floor
-
 	def __init__(self, id_, room=True):
 
 		self.hlt  = self.full_hlt
@@ -85,23 +82,24 @@ class Avatar(object):
 
 		self.count['Source'] = [40, 0, 'on', None]
 
-		self.location['row'] = 0
-		self.location['elm'] = 0
+		self.lay = 0
+		self.row = 0
+		self.elm = 0
 
-		if room:
-			Rooms(
+		# if room:
+		# 	Rooms(
 
-				['the initial room', 'room with the chest'], 
-				doors='off', 
-				width=5, height=5, lenght=1
+		# 		['the initial room', 'room with the chest'], 
+		# 		doors='off', 
+		# 		width=5, height=5, lenght=1
 
-				).spawn(
-					- 1, 
-					- 1, 
-					self.map
-					)
+		# 		).spawn(
+		# 			- 1, 
+		# 			- 1, 
+		# 			self.map
+		# 			)
 
-		self.map[self.location['row']][self.location['elm']] = self
+		self.map[self.lay][self.row][self.elm] = self
 
 		self.inventory = {
 
@@ -117,17 +115,17 @@ class Avatar(object):
 
 		self.recepts = []
 
+		self.fall_var = False
+		self.fall_var2= False
 
 	def check(self):
 		'''
-		Checks to see if all is in order with personagem
+		Checks to see if all is in order with avatar
 		'''
 
-		self.map[self.location['row']][self.location['elm']] = self
-		self.row = self.location['row']
-		self.elm = self.location['elm']
+		self.map[self.lay][self.row][self.elm] = self
 
-		chank = self.area.chank_map[int(self.location['row']/10)][int(self.location['elm']/10)]
+		chank = self.area.chank_map[int(self.lay/10)][int(self.row/10)][int(self.elm/10)]
 
 		if not chank.message:
 			chank.msg()
@@ -144,6 +142,19 @@ class Avatar(object):
 		self.select()
 		self.using_items()
 		self.game()
+
+	def chk_walk(self, obj):
+		return True
+
+	def fall(self):
+
+		if self.fall_var and type(self.map[self.lay-1][self.row][self.elm]) is Air:
+			self.map[self.lay][self.row][self.elm] = Air()
+			self.lay -= 1
+			self.fall_var = False
+
+		if type(self.map[self.lay-1][self.row][self.elm]) is Air:
+			self.fall_var = True
 
 	def level(self):
 		if self.Exp >= self.End_exp:
@@ -191,14 +202,12 @@ class Avatar(object):
 		'''
 		Restart the level and Avatar
 		'''
-		fst_row = int(float(self.area.rows)/2)
-		fst_elm = int(float(self.area.elms)/2)
 		if self.selected:
 			self.selected.use = False
-		self.map[self.location['row']][self.location['elm']] = DieChest()
-		self.location['row'] = fst_row
-		self.location['elm'] = fst_elm
-		self.map[fst_row + 1][fst_elm] = Floor()
+		self.map[self.lay][self.row][self.elm] = DieChest()
+		self.lay = 0
+		self.row = 0
+		self.elm = 0
 		for slot in self.backpack:
 			slot = None
 		self.hlt = self.full_hlt
@@ -215,9 +224,8 @@ class Avatar(object):
 		for item in self.backpack:
 
 			if type(item) is list:
-				item = item[0]
-
-			if item:
+				new_lenght = 2 + 2 + len(item[0].name) + 2 + len(str(len(item)))
+			elif item:
 				new_lenght = 2 + 2 + len(item.name)
 			else:
 				new_lenght = 2 + 2 + 5
@@ -275,7 +283,11 @@ class Avatar(object):
 			if not item:
 				item = '_____'
 			elif type(item) is list:
-				item = str(f'{item[0].name} x{len(item)}')
+				if len(item) > 1:
+					leng = f' x{len(item)}'
+				else:
+					leng = ''
+				item = f'{item[0].name}{leng}'
 			else:
 				item = item.name
 			if count == index:
@@ -308,6 +320,8 @@ class Avatar(object):
 
 			clear()
 
+			print(self.recepts)
+
 			self.check()
 			self.stat()
 
@@ -315,7 +329,7 @@ class Avatar(object):
 
 			self.print_inventory(slot, names)
 
-			choices = [(Key.up, 'up'), (Key.down, 'down'), (Key.enter, 'select'), (Key.right, 'transfer'), (Key.esc, 'esc'), ('i', 'esc')]
+			choices = {Key.up: 'up', Key.down: 'down', Key.enter: 'select', Key.right: 'transfer', Key.esc: 'esc', 'i': 'esc'}
 
 			choice = smart_input(choices)
 
@@ -375,7 +389,7 @@ class Avatar(object):
 						print('\nNone')
 
 				if not transfer:
-					choices = [(Key.enter, 'use'), (Key.esc, 'esc')]
+					choices = {Key.enter: 'use', Key.esc: 'esc'}
 					second_choice = smart_input(choices)
 
 					if second_choice == 'use' and not transfer:
@@ -397,47 +411,56 @@ class Avatar(object):
 					memo, trans_item = trans_item, memo
 
 	def add_to_inventory(self, *items):
+
 		for item in items:
 
+			self.check()
+
+			if type(item) is list:
+				tmp = item[0]
+			else:
+				tmp = item
+
 			try:
-				if type(item) is list:
-					if not item[0].recept in self.recepts:
-						self.recepts.append(item[0].recept)
-				if not item.recept in self.recepts:
-					self.recepts.append(item.recept)
+				if not tmp.recept in self.recepts:
+					self.recepts.append(tmp.recept)
 			except AttributeError:
 				pass
 
-			self.check()
-			if type(item) is list:
+			if tmp.type_ in ('Resource', 'Drug'):
+				if not type(item) is list:
+					item = [item]
 				cont = True
 				for index in range(len(self.backpack)):
 					slot = self.backpack[index]
 					if type(slot) is list:
-						if type(slot[0]) == type(item[0]):
-							self.backpack[index].extend(item)
+						if type(slot[0]) == type(tmp):
+							if type(item) is list:
+								self.backpack[index].extend(item)
+							else:
+								self.backpack[index].append(item)
 							cont = False
 				if cont:
-					if self.empt_slot:
-						self.backpack[self.empt_slot] = item
-						self.emp_slot()
+					self.backpack[self.empt_slot] = item
+					self.emp_slot()
+				continue
 
-			elif item.type_ == 'Helmet' and self.inventory['head'] == None:
+			elif tmp.type_ == 'Helmet' and self.inventory['head'] == None:
 				item.using(self)
-			elif item.type_ == 'Cuirass' and self.inventory['body'] == None:
+			elif tmp.type_ == 'Cuirass' and self.inventory['body'] == None:
 				item.using(self)
-			elif item.type_ == 'Wings' and self.inventory['wings'] == None:
+			elif tmp.type_ == 'Wings' and self.inventory['wings'] == None:
 				item.using(self)
-			elif item.type_ == 'Leggings' and self.inventory['feet'] == None:
+			elif tmp.type_ == 'Leggings' and self.inventory['feet'] == None:
 				item.using(self)
-			elif item.type_ == 'Shoes' and self.inventory['shoes'] == None:
+			elif tmp.type_ == 'Shoes' and self.inventory['shoes'] == None:
 				item.using(self)
 			elif self.empt_slot != None:
 				self.backpack[self.empt_slot] = item
 				self.emp_slot()
 			else:
 				print('inventory is full')
-				sleep(0.3)
+				sleep(0.4)
 				break
 
 			try:
@@ -513,7 +536,7 @@ class Avatar(object):
 
 			self.skill_tree(index)
 
-			choices = [(Key.up, 'up'), (Key.down, 'down'), (Key.enter, 'select'), (Key.esc, 'esc')]
+			choices = {Key.up: 'up', Key.down: 'down', Key.enter: 'select', Key.esc: 'esc'}
 
 			choice = smart_input(choices)
 
@@ -563,6 +586,33 @@ class Avatar(object):
 
 		clear()
 
+	def locate(self, dir_):
+
+		if self.selected:
+			
+			row = self.row
+			elm = self.elm
+
+			if dir_ == 'up':
+				row -= 1
+			elif dir_ == 'right':
+				elm += 1
+			elif dir_ == 'down':
+				row += 1
+			elif dir_ == 'left':
+				elm -= 1
+
+			if self.selected.type_ == 'Triger':
+				if type(self.selected) is list:
+					self.map[row][elm] = self.selected[0]
+					if len(self.selected) > 1:
+						del self.selected[0]
+					else:
+						self.selected = None
+				else:
+					self.map[row][elm] = self.selected
+					self.selected = None
+
 	def get_hit(self, dmg):
 		if randint(1, 100) in range(self.chance['dodge Atk']) and self.armor < dmg:
 			self.hlt -= dmg - self.armor
@@ -576,13 +626,13 @@ class Avatar(object):
 		if isinstance(self.selected, metaStickCreate):
 			stick = self.selected
 			if dir_ == 'up':
-				stick.hit(self.row-1, self.elm, self.map)
+				stick.hit(self.lay, self.row-1, self.elm, self.map)
 			elif dir_ == 'right':
-				stick.hit(self.row, self.elm+1, self.map)
+				stick.hit(self.lay, self.row, self.elm+1, self.map)
 			elif dir_ == 'down':
-				stick.hit(self.row+1, self.elm, self.map)
+				stick.hit(self.lay, self.row+1, self.elm, self.map)
 			elif dir_ == 'left':
-				stick.hit(self.row, self.elm-1, self.map)
+				stick.hit(self.lay, self.row, self.elm-1, self.map)
 
 		elif randint(1, 100) in range(self.chance['hit']):
 			obj.get_hit(self.dmg, self)

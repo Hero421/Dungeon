@@ -7,6 +7,7 @@ from Methods.smart_input import smart_input
 from Methods.create_player import create_player
 from Methods.global_turn import global_turn
 from Methods.get_script_dir import get_script_dir
+from Blocks.Air import Air
 import links
 from links import clear, esc, game
 import Dungeon
@@ -18,6 +19,7 @@ player = create_player(str(id_))
 print(player.area.name)
 
 var = False
+fall_var2 = False
 
 while True:
 
@@ -27,10 +29,10 @@ while True:
 
 		print('exit?')
 
-		choices = [(Key.enter, 'yes'), (Key.esc, 'no')]
+		choices = {Key.enter: True, Key.esc: False}
 		choice  = smart_input(choices)
 
-		if choice == 'yes': break
+		if choice: break
 
 		links.esc = False
 	
@@ -40,32 +42,39 @@ while True:
 		var = False
 
 	clear()
-	
-	player.stat()
+
+	print(player.lay, player.row, player.elm)
+	print()
 	player.area.print_map(str(id_), radius=8)
 
 	dump(
-		smart_input([
+		smart_input({
 
-			(Key.up, 'up'), 
-			(Key.right, 'right'), 
-			(Key.down, 'down'), 
-			(Key.left, 'left'), 
-			(Key.esc, 'esc'), 
-			('e', 'act'),
-			('h', 'hit'),
-			('i', 'inv'),
-			('k', 'skills')
+			Key.up:     'North',
+			Key.right:  'East',
+			Key.down:   'South',
+			Key.left:   'West',
+			Key.esc:    'esc',
+			Key.enter:  '',
+			Key.space:  'up',
+			Key.ctrl_l: 'down',
+			'e': 'act',
+			'h': 'hit',
+			'i': 'inv',
+			'k': 'skills',
+			'b': 'raze',
+			'l': 'locate'
 
-			]), 
+			}),
 
 		open(get_script_dir() + '\\uuid\\' + str(id_) + '.json', 'w')
 	)
 
 	global_turn(id_)
-	
-	from links import esc
 
+	player.fall()
+
+	from links import esc
 
 clear()
 if game:
