@@ -12,9 +12,9 @@ import links
 from links import clear, esc, game
 import Dungeon
 
-id_ = uuid4()
+ID = uuid4()
 
-player = create_player(str(id_))
+player = create_player(str(ID))
 
 print(player.area.name)
 
@@ -46,7 +46,7 @@ while True:
 	player.stat()
 	print(player.lay, player.row, player.elm)
 	print()
-	player.area.print_map(str(id_), radius=8)
+	player.area.print_map(str(ID), radius=8)
 
 	dump(
 		smart_input({
@@ -68,10 +68,10 @@ while True:
 
 			}),
 
-		open(get_script_dir() + '\\uuid\\' + str(id_) + '.json', 'w')
+		open(get_script_dir() + '\\uuid\\' + str(ID) + '.json', 'w')
 	)
 
-	global_turn(id_)
+	global_turn(ID)
 
 	player.fall()
 

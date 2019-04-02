@@ -4,15 +4,20 @@ class Air:
 
 	def des(self, lay, row, elm, map_):
 
-		cell = map_[lay - 1][row][elm]
-		if not type(cell) is Air:
-			return colored(cell.des, 'yellow')
-		else:
-			cell = map_[lay - 2][row][elm]
+		num = 4
+
+		for count in range(1, 4):
+			cell = map_[lay - count][row][elm]
 			if not type(cell) is Air:
-				return colored(cell.des, 'red')
-			else:
-				return ' '
+				num = count
+				break
+		
+		if   num == 1: color = 'yellow'
+		elif num == 2: color = 'red'
+		elif num == 3: color = 'green'
+		else: return ' '
+
+		return colored(cell.des, color)
 
 	def walk(self, dir_, obj):
 
@@ -27,28 +32,8 @@ class Air:
 		elif dir_ == 'up':    lay += 1
 		elif dir_ == 'down':  lay -= 1
 
-		if obj.map[lay-1][row][elm].chk_walk(obj):
+		obj.map[obj.lay][obj.row][obj.elm] = self
 
-			obj.map[obj.lay][obj.row][obj.elm] = self
-
-			if   dir_ == 'North': obj.row -= 1
-			elif dir_ == 'East':  obj.elm += 1
-			elif dir_ == 'South': obj.row += 1
-			elif dir_ == 'West':  obj.elm -= 1
-			elif dir_ == 'up':    obj.lay += 1
-
-		elif dir_ == 'down':
-
-			input(self)
-
-			obj.map[obj.lay][obj.row][obj.elm] = self
-			obj.lay -= 1
-
-	def chk_walk(self, obj):
-
-		block = obj.map[obj.lay-1][obj.row][obj.elm]
-
-		if not type(block) in (Air, type(obj)):
-			obj.fall_var = True
-			return True
-		return False
+		obj.lay = lay
+		obj.row = row
+		obj.elm = elm

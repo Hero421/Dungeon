@@ -27,8 +27,19 @@ class Chank(object):
 		for lay in range(self.length):
 			for row in range(self.length):
 				for elm in range(self.length):
-					if type(self.map_[self.strt_lay + lay][self.strt_row + row][self.strt_elm + elm]) is int:
-						generator_for_blocks(self.strt_lay + lay, self.strt_row + row, self.strt_elm + elm, self.map_)
+					t_lay = self.strt_lay + lay
+					t_row = self.strt_row + row
+					t_elm = self.strt_elm + elm
+					if type(self.map_[t_lay][t_row][t_elm]) is int:
+						v_map  = self.area.vector_map
+						v_list = v_map[self.row][self.elm]
+						tmp_cls= type('tmp_cls', (), {'x2': t_elm, 'y2': t_row})
+						mul0   = v_list[0]*tmp_cls
+						mul1   = v_list[1]*tmp_cls
+						mul2   = v_list[2]*tmp_cls
+						mul3   = v_list[3]*tmp_cls
+						height = int((mul0 + mul1 + mul2 + mul3)/4)
+						generator_for_blocks(t_lay, t_row, t_elm, self.map_, height)
 
 		del self.length
 		del self.strt_lay

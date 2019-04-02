@@ -1,7 +1,6 @@
 from Avatar import Avatar
 
-def create_player(id_, room=True):
+def create_player(ID, room=True):
 	
-	created_player = Avatar(id_, room=room)
-
+	created_player = Avatar(ID, room=room)
 	return created_player

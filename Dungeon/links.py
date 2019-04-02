@@ -1,10 +1,10 @@
 from os import system
 
-intoxicated = {}
+intoxicated = dict()
 
-raritys = ['common', 'rare', 'Epic', 'GODLY']
+RARITYS = ['common', 'rare', 'Epic', 'GODLY']
 
-types_of_items = [
+TYPES_OF_ITEMS = [
 	'Helmet' ,
 	'Torso'  ,
 	'Leggings',
@@ -19,24 +19,24 @@ types_of_items = [
 
 items = {
 	
-	rarity: {
+	RARITY: {
 	
-		type_of_item: []
-		for type_of_item in types_of_items
+		TYPE: list()
+		for TYPE in TYPES_OF_ITEMS
 	}
 	
-	for rarity in raritys
+	for RARITY in RARITYS
 }
 
-ways = [
-	'up', 
-	'right', 
-	'down' , 
-	'left'
+WAYS = [
+	'North', 
+	'South', 
+	'East' , 
+	'West'
 ]
 
-levels = [[], []]
-enemys = []
+levels = list()
+enemys = list()
 
 esc = False
 
@@ -44,7 +44,7 @@ clear = lambda: system('cls')
 
 game = None
 
-ses_avatars = {}
+ses_avatars = dict()
 
 ses_area = None
 

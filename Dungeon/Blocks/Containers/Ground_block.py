@@ -13,7 +13,3 @@ class GroundBlock(Container):
 
 	def give(self, obj):
 		obj.add_to_inventory([GroundBlock()])
-
-	def chk_walk(self, obj):
-
-		return True

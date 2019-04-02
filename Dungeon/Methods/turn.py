@@ -16,16 +16,12 @@ def turn(avatar):
 
 		effect()
 		
-		if choice == 'esc': links.esc = True
-
+		if   choice == 'esc':    links.esc = True
 		elif choice == 'skills': avatar.skill_tree()
+		elif choice == 'inv':    avatar.open_inventory()
 
-		elif choice == 'inv': avatar.open_inventory()
-
-		elif links.res == False:
-
+		elif not links.res:
 			if choice in ['North', 'East', 'South', 'West', 'up', 'down']: distributor(avatar, choice, 'mov')
-
 			else:
 				distributor(avatar, smart_input({
 

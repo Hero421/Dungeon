@@ -5,7 +5,6 @@ from Blocks.Trigers.Chest import Chest
 from links import ses_avatars
 
 class Container(object):
-	"""docstring for GoldOre"""
 		
 	def raze(self, choice, obj):
 		'''

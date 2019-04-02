@@ -23,6 +23,3 @@ class StoneBlock(Container):
 
 		if randint(1, 100) in range(30):
 			obj.add_to_inventory([Stone() for _ in range(randint(1, 3))])
-
-	def chk_walk(self, obj):
-		return True

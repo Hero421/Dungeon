@@ -26,7 +26,7 @@ class Chest(Triger):
 		self.type_= 'Triger'
 		self.desc = 'Something'
 		self.open  = False
-		self.items = []
+		self.items = list()
 		self.rarity= rarity
 		if self.rarity is None:
 		#	rarity_of(self)
@@ -44,7 +44,7 @@ class Chest(Triger):
 				if type_ == 'Resource':
 					num = randint(5, 20)
 					recour = ch(items['common'][type_])
-					item = []
+					item = list()
 					for _ in range(num):
 						item.append(recour())
 					self.items.append(item)
@@ -80,7 +80,7 @@ class Chest(Triger):
 
 	def print_items(self, index, obj):
 
-		prints = []
+		prints = list()
 		count  = 1
 
 		for slot in self.items:

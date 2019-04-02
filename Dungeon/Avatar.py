@@ -17,64 +17,65 @@ from Items.Sticks.metaStickCreate import StickCreate
 
 class Avatar(object):
 
-	empt_slot = 0
-	status    = []
-	used_items= []
-	count     = {}  # {'self.name': [start, stop, stat(on/off), self]}
-	chance    = {}	# {'ivent': chance}
-	choices   = None
-	selected  = None
+	def __init__(self, ID, room=True):
 
-	gold = 0
+		self.empt_slot = 0
+		self.status    = list()
+		self.used_items= list()
+		self.recepts   = list()
+		self.count     = dict()  # {'self.name': [start, stop, stat(on/off), self]}
+		self.chance    = dict()  # {'ivent': chance}
+		self.choices   = None
+		self.selected  = None
 
-	des  = '0'
+		self.gold = 0
 
-	full_hlt  = 10
-	full_mana = 0
+		self.des  = '0'
 
-	mid_dmg   = 2
-	mid_m_dmg = 1
+		self.full_hlt  = 10
+		self.full_mana = 0
 
-	dodge_Atk = 5
-	dodge_MAtk= 1
+		self.mid_dmg   = 2
+		self.mid_m_dmg = 1
 
-	hit   = 1
-	armor = 0
-	
-	power = 1
+		self.dodge_Atk = 5
+		self.dodge_MAtk= 1
 
-	backpack_slots = 20
+		self.hit   = 1
+		self.armor = 0
+		
+		self.power = 1
 
-	Atk  = 1
-	MAtk = 1
-	Agi  = 1
-	Vit  = 1
-	Int  = 1
-	Dcs  = 1
-	Luc  = 1
+		self.backpack_slots = 20
 
-	Lvl  = 1
+		self.Atk  = 1
+		self.MAtk = 1
+		self.Agi  = 1
+		self.Vit  = 1
+		self.Int  = 1
+		self.Dcs  = 1
+		self.Luc  = 1
 
-	Exp = 0
-	End_exp = 20
+		self.Lvl  = 1
 
-	Skill_points = 0
+		self.Exp = 0
+		self.End_exp = 20
 
-	crit = 0
+		self.Skill_points = 0
 
-	def __init__(self, id_, room=True):
+		self.crit = 0
 
 		self.hlt  = self.full_hlt
 		self.mana = self.full_mana
 		self.dmg  = randint(self.mid_dmg   - 1, self.mid_dmg   + 1)
 		self.m_dmg= randint(self.mid_m_dmg - 1, self.mid_m_dmg + 1)
 		
-		self.id_ = id_
+		self.ID = ID
 
 		self.area = links.ses_area
 		self.map  = self.area.map
 
-		links.ses_avatars[id_] = self
+		links.ses_avatars[ID] = self
 
 		self.chance['dodge Atk']  = 100 - self.dodge_Atk
 		self.chance['dodge MAtk'] = 100 - self.dodge_MAtk
@@ -86,18 +87,19 @@ class Avatar(object):
 		self.row = 0
 		self.elm = 0
 
-		# if room:
-		# 	Rooms(
+		if room:
+			Rooms(
 
-		# 		['the initial room', 'room with the chest'], 
-		# 		doors='off', 
-		# 		width=5, height=5, lenght=1
+				['the initial room', 'room with the chest'], 
+				doors='off', 
+				WIDTH=5, HEIGHT=5
 
-		# 		).spawn(
-		# 			- 1, 
-		# 			- 1, 
-		# 			self.map
-		# 			)
+				).spawn(
+					  0,
+					- 1, 
+					- 1, 
+					self.map
+					)
 
 		self.map[self.lay][self.row][self.elm] = self
 
@@ -112,8 +114,6 @@ class Avatar(object):
 			}
 
 		self.backpack = [None for _ in range(self.backpack_slots)]
-
-		self.recepts = []
 
 		self.fall_var = False
 		self.fall_var2= False
@@ -219,28 +219,28 @@ class Avatar(object):
 
 	def print_inventory(self, index, names=None, prints=None):
 
-		lenght = 0
+		length = 0
 
 		for item in self.backpack:
 
 			if type(item) is list:
-				new_lenght = 2 + 2 + len(item[0].name) + 2 + len(str(len(item)))
+				new_length = 2 + 2 + len(item[0].name) + 2 + len(str(len(item)))
 			elif item:
-				new_lenght = 2 + 2 + len(item.name)
+				new_length = 2 + 2 + len(item.name)
 			else:
-				new_lenght = 2 + 2 + 5
+				new_length = 2 + 2 + 5
 
-			if new_lenght > lenght:
-				lenght = new_lenght
+			if new_length > length:
+				length = new_length
 
-		lenght_add = 0
+		length_add = 0
 
 		if prints:
 			if len(prints) > 1:
 
 				for slot in prints:
-					if len(slot) > lenght_add:
-						lenght_add = len(slot)
+					if len(slot) > length_add:
+						length_add = len(slot)
 
 		if names:
 			if self.selected:
@@ -298,7 +298,7 @@ class Avatar(object):
 			if prints:
 				if len(prints) >= count:
 					add = prints[count-1]
-			residue = ' ' * (lenght - len(item) - len(mark))
+			residue = ' ' * (length - len(item) - len(mark))
 			print(f'{count}{point}{item}{mark}{residue}{add}')
 			count += 1
 

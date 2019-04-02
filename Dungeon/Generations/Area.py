@@ -1,97 +1,30 @@
-from Generations.Chank import Chank
+from math import ceil
 from random import randint
 
+from Generations.Vector import Vector
+from Generations.Chank import Chank
+from Generations.Rooms import Room
+from Generations.Map import Map
+
 from Blocks.Containers.Wall import Wall
+from Blocks.Trigers.Spike import Spike
 from Blocks.Air import Air
 
-from Generations.Rooms import Room
 from links import ses_avatars, clear
 import links
-
-class Map(list):
-
-	def __new__(cls, lst):
-		if type(lst) is list:
-			return list.__new__(cls, list)
-
-	def __init__(self, lst):
-		self.list = lst
-
-	def __len__(self):
-		return self.list.__len__()
-
-	def __iter__(self):
-		return self.list.__iter__()
-
-	def __next__(self):
-		return self[self.list.index(self.list.__next__()) - int(self.list.__len__()/2)]
-
-	def __index__(self, obj):
-
-		idx = -int(self.list.__len__()/2)
-
-		for elm in self.list:
-			if elm is obj:
-				return idx
-			idx += 1
-
-		raise AttributeError(f'{obj} is not in list')
-
-	def __getitem__(self, n):
-
-		idx = -int(self.list.__len__()/2)
-		radius = -idx
-
-		if isinstance(n, slice):
-			return self.list[n.start-radius : n.stop-radius : n.step]
-
-		else:
-			for elm in self.list:
-				if idx == n and not type(elm) is None:
-					return elm
-				idx += 1
-
-			raise IndexError(f'index {n} is not in list')
-
-			if -(3*radius) < n < -radius:
-				return self.list[n + radius]
-
-	def __setitem__(self, n, value):
-
-		idx = -int(self.list.__len__()/2)
-		radius = -idx
-
-		error = True
-		cont  = True
-
-		for index in range(self.list.__len__()):
-			if idx == n:
-				self.list[index] = value
-				cont = False
-				break
-			idx += 1
-
-		if cont:
-
-			if -(3*radius) < n < -radius:
-				self.list[n + radius] = value
-				error = False
-
-			if error:
-				raise IndexError(f'index {n} is not in list')
 
 class Area(object):
 
 	def __init__( self, 
 				  name, 
-				  layers, rows, elms,
-				  length_of_chank=10,
+				  layers, rows, elems,
+				  len_of_chank=10,
 				  ):
-		self.name   = name
-		self.lays   = layers + 4
-		self.rows   = rows + 4
-		self.elms   = elms + 4
-		self.length_of_chank = length_of_chank
+		self.name = name
+		self.LAYS = layers + 4
+		self.ROWS = rows + 4
+		self.ELMS = elems + 4
+		self.LEN_OF_CHANK = len_of_chank
 		links.levels.append(self)
 		if not links.ses_area:
 			self.generator()
@@ -111,34 +44,60 @@ class Area(object):
 		self.map = 	Map([
 						Map([
 							Map(
-								[int() for elm in range(self.elms)]
+								[int() for elm in range(self.ELMS)]
 								) 
-							for row in range(self.rows)
+							for row in range(self.ROWS)
 							])
-						for lay in range(self.lays)
+						for lay in range(self.LAYS)
 						])
 
 		self.chank_map = Map([
 							Map([
 								Map([
-									Chank(lay, row, elm, self, length=self.length_of_chank)
+									Chank(lay, row, elm, self, length=self.LEN_OF_CHANK)
 
 										for elm in range(
-														-int(self.elms/(self.length_of_chank*2)),
-														 int(self.elms/(self.length_of_chank*2))
+														-int(self.ELMS/(self.LEN_OF_CHANK*2)),
+														 int(self.ELMS/(self.LEN_OF_CHANK*2))
 														)
 									])
 								for row in range(
-												-int(self.rows/(self.length_of_chank*2)),
-												 int(self.rows/(self.length_of_chank*2))
+												-int(self.ROWS/(self.LEN_OF_CHANK*2)),
+												 int(self.ROWS/(self.LEN_OF_CHANK*2))
 												)
 								])
 							for lay in range(
-											-int(self.lays/(self.length_of_chank*2)),
-											 int(self.lays/(self.length_of_chank*2))
+											-int(self.LAYS/(self.LEN_OF_CHANK*2)),
+											 int(self.LAYS/(self.LEN_OF_CHANK*2))
 											)
 							])
 
+		self.vector_map = Map([Map([[] for elm in range(ceil(self.ELMS/self.LEN_OF_CHANK))]) for row in range(ceil(self.ROWS/self.LEN_OF_CHANK))])
+
+		map_ = Map([Map([None for elm in range(ceil(self.ELMS/self.LEN_OF_CHANK+2))]) for row in range(ceil(self.ROWS/self.LEN_OF_CHANK+2))])
+
+		vector_row = -ceil(len(self.vector_map)/2)
+		for row in range(-map_.RADIUS, map_.RADIUS):
+			vector_elm = -ceil(len(self.vector_map[0])/2)
+			for elm in range(-map_[0].RADIUS, map_[0].RADIUS):
+				map_[row][elm] = Vector(vector_elm, vector_row)
+				vector_elm += 1
+			vector_row += 1
+
+		vector_row = -ceil(len(self.vector_map)/2)+1
+		for row in range(-map_.RADIUS, map_.RADIUS-1):
+			vector_elm = -ceil(len(self.vector_map[0])/2)+1
+			for elm in range(-map_[0].RADIUS, map_[0].RADIUS-1):
+				vector_list = self.vector_map[vector_row][vector_elm]
+				vector_list.append(map_[row  ][elm  ])
+				vector_list.append(map_[row  ][elm+1])
+				vector_list.append(map_[row+1][elm+1])
+				vector_list.append(map_[row+1][elm  ])
+				vector_elm += 1
+			vector_row += 1
+
+		del map_
+		
 		chank = self.chank_map[0][0][0]
 
 		chank.generator()
@@ -151,31 +110,31 @@ class Area(object):
 		for lay in self.map:
 
 			for row in lay:
-				row[-int(len(self.map)/2)-1] = Wall()
+				row[-int(len(self.map)/2)  ] = Wall()
 				row[ int(len(self.map)/2)-1] = Wall()
 
 			for elm in range(-int(len(self.map[0][0])/2), int(len(self.map[0][0])/2)-1):
 				lay[-int(len(self.map)/2)][elm] = Wall()
-				lay[ int(len(self.map)/2)-2][elm] = Wall()
+				lay[ int(len(self.map)/2)-5][elm] = Wall()
 
 		clear()
 		print(self.name)
 		print('\ncreate the final room')
 
 		# while True:
-		# 	end_room_elm = randint(1, self.elms)
-		# 	end_room_row = randint(1, self.rows)
-		# 	if  end_room_row in range(self.rows//2 - 7, self.rows//2 + 7) or \
-		# 		end_room_row in range(self.rows//2 + 8, self.elms//2 - 8) or \
-		# 		end_room_elm in range(self.elms//2 - 7, self.elms//2 + 7) or \
-		# 		end_room_elm in range(self.elms//2 + 8, self.elms//2 - 8) or \
-		# 		end_room_elm > self.elms - 5 or \
-		# 		end_room_row > self.rows - 5:
+		# 	end_room_elm = randint(1, self.ELMS)
+		# 	end_room_row = randint(1, self.ROWS)
+		# 	if  end_room_row in range(self.ROWS//2 - 7, self.ROWS//2 + 7) or \
+		# 		end_room_row in range(self.ROWS//2 + 8, self.ELMS//2 - 8) or \
+		# 		end_room_elm in range(self.ELMS//2 - 7, self.ELMS//2 + 7) or \
+		# 		end_room_elm in range(self.ELMS//2 + 8, self.ELMS//2 - 8) or \
+		# 		end_room_elm > self.ELMS - 5 or \
+		# 		end_room_row > self.ROWS - 5:
 		# 		continue
 		# 	else:
 		# 		break
 
-		# Room(generation='end room').spawn(lay, end_room_row-int(self.rows/2), end_room_elm-int(self.elms/2), self.map)
+		# Room(generation='end room').spawn(lay, end_room_row-int(self.ROWS/2), end_room_elm-int(self.ELMS/2), self.map)
 
 	def print_map(self, id_, radius=5):
 		'''
@@ -196,11 +155,10 @@ class Area(object):
 		for row in a.map[a.lay][strt_row : fin_row]:
 			print(' '.join([
 								elm.des(a.lay, self.map[a.lay].__index__(row), row.__index__(elm), self.map) 
-								if type(elm) is Air 
+								if type(elm) in (Air, Spike)
 								else 
 								elm.des 
 
 							for elm in row[strt_elm : fin_elm]
-						   ]
-						  )
+						   ])
 				 )

@@ -18,27 +18,36 @@ from Enemys.metaEnemy import Enemy
 
 from Generations.Rooms import Rooms, Room
 
-def generator_for_blocks(lay, row, elm, map_):
+def generator_for_blocks(lay, row, elm, map_, height=0):
 
-	if lay < 0:
+	if lay < height:
 
-		if randint(1, 100) in range(70):
+		num  = randint(1, 10000)
+
+		if num in range(3 * 100):
+			block = GoldOreBlock
+
+		elif num in range(12 * 100):
+			block = IronOreBlock
+
+		elif num in range(40 * 100):
+			block = StoneBlock
+
+		else:
 			block = GroundBlock
-		else:
-			block = StoneBlock
 
 		map_[lay][row][elm] = block()
 
-	elif lay == 0:
+	elif lay == height:
 
-		if randint(1, 100) in range(70):
+		if randint(1, 100) in range(30):
+			block = StoneBlock
+		else:
 			block = Air
-		else:
-			block = StoneBlock
 
 		map_[lay][row][elm] = block()
 
-	elif lay > 0:
+	elif lay > height:
 
 		map_[lay][row][elm] = Air()
 

@@ -4,6 +4,8 @@ from pynput.keyboard import Key
 from links import clear
 from Methods.smart_input import smart_input
 
+from Items.Resources.Wood import Wood
+
 from Blocks.Trigers.metaTriger import Triger
 
 class Workbench(Triger):
@@ -11,6 +13,7 @@ class Workbench(Triger):
 	des = 'W'
 
 	def __init__(self):
+		self.recept = {Wood: 10, 'result': Workbench, 'place': Workbench}
 		self.name = 'Workbench'
 		self.type_= 'Triger'
 		self.desc = 'Something'

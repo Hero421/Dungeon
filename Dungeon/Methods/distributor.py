@@ -1,16 +1,9 @@
-from time import sleep
-
-from Blocks.Chasm import Chasm
 from Blocks.Trigers.Spike import Spike
 from Blocks.Trigers.Door import Door
 from Blocks.Air import Air
 from Blocks.Trigers.metaTriger import Triger
 
-from Enemys.metaEnemy import metaEnemy
-
 from Blocks.Containers.metaContainer import Container
-
-import links
 
 def distributor(obj, dir_, type_):
 
@@ -28,7 +21,7 @@ def distributor(obj, dir_, type_):
 	elif type_== 'raze' and isinstance(cell, (Container, Triger)):
 		cell.raze(dir_, obj)
 
-	elif type_== 'locate' and isinstance(cell, (Surface)):
+	elif type_== 'locate' and not type(cell) is Air:
 		obj.locate(dir_)
 
 	elif type_== 'hit': 
