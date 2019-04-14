@@ -19,4 +19,4 @@ import Items.Resources.Board
 import Items.Resources.Stone
 import Items.Resources.Raw_stone
 
-Dungeon_1 = Area('Dungeon 1', 100, 100, 100)
+Dungeon_1 = Area('Dungeon 1', 40, 40, 40)

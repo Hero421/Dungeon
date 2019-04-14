@@ -1,41 +1,154 @@
-class Trader(GameObject):
+from os import system
+from pynput.keyboard import Key
+
+from NPC.meta_NPC import NPC
+from links import items
+from Methods.smart_input import smart_input
+
+class Trader(NPC):
 	
 	stat = False
 	des = '$'
 
-	items = []
+	items = [None for _ in range(10)]
 	
-	def __init__(self):
+	# def __init__(self):
+	# 	self.generator()
 
-		super().__init__()
+	# def generator(self):
 		
+		
+
+	def print_items(self, index, obj):
+
+		for slot in self.items:
+
+			if type(slot) is list:
+				item = f'{slot[0].name} x{len(slot)}'
+			elif slot:
+				item = slot.name
+			else:
+				item = '_____'
+
+			if slot:
+				cost = f' cost: {item.cost} gold'
+			else:
+				cost = str()
+
+			if index == count + len(obj.backpack):
+				mark = ' <'
+			else:
+				mark = str()
+
+			print(f'{item}{cost}{mark}')
+
+	def choice_item(self, obj):
+
+		index = 1
+
+		while True:
+
+			clear()
+
+			obj.print_inventory(index, prints=self.print_items(index, obj))
+
+			choices = {Key.up:    'up', 
+					   Key.down:  'down', 
+					   Key.left:  'left', 
+					   Key.right: 'right', 
+					   Key.enter: 'select', 
+					   Key.esc:   'esc'}
+
+			choice = smart_input(choices)
+
+			if choice == 'esc': break
+
+			elif choice == 'up':
+				if 1 < index and not index == len(obj.backpack)+1:
+					index -= 1
+
+			elif choice == 'down':
+				if index < len(obj.backpack) + len(self.items) and not index == len(obj.backpack):
+					index += 1
+
+			elif choice == 'left':
+				if index > len(obj.backpack):
+					index -= len(obj.backpack)
+
+			elif choice == 'right':
+				if index < len(obj.backpack):
+					if index > len(self.items):
+						index = len(obj.backpack) + len(self.items)
+					else:
+						index += len(obj.backpack)
+
+			elif choice == 'select':
+
+				if index > len(obj.backpack)-1:
+
+					item = self.items[index-len(obj.backpack)-1]
+
+					if type(item) is list:
+						print()
+						item[0].print_details()
+
+					elif item:
+						print()
+						item.print_details()
+
+					else:
+						print('\nNone')
+						continue
+
+					print('\nGet?')
+
+					choices = {Key.enter: True, 
+							   Key.esc:   False}
+
+					answer = smart_input(choices)
+					
+					if answer:
+						obj.add_to_inventory(item)
+						self.items[index-len(obj.backpack)-1] = None
+
+				else:
+
+					item = obj.backpack[index-1]
+
+					if None in self.items:
+						self.items[self.items.index(None)] = item
+						obj.backpack[index-1] = None
+						obj.gold += item.cost
+
 	def act(self, obj):
-		print('Здравствуй, одинокий путник! С чем ты ко мне пожаловал?')
-		print('1. Что у тебя есть на продажу?')
-		print('2. Есть ли для меня задание?')
-		print('3. У меня тут много барахла, интересует?')
 
-		choice = input()
+		index = 0
 
-		if self.stat == False:
-			pass
+		while True:
+			system('cls')
+			print('Здравствуй, одинокий путник! С чем ты ко мне пожаловал?')
+			questions = ['Что у тебя есть на продажу?', 'Есть ли для меня задание?']
+			for qun in questions:
+				if index == questions.index(qun):
+					mark = ' <'
+				else:
+					mark = str()
+				print(f'{qun}{mark}')
 
-		if choice == '1':
-			count = 1
-			for slot in self.items:
-				if len(self.items) < 10:
-					if len(str(self.items.index(slot))) == 1:
-						print(str(count) + '.', slot, 'cost:', slot.cost)
-						count += 1
-				elif len(self.items) < 100:
-					if len(str(self.items.index(slot))) == 1:
-						print(str(count) + '. ', slot, 'cost:', slot.cost)
-					if len(str(self.items.index(slot))) == 2:
-						print(str(count) + '.', slot, 'cost:', slot.cost)
+			choices = {Key.up:    'up', 
+					   Key.down:  'down', 
+					   Key.enter: 'select', 
+					   Key.esc:   'esc'}
 
-		sec_choice = input()
+			choice = smart_input(choices)
 
-		obj.gold -= self.items[int(sec_choice)-1].cost
-		obj.add_to_inventory([self.items[int(sec_choice)-1]])
-		self.items[int(sec_choice)]
-	 
+			if choice == 'esc': break
+			elif choice == 'up':
+				if index > 0:
+					index -= 1
+			elif choice == 'down':
+				if index < len(questions)-1:
+					index += 1
+			elif choice == 'select':
+				if index == 0:
+					pass

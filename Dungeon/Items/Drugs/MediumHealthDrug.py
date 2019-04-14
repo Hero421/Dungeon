@@ -2,7 +2,7 @@ from Items.Drugs.metaDrug import Drug
 
 class MediumHealthDrug(Drug):
 
-	cost = 300
+	cost = 500
 	name = 'Medium health drug'
 
 	def __init__(self):

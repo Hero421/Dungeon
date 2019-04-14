@@ -3,6 +3,8 @@ from Blocks.Trigers.Door import Door
 from Blocks.Air import Air
 from Blocks.Trigers.metaTriger import Triger
 
+from NPC.meta_NPC import NPC
+
 from Blocks.Containers.metaContainer import Container
 
 def distributor(obj, dir_, type_):
@@ -27,7 +29,7 @@ def distributor(obj, dir_, type_):
 	elif type_== 'hit': 
 		obj.give_hit(cell, dir_)
 
-	elif type_== 'act' and isinstance(cell, Triger):
+	elif type_== 'act' and isinstance(cell, (Triger, NPC)):
 		if type(cell) is Spike:
 			cell.act(obj, dir_)
 		else:

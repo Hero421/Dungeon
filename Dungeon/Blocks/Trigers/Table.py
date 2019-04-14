@@ -1,6 +1,7 @@
-from time import sleep
 from termcolor import colored
+from pynput.keyboard import Key
 
+from Methods.smart_input import smart_input
 from Blocks.Trigers.metaTriger import Triger
 
 class Table(Triger):
@@ -24,4 +25,4 @@ class Table(Triger):
 		Shows the inscription on the plate
 		'''
 		print(self.text + '\n')
-		sleep(0.5)
+		smart_input({Key.enter: None})

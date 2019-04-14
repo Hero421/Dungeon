@@ -10,7 +10,7 @@ from Blocks.Containers.Wall import Wall
 from Blocks.Trigers.Spike import Spike
 from Blocks.Air import Air
 
-from links import ses_avatars, clear
+from links import ses_avatars, clear, NewInt
 import links
 
 class Area(object):
@@ -22,8 +22,8 @@ class Area(object):
 				  ):
 		self.name = name
 		self.LAYS = layers + 4
-		self.ROWS = rows + 4
-		self.ELMS = elems + 4
+		self.ROWS = rows   + 4
+		self.ELMS = elems  + 4
 		self.LEN_OF_CHANK = len_of_chank
 		links.levels.append(self)
 		if not links.ses_area:
@@ -44,7 +44,7 @@ class Area(object):
 		self.map = 	Map([
 						Map([
 							Map(
-								[int() for elm in range(self.ELMS)]
+								[NewInt() for elm in range(self.ELMS)]
 								) 
 							for row in range(self.ROWS)
 							])

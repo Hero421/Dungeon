@@ -1,5 +1,7 @@
 from termcolor import colored
+from pynput.keyboard import Key
 
+from Methods.smart_input import smart_input
 from Blocks.Trigers.metaTriger import Triger
 
 class Simulator(Triger):
@@ -15,4 +17,4 @@ class Simulator(Triger):
 	
 	def get_hit(self, dmg, obj):
 		print('Taked domage:', dmg)
-		input()
+		smart_input({Key.enter: None})

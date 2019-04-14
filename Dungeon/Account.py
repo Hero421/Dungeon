@@ -1,3 +1,4 @@
+from random import seed
 from uuid import uuid4
 from json import dump
 from time import sleep

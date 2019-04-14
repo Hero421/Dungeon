@@ -17,6 +17,8 @@ TYPES_OF_ITEMS = [
 	'Resource'
 ]
 
+NewInt = type('NewInt', (int, ), {'des': str(int())})
+
 items = {
 	
 	RARITY: {

@@ -1,5 +1,6 @@
 from random import choice, randint
 
+from NPC.Trader import Trader
 from Blocks.Containers.Wood_block   import WoodBlock
 from Blocks.Containers.Ground_block import GroundBlock
 from Blocks.Trigers.Simulator       import Simulator
@@ -38,14 +39,11 @@ class Rooms(object):
 
 	def __init__(self, 
 				 generations=None, 
-				 num=None, 
-				 doors='on', 
-				 HEIGHT=5, 
-				 WIDTH =5, 
-				 LENGTH=5, 
+				 num=None,
+				 HEIGHT=5,
+				 WIDTH =5,
+				 LENGTH=5,
 				 LEN_OF_COR=2):
-
-		self.doors = doors
 
 		if len(generations) > 1:
 			if not num:
@@ -88,10 +86,10 @@ class Rooms(object):
 
 				if generation == self.generations[-1]:
 					var = False
-					Room(way, last='last_room', generation=generation, doors=self.doors, WIDTH=self.WIDTH, LENGTH=self.LENGTH).spawn(lay, row, elm, map_)
+					Room(way, generation=generation, WIDTH=self.WIDTH, LENGTH=self.LENGTH).spawn(lay, row, elm, map_)
 					break
 
-				Room(way, generation=generation, doors=self.doors, WIDTH=self.WIDTH, LENGTH=self.LENGTH).spawn(lay, row, elm, map_)
+				Room(way, generation=generation, WIDTH=self.WIDTH, LENGTH=self.LENGTH).spawn(lay, row, elm, map_)
 				self.map_of_rooms[self.room_row][self.room_elm] = 'R'
 
 				while True:
@@ -115,48 +113,44 @@ class Rooms(object):
 					row -= self.LENGTH + self.LEN_OF_COR
 					self.room_row -= 2
 					if var:
-						Corridor('vertical', doors=self.doors, LENGTH=self.LEN_OF_COR).spawn(lay-1, row+self.LENGTH-1, elm+1, map_)
+						Corridor('vertical', LENGTH=self.LEN_OF_COR).spawn(lay-1, row+self.LENGTH-1, elm+1, map_)
 						self.map_of_rooms[self.room_row + 1][self.room_elm] = 'C'
 
 				elif way == 'right':
 					elm += self.WIDTH + self.LEN_OF_COR
 					self.room_elm += 2
 					if var:
-						Corridor('horizontal', doors=self.doors, LENGTH=self.LEN_OF_COR).spawn(lay-1, row+1, elm-self.LEN_OF_COR-1, map_)
+						Corridor('horizontal', LENGTH=self.LEN_OF_COR).spawn(lay-1, row+1, elm-self.LEN_OF_COR-1, map_)
 						self.map_of_rooms[self.room_row][self.room_elm - 1] = 'C'
 
 				elif way == 'down':
 					row += self.LENGTH + self.LEN_OF_COR
 					self.room_row += 2
 					if var:
-						Corridor('vertical', doors=self.doors, LENGTH=self.LEN_OF_COR).spawn(lay-1, row-self.LEN_OF_COR-1, elm+1, map_)
+						Corridor('vertical', LENGTH=self.LEN_OF_COR).spawn(lay-1, row-self.LEN_OF_COR-1, elm+1, map_)
 						self.map_of_rooms[self.room_row - 1][self.room_elm] = 'C'
 
 				elif way == 'left':
 					elm -= self.WIDTH + self.LEN_OF_COR
 					self.room_elm -= 2
 					if var:
-						Corridor('horizontal', doors=self.doors, LENGTH=self.LEN_OF_COR).spawn(lay-1, row+1, elm+self.WIDTH-1, map_)
+						Corridor('horizontal', LENGTH=self.LEN_OF_COR).spawn(lay-1, row+1, elm+self.WIDTH-1, map_)
 						self.map_of_rooms[self.room_row][self.room_elm + 1] = 'C'
 
 		else:
-			Room(way, last=True, generation=self.generations, doors=self.doors, HEIGHT=self.HEIGHT, WIDTH=self.WIDTH, LENGTH=self.LENGTH).spawn(row, elm, map_)
+			Room(way, generation=self.generations, HEIGHT=self.HEIGHT, WIDTH=self.WIDTH, LENGTH=self.LENGTH).spawn(row, elm, map_)
 
 
 class Room(object):
 
 	def __init__(self, 
-				 way=choice(['North', 'South', 'East', 'West']), 
-				 last=False, 
-				 generation=choice(['room with the monster', 'room with the chest', 'a room with a chest and a monster']), 
-				 doors='on',
+				 way=choice(['North', 'South', 'East', 'West']),
+				 generation=choice(['room with the monster', 'room with the chest', 'a room with a chest and a monster']),
 				 HEIGHT=5,
 				 WIDTH=5, 
 				 LENGTH=5):
 		self.generation = generation
 		self.way = way
-		self.last = last
-		self.doors = doors
 		self.HEIGHT = HEIGHT
 		self.WIDTH  = WIDTH
 		self.LENGTH = LENGTH
@@ -167,64 +161,23 @@ class Room(object):
 		fin_row = strt_row + self.LENGTH
 		fin_elm = strt_elm + self.WIDTH
 
-		for lay in range(-1, fin_lay - strt_lay - 1):
+		for lay in range(-1, fin_lay - strt_lay + 1):
 			for row in range(-1, fin_row - strt_row - 1):
 				for elm in range(-1, fin_elm - strt_elm - 1):
-					if not type(map_[strt_lay + lay][strt_row + row][strt_elm + elm]) in (Door, WoodBlock):
-						map_[strt_lay + lay][strt_row + row][strt_elm + elm] = WoodBlock()
+					map_[strt_lay + lay][strt_row + row][strt_elm + elm] = WoodBlock()
 
 		for lay in range(-1, fin_lay - strt_lay + 1):
 			for row in range(fin_row - strt_row - 2):
 				for elm in range(fin_elm - strt_elm - 2):
 					map_[strt_lay + lay][strt_row + row][strt_elm + elm] = WoodBlock() if lay in (strt_lay-1, fin_lay) else Air()
-		
-		choice = Door if self.doors == 'on' else WoodBlock
-
-		if self.way == 'North':
-			if self.last:
-				rand = randint(1, 3)
-				if rand == 1:
-					map_[strt_lay][strt_row + int(self.LENGTH/2)-1][strt_elm-1] = choice()
-				elif rand == 2:
-					map_[strt_lay][strt_row-1][strt_elm + int(self.WIDTH/2)-1] = choice()
-				elif rand == 3:
-					map_[strt_lay][strt_row + int(self.LENGTH/2)-1][fin_elm-2] = choice()
-		elif self.way == 'South':
-			if self.last:
-				rand = randint(1, 3)
-				if rand == 1:
-					map_[strt_lay][fin_row-2][strt_elm + int(self.WIDTH/2)-1] = choice()
-				elif rand == 2:
-					map_[strt_lay][strt_row-1][strt_elm + int(self.WIDTH/2)-1] = choice()
-				elif rand == 3:
-					map_[strt_lay][strt_row + int(self.LENGTH/2)-1][fin_elm-2] = choice()
-		elif self.way == 'East':
-			if self.last:
-				rand = randint(1, 3)
-				if rand == 1:
-					map_[strt_lay][fin_row-2][strt_elm + int(self.WIDTH/2)-1] = choice()
-				elif rand == 2:
-					map_[strt_lay][strt_row + int(self.LENGTH/2)-1][strt_elm-1] = choice()
-				elif rand == 3:
-					map_[strt_lay][strt_row + int(self.LENGTH/2)-1][fin_elm-2] = choice()
-		elif self.way == 'West':
-			if self.last:
-				rand = randint(1, 3)
-				if rand == 1:
-					map_[strt_lay][fin_row-2][strt_elm + int(self.WIDTH/2)-1] = choice()
-				if rand == 2:
-					map_[strt_lay][strt_row + int(self.LENGTH/2)-1][strt_elm-1] = choice()
-				if rand == 3:
-					map_[strt_lay][strt_row-1][strt_elm + int(self.WIDTH/2)-1] = choice()
 
 		if self.generation == 'the initial room':
 			map_[strt_lay][strt_row][strt_elm] = Chest()
 			map_[strt_lay][strt_row + 2][strt_elm] = Oven()
 			map_[strt_lay][strt_row + 2][strt_elm + 2] = Workbench()
-			map_[strt_lay][strt_row][fin_elm - 3] = Source()
+			map_[strt_lay][strt_row][fin_elm - 3] = Trader()
 			map_[strt_lay][fin_row - 1][strt_elm + int(self.WIDTH/2) - 2] = Table('Test table')
 			map_[strt_lay][fin_row - 1][strt_elm + int(self.WIDTH/2)] = Simulator()
-			map_[strt_lay][fin_row - 2][strt_elm + int(self.WIDTH/2) - 1] = choice()
 
 		elif self.generation == 'end room':
 			map_[strt_lay][strt_row][strt_elm] = Portal()
@@ -249,19 +202,16 @@ class Corridor(object):
 	"""
 	docstring for Corridor
 	"""
-	def __init__(self, orientation, doors='on', LENGTH=2, HEIGHT=3):
+	def __init__(self, orientation, LENGTH=2, HEIGHT=3):
 		
 		self.orientation = orientation # 'horizontal'/'vertical'
-		self.doors = doors
 		self.LENGTH = LENGTH
 		self.HEIGHT = HEIGHT
 
 	def spawn(self, lay, row, elm, map_):
 
 		# start: {'row': start_row, 'elm': start_elem} on the map
-		
-		choice = Door if self.doors == 'on' else WoodBlock
-		
+
 		if self.orientation == 'horizontal':
 
 			for count_elm in range(self.LENGTH):
@@ -270,9 +220,6 @@ class Corridor(object):
 					map_[lay+count_lay][row+1][elm+count_elm] = WoodBlock()
 					map_[lay+count_lay][row-1][elm+count_elm] = WoodBlock()
 
-			map_[lay+1][row][elm] = choice()
-			map_[lay+1][row][elm+self.LENGTH] = choice()
-
 		elif self.orientation == 'vertical':
 
 			for count_row in range(self.LENGTH):
@@ -280,6 +227,3 @@ class Corridor(object):
 					map_[lay+count_lay][row+count_row][elm  ] = WoodBlock() if count_lay in (0, self.HEIGHT) else Air()
 					map_[lay+count_lay][row+count_row][elm+1] = WoodBlock()
 					map_[lay+count_lay][row+count_row][elm-1] = WoodBlock()
-
-			map_[lay+1][row-1][elm] = choice()
-			map_[lay+1][row+self.LENGTH][elm] = choice()

@@ -8,8 +8,9 @@ class GroundBlock(Container):
 	of course, if it's not spike.
 	'''
 	
-	des = '.'
+	des   = '.'
 	type_ = 'Block'
+	name  = 'ground'
 
 	def give(self, obj):
 		obj.add_to_inventory([GroundBlock()])

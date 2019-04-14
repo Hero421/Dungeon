@@ -1,11 +1,11 @@
 from random import randint
 from time import sleep
+from pynput.keyboard import Key
 
+from Methods.smart_input import smart_input
 from Blocks.Air import Air
 
 class Enemy(object):
-
-	des = ' '
 
 	def __init__(self, types=False):
 
@@ -22,23 +22,23 @@ class Enemy(object):
 
 				sorted(types, key=lambda x: x[::-1])
 
-				chance = randint(1, 100)
+				num = randint(1, 100)
 
-				for pair in self.types:
-					if pair[1] in range(chance):
-						self = pair[0]()
+				for enemy, chance in self.types.items:
+					if num in range(chance):
+						enemy(row, elm, map_)
 
 			elif len(self.types) == 1:
 				self = types()
 
-		elif not self.types:
+		else:
 			
 			chance = randint(1, 100)
 
 			if chance in range(50):
-				self = Goblin(row, elm, map_)
+				Goblin(row, elm, map_)
 			else:
-				self = Cravler(row, elm, map_)
+				Cravler(row, elm, map_)
 
 class metaEnemy(object):
 
@@ -50,8 +50,6 @@ class metaEnemy(object):
 	dirs = ['up', 'up-right', 'right', 'down-right', 'down', 'down-left', 'left', 'up-left']
 
 	all_acts = ['turn', 'move', 'foto', 'eat', 'aff', 'hit', 'mul', 'inv', 'check']
-
-	left = {'up': 'up-left', 'up-left': 'left', 'left': 'down-left', 'down-left': 'down', 'down': 'down-right', 'down-right': 'right', 'right': 'up-right', 'up-right': 'up'}
 
 	def __init__( self, 
 				  row, 

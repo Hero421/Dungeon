@@ -36,8 +36,6 @@ def generator_for_blocks(lay, row, elm, map_, height=0):
 		else:
 			block = GroundBlock
 
-		map_[lay][row][elm] = block()
-
 	elif lay == height:
 
 		if randint(1, 100) in range(30):
@@ -45,11 +43,10 @@ def generator_for_blocks(lay, row, elm, map_, height=0):
 		else:
 			block = Air
 
-		map_[lay][row][elm] = block()
-
 	elif lay > height:
+		block = Air
 
-		map_[lay][row][elm] = Air()
+	map_[lay][row][elm] = block()
 
 		# random_num = randint(1, 10000)
 		
